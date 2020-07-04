@@ -1,0 +1,35 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+  <head>
+    <title>{% block title %}{% endblock title %}</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link type="text/css" rel="stylesheet" href="{% static 'BootstrapVue/bootstrap.min.css' %}">
+    <link type="text/css" rel="stylesheet" href="{% static 'BootstrapVue/bootstrap-vue.min.css' %}">
+
+    <script src="{% static 'BootstrapVue/vue.min.js' %}" ></script>
+    <script src="{% static 'BootstrapVue/bootstrap-vue.min.js' %}"></script>
+    
+    <script src="{% static 'popper.min.js' %}"></script>
+    {% comment %} <script src="{% static 'BootstrapVue/portal-vue.umd.js' %}"></script> {% endcomment %}
+
+    <script src="{% static 'BootstrapVue/bootstrap-vue-icons.min.js' %}"></script>
+
+    
+  
+  <body>
+    {% block body %}
+    
+    {% endblock body %}
+    
+  </body>
+  
+</html>
+   
+   
+   
+   
+   
