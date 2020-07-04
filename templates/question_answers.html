@@ -1,0 +1,40 @@
+{% extends "main.html" %}
+
+{% load static humanize %}
+
+{% block title %}code | Question{% endblock title %}
+
+{% block content %}
+  <b-card class="mb-2">
+  <b-card-title>{{ question.title }}</b-card-title>
+    <b-card-text>{{ question.body }}</b-card-text>
+    <card-footer><b-link href="#foo">{{ question.asked_by }}</b-link> <small class="text-muted float-right">{{ question.posted_on|naturaltime }}</small></card-footer>
+  </b-card>
+
+  {% for answer in answers %}
+    <b-card class="mb-2">
+    <b-card-text>{{ answer.text }}</b-card-text>
+    <card-footer><b-link href="#foo">{{ answer.answered_by }}</b-link> 
+    <b-icon icon="arrow-up"></b-icon> 
+    <b-icon icon="arrow-down"></b-icon> 
+    <small class="text-muted float-right">{{ answer.posted_on|naturaltime }}</small></card-footer>
+  </b-card>
+  {% endfor %}
+   
+{% endblock %}
+
+{% for question in questions %}
+       <b-card class="mb-2">
+       
+       {% for tag in question.tags.all %}
+         <b-badge variant="secondary">{{ tag }}</b-badge>
+       {% endfor %}
+       
+       <br>
+       <small class="text-muted float-right"><b-link href="#foo">{{ question.asked_by }}</b-link> | {{ question.posted_on|naturaltime }}</small>
+       <small><strong><b-link href="#foo">{{ question.views }} views</b-link> | <b-link href="#foo">{{ question.answers.count|default_if_none:"0" }} answers</b-link></strong></small>
+       
+      </b-card>
+       
+       
+    {% endfor %}

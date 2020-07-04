@@ -5,19 +5,22 @@
 {% block title %}code | Home{% endblock title %}
 
 {% block content %}
-   {% if user.is_authenticated %}
-   <b-button size="sm" href="#" class="mb-2 pull-right" variant="outline-primary" squared>Ask Question</b-button>
-   {% endif %}
    {% for question in questions %}
        <b-card class="mb-2">
-       <b-card-title><b-link href="#foo">{{ question.title }}</b-link></b-card-title>
+       <b-card-title><b-link href="/questions/{{ question.id }}">{{ question.title }}</b-link></b-card-title>
        {% for tag in question.tags.all %}
          <b-badge variant="secondary">{{ tag }}</b-badge>
        {% endfor %}
        
        <br>
-       <small class="text-muted float-right"><b-link href="#foo">{{ question.asked_by }}</b-link> | {{ question.posted_on|naturaltime }}</small>
-       <small><strong><b-link href="#foo">{{ question.views }} views</b-link> | <b-link href="#foo">{{ question.answers.count|default_if_none:"0" }} answers</b-link></strong></small>
+       <small class="text-muted float-right">
+       <b-link href="#foo">{{ question.asked_by }}</b-link> <span>|</span> {{ question.posted_on|naturaltime }}
+       </small>
+
+       <small>
+       <strong><b-link href="#foo">{{ question.views }} views</b-link>
+      <span>|</span> <b-link href="#foo">{{ question.answers.count|default_if_none:"0" }} answers</b-link></strong>
+      </small>
        
       </b-card>
        
