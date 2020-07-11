@@ -12,41 +12,49 @@
     <div class="collapse navbar-collapse" id="mainMenu">
 
       <ul class="nav-bar nav">
-
        
         {% if '/question' in request.path %}
           <li class="nav-item active">
-          <a class="nav-link" href="{% url 'question' %}">Questions</a>
-        </li>
+            <a class="nav-link" href="{% url 'question' %}">Questions</a>
+          </li>
         {% else %}
           <li class="nav-item">
-          <a class="nav-link" href="{% url 'question' %}">Questions</a>
-        </li>
+            <a class="nav-link" href="{% url 'question' %}">Questions</a>
+          </li>
         {%endif%}
         
 
-          {% if '/tags/' in request.path %}
-           <li class="nav-item active">
-              <a class="nav-link" href="{% url 'tags' %}">Tags</a>
-           </li>
-          {% else %}
-          <li class="nav-item">
-             <a class="nav-link" href="{% url 'tags' %}">Tags</a>
+       {% if '/tags/' in request.path %}
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'tags' %}">Tags</a>
           </li>
-          {%endif%}
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'tags' %}">Tags</a>
+          </li>
+        {%endif%}
          
 
-          {% if '/ask/' in request.path %}
+        {% if '/ask/' in request.path %}
            <li class="nav-item active">
               <a class="nav-link" href="{% url 'ask_question' %}">Ask</a>
            </li>
-           {% else %}
+        {% else %}
            <li class="nav-item">
               <a class="nav-link" href="{% url 'ask_question' %}">Ask</a>
            </li>
-           {%endif%}
-            
+       {%endif%}
 
+       {% if '/users/' in request.path %}
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'users' %}">Users</a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'users' %}">Users</a>
+          </li>
+        {%endif%}
+            
      </ul>
 
       {% if user.is_authenticated %}

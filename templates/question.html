@@ -11,7 +11,7 @@
          <div class="row">
 
            <div class="col-12">
-             <small><b><a href="{% url 'question_detail' question.pk %}">{{ question.title }}</a></b></small>
+             <small><b><a href="{% url 'question_detail' question.pk question.slug %}">{{ question.title }}</a></b></small>
            </div>
 
            <div class="col-12">
@@ -22,7 +22,7 @@
 
            <div class="col-12">
              <small>
-                <b>posted by: </b><a href="#">{{ question.asked_by }}</a>
+                <b>posted by: </b><a href="">{{ question.asked_by }}</a>
                 <span class="text-secondary">|</span>
                 <span>{{ question.posted_on|naturaltime}}</span>
 

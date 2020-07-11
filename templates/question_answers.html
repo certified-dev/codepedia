@@ -25,7 +25,7 @@
          </div>
 
          <div class="col-12 bg-light" style="border:1px solid lightgray;">
-            <small>{{ question.body }}</small>
+            <small>{{ question.body|safe }}</small>
          </div>
 
          <div class="col-12">
@@ -39,7 +39,7 @@
 
                {% if user == question.asked_by %}
                <div class="float-right">
-                <a class="ml-2" href="{% url 'update_question' question.pk %}">edit</a>
+                <a class="ml-2" href="{% url 'update_question' question.pk question.slug %}">edit</a>
                 <a href="#">delete</a>
                 </div>
                {% endif %}
@@ -68,7 +68,7 @@
       <div class="row">
 
          <div class="col-12 bg-light border-left-0 border-right-0" style="border:1px solid lightgray;">
-         <small>{{ answer.text }}</small>
+         <small>{{ answer.text|safe }}</small>
          </div>
 
          <div class="col-12">

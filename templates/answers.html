@@ -22,14 +22,14 @@
 
          <div class="col-12">
              <small class="">
-               <b>asked by: </b><a href="#foo" class="mr-2">{{ answer.question.asked_by }}</a>
+               <b>asked by: </b><a href="" class="mr-2">{{ answer.question.asked_by }}</a>
                <b>posted: </b><span>{{ answer.question.posted_on|naturaltime}}</span>
              </small>
          </div>
 
          <div class="col-12">
              <small>
-                {{ answer.text }}
+                {{ answer.text|safe }}
              </small>
          </div>
 

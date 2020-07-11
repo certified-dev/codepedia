@@ -7,11 +7,11 @@
 
 {% block content %}
 <div class="container p-2" style="border:1px solid lightgray;">
-
+ <p>Ask Question</p>
     <form method="post" novalidate>
        {% csrf_token %}
        {{ form.as_p }}
-      <button type="submit" class="btn btn-success">Save</button>
+       <button type="submit" class="btn btn-primary btn-sm">Submit</button>
     </form>
 
 </div>
