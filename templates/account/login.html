@@ -29,29 +29,29 @@
     }
     
     .btn-Facebook {
-        border: solid 1px #405D9D;
+       background-color: #405D9D;
+        color: #fff;
     }
     
     .btn-Facebook:hover {
-        background-color: #405D9D;
         color: #fff;
     }
     
     .btn-GitHub {
-        border: solid 1px #24292e;
-    }
-    
-    .btn-GitHub:hover {
         background-color: #24292e;
         color: #fff;
     }
     
+    .btn-GitHub:hover {
+        color: #fff;
+    }
+    
     .btn-Google {
-        border: solid 1px #ea4335;
+        background-color: #ea4335;
+        color: #fff;
     }
     
     .btn-Google:hover {
-        background-color: #ea4335;
         color: #fff;
     }
     
@@ -72,25 +72,6 @@
  
   {% block body %}
   
-   {% comment %}
-{% block messages %}
-   
-    {% if messages %}
-<div>
-    <ul>
-        {% for message in messages %}
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong>{{message}}</strong>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-        </div>
-        {% endfor %}
-    </ul>
-</div>
-{% endif %}
-
- {% endblock %} {% endcomment %}
 
 <div class="container">
     <div class="row">
@@ -105,7 +86,7 @@
                     <p>
                         {% for provider in socialaccount_providers %}
                         <a title="{{provider.name}}" href="{% provider_login_url provider.id process=process scope=scope auth_params=auth_params %}" class="btn btn-block btn-{{provider.name}}">
-                            <i class="fab fa-{{provider.name}}"></i>Login via {{provider.name}}
+                            <i class="fab fa-{{provider.name|lower}}"></i>
                         </a>
                         {% endfor %}
                     </p>

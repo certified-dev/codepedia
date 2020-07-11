@@ -1,0 +1,21 @@
+{% extends "main.html" %}
+
+{% load static humanize %}
+
+{% block title %}code | Home{% endblock title %}
+
+{% block content %}
+  <div class="row">
+    {% for user in users %}
+      <div class="col-sm-6 mb-1">
+        <div class="card">
+          <img class="card-img-left" src="holder.js/100x180/" alt="">
+          <div class="card-body">
+            <h6 class="card-title"><a href="#">{{ user }}</a></h6>
+            <p class="card-text">{{ user.points }}</p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

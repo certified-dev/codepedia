@@ -1,0 +1,30 @@
+{% extends "main.html" %}
+
+{% load static %}
+
+{% block title %}code | Tags{% endblock title %}
+
+
+{% block content %}
+
+{% for tag in tags %}
+<div class="container mb-1 p-2 pl-3" style="border:1px solid lightgray;">
+   <div class="row pl-1 pr-2">
+      <div class="col-12">
+        <a href="{% url 'tag_question' tag.pk %}" class="badge badge-info badge-pill">{{ tag }}</a>
+      </div>
+
+      <div class="col-12 bg-light" >
+        <small >{{ tag.description }}</small>
+      </div>
+
+      <div class="col-12">
+         <small><b>questions:</b> {{ tag.question_tags.count }}</small>
+      </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}
+
+
