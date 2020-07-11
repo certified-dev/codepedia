@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+ {% load i18n widget_tweaks %} 
+
+{% comment %} {% block head_title %}
+
+ {% trans "Signup" %}
+ 
+  {% endblock %}  {% endcomment %}
+  
+{% block css %}
+<style>
+    .col-sm-5 {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+</style> 
+
+{% endblock %} 
+
+
+ {% block body %}
+
+  {% comment %} 
+  {% block messages %} 
+  
+ {% if messages %}
+<div>
+    <ul>
+        {% for message in messages %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>{{message}}</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+        </div>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %} 
+
+{% endblock %} {% endcomment %}
+
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-sm-5">
+            <div class="card mt-5 mb-2">
+                <header class="card-header">
+                    <a href="" class="float-right btn btn-outline-primary mt-1">Log in</a>
+                    <h4 class="card-title mt-2">Sign up</h4>
+                </header>
+                <article class="card-body">
+                
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    {% for error in form.non_field_errors %}
+                    <p {% if forloop.last %} class="mb-0" {% endif %}>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                    <form method="post" action="{% url 'account_signup' %}">
+                        {% csrf_token %} {% if redirect_field_value %}<input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" /> {% endif %}
+                       <div class="form-row">
+                        
+                            {% comment %} <div class="col-sm form-group">
+                                <div class="input-group mb-4">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+                                    </div>
+                                    <input name="first_name" class="form-control" placeholder="First Name" type="text" id="id_first_name">
+                                </div>
+                            </div>
+                            <!-- form-group end.// -->
+
+                            <div class="col form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+                                    </div>
+                                    <input name="last_name" class="form-control" placeholder="Last Name" type="text" id="id_last_name">
+                                </div>
+                            </div>
+                            <!-- form-group end.// --> {% endcomment %}
+
+                        </div>
+                        <!-- form-row end.// --> 
+
+                        <div class="form-group mb-4">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"> <i class="fa fa-user-circle"></i> </span>
+                                </div>
+                                <input name="username" class="form-control" placeholder="Username" type="text" id="id_username">
+                            </div>
+                            <small class="form-text text-muted">Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</small>
+                        </div>
+                        <!-- form-group end.// -->
+
+
+                        <div class="form-group mb-4">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
+                                </div>
+                                <input name="email" class="form-control" placeholder="Email Address" type="email" id="id_email" maxlength="254" required>
+                            </div>
+                            <small class="form-text text-muted">We'll never share your email with anyone else.</small>
+                        </div>
+                        <!-- form-group end.// -->
+
+                        
+                        <!-- form-row.// -->
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+                                </div>
+                                <input name="password1" class="form-control" placeholder="Create Password" type="password" id="id_password1" minlength="5" required>
+                            </div>
+                        </div>
+                        <div class="form-group mb-4">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+                                </div>
+                                <input name="password2" class="form-control" placeholder="Confirm Password" type="password" id="id_password2" minlength="5">
+                            </div>
+                        </div>
+                        <!-- form-group end.// -->
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-block"> Register  </button>
+                        </div>
+                        <!-- form-group// -->
+                        <small class="text-muted">By clicking the 'Sign Up' button, you confirm that you accept our <br> Terms of use and Privacy Policy.</small>
+                    </form>
+                </article>
+                <!-- card-body end .// -->
+                <div class="border-top card-header text-center">Have an account? <a href="{{ login_url }}">Log In</a></div>
+            </div>
+        </div>
+    </div>
+</div>
+            {% endblock %}

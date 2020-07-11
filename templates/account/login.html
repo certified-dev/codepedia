@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+ {% load i18n widget_tweaks %}
+ 
+{% block css %}
+<style>
+    .divider-text {
+        position: relative;
+        text-align: center;
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .divider-text span {
+        padding: 7px;
+        font-size: 12px;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .divider-text:after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        border-bottom: 1px solid #ddd;
+        top: 55%;
+        left: 0;
+        z-index: 1;
+    }
+    
+    .btn-Facebook {
+        border: solid 1px #405D9D;
+    }
+    
+    .btn-Facebook:hover {
+        background-color: #405D9D;
+        color: #fff;
+    }
+    
+    .btn-GitHub {
+        border: solid 1px #24292e;
+    }
+    
+    .btn-GitHub:hover {
+        background-color: #24292e;
+        color: #fff;
+    }
+    
+    .btn-Google {
+        border: solid 1px #ea4335;
+    }
+    
+    .btn-Google:hover {
+        background-color: #ea4335;
+        color: #fff;
+    }
+    
+    .col-sm-5 {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+</style>
+{% endblock%}
+
+ {% block title %}
+ 
+ {% trans "Sign In" %} 
+ 
+ {% endblock %}
+ 
+  {% block body %}
+  
+   {% comment %}
+{% block messages %}
+   
+    {% if messages %}
+<div>
+    <ul>
+        {% for message in messages %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>{{message}}</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+        </div>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+ {% endblock %} {% endcomment %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-5">
+            <div class="card">
+                <header class="card-header">
+                    <a href="{% url 'account_signup' %}" class="float-right btn btn-outline-primary mt-1">Sign Up</a>
+                    <h4 class="card-title mt-2">Login</h4>
+                </header>
+                <article class="card-body">
+                    {% load account socialaccount %} {% get_providers as socialaccount_providers %}
+                    <p>
+                        {% for provider in socialaccount_providers %}
+                        <a title="{{provider.name}}" href="{% provider_login_url provider.id process=process scope=scope auth_params=auth_params %}" class="btn btn-block btn-{{provider.name}}">
+                            <i class="fab fa-{{provider.name}}"></i>Login via {{provider.name}}
+                        </a>
+                        {% endfor %}
+                    </p>
+
+                        <p class="divider-text">
+                            <span style="background: #fff;">OR</span>
+                        </p>
+
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for error in form.non_field_errors %}
+                            <p {% if forloop.last %} class="mb-0" {% endif %}>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <form id="signup_form" method="POST" action="{% url 'account_login' %}" novalidate>
+                            {% csrf_token %}
+
+                            <div class=" form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+                                    </div>
+                                    <input name="login" class="form-control" placeholder="Email or Username" id="id_login" type="text" required>
+                                </div>
+                                <!-- input-group.// -->
+                            </div>
+
+                            <!-- form-group// -->
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+                                    </div>
+                                    <input name="password" class="form-control" placeholder="Password" id="id_password" type="password" required>
+                                </div>
+                                <!-- input-group.// -->
+                            </div>
+
+                            {% if redirect_field_value %}<input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" /> {% endif %}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary btn-block"> Login</button>
+                                    </div>
+                                    <!-- form-group// -->
+                                </div>
+                                <div class="col-md-6 text-center mt-2">
+                                    <a class="small" href="{% url 'account_reset_password' %}">Forgot password?</a>
+                                </div>
+                            </div>
+                            <!-- .row// -->
+                        </form>
+                </article>
+                <div class="border-top text-center card-header">Don't have an account? <a href="{% url 'account_signup' %}">Sign Up</a></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

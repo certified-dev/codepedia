@@ -1,0 +1,20 @@
+{% extends "main.html" %}
+
+{% load static %}
+
+{% block title %}code | Question{% endblock title %}
+
+
+{% block content %}
+<div class="container p-2" style="border:1px solid lightgray;">
+
+    <form method="post" novalidate>
+       {% csrf_token %}
+       {{ form.as_p }}
+      <button type="submit" class="btn btn-success">Save</button>
+    </form>
+
+</div>
+{% endblock %}
+
+
