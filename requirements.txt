@@ -7,6 +7,9 @@ chardet==3.0.4
 defusedxml==0.6.0
 Django==3.0.7
 django-allauth==0.42.0
+django-appconf==1.0.4
+django-redis==4.12.1
+django-select2==7.4.2
 django-widget-tweaks==1.4.8
 future==0.18.2
 idna==2.9
