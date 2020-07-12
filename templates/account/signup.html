@@ -1,12 +1,9 @@
 {% extends "base.html" %}
 
- {% load i18n widget_tweaks %} 
+{% load i18n widget_tweaks %} 
 
-{% comment %} {% block head_title %}
-
- {% trans "Signup" %}
+{% block title %} {% trans "Signup" %} {% endblock %}  
  
-  {% endblock %}  {% endcomment %}
   
 {% block css %}
 <style>
@@ -17,14 +14,12 @@
         transform: translate(-50%, -50%);
     }
 </style> 
-
 {% endblock %} 
 
 
  {% block body %}
 
-  {% comment %} 
-  {% block messages %} 
+<!-- {% block messages %} 
   
  {% if messages %}
 <div>
@@ -39,10 +34,10 @@
         {% endfor %}
     </ul>
 </div>
-{% endif %} 
+{% endif %}
+{% endblock %}
 
-{% endblock %} {% endcomment %}
-
+ -->
 
 <div class="container">
     <div class="row justify-content-center">
@@ -144,4 +139,5 @@
         </div>
     </div>
 </div>
-            {% endblock %}
+
+{% endblock %}
