@@ -10,7 +10,19 @@
  <p>Ask Question</p>
     <form method="post" novalidate>
        {% csrf_token %}
-       {{ form.as_p }}
+       {{ form.media }}
+       <div class="form-group">
+        {{ form.title }}
+       </div>
+       
+       <div class="form-group">
+        {{ form.body }}
+         <small id="helpId" class="text-muted">Help text</small>
+       </div>
+
+        <div class="form-group">
+        {{ form.tags }}
+       </div>
        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
     </form>
 

@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, CreateView, UpdateView, DetailView
 
 from .models import Question, Answer, Tag, User
-from .forms import AnswerForm, CommentForm
+from .forms import AnswerForm, CommentForm, QuestionForm
 
 
 class HomeView(ListView):
@@ -35,7 +35,7 @@ class QuestionListView(ListView):
 @method_decorator([login_required], name="dispatch")
 class QuestionCreateView(CreateView):
     model = Question
-    fields = ('title', 'body', 'tags')
+    form_class = QuestionForm
     template_name = "question_add.html"
 
     def form_valid(self, form):
@@ -48,7 +48,7 @@ class QuestionCreateView(CreateView):
 @method_decorator([login_required], name="dispatch")
 class QuestionUpdateView(UpdateView):
     model = Question
-    fields = ('title', 'body', 'tags')
+    form_class = QuestionForm
     template_name = "question_update.html"
     context_object_name = 'question'
 
@@ -89,6 +89,7 @@ class AnswerListView(ListView):
             downvoted = True
 
         extra_context = {
+            'form': AnswerForm(),
             'question': self.question,
             'user_answers': user_answers,
             'upvoted': upvoted,
@@ -119,7 +120,7 @@ def reply_question(request, pk):
 @method_decorator([login_required], name="dispatch")
 class AnswerUpdateView(UpdateView):
     model = Answer
-    fields = ('text',)
+    form_class = AnswerForm
     template_name = "answer_update.html"
     pk_url_kwarg = 'answer_pk'
     context_object_name = 'answer'

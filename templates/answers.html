@@ -11,7 +11,7 @@
         <div class="row">
 
          <div class="col-12">
-          <small><b><a href="{% url 'question_detail' answer.question.pk %}">{{ answer.question.title }}</a></b></small>
+          <small><b><a href="{% url 'question_detail' answer.question.pk answer.question.slug %}">{{ answer.question.title }}</a></b></small>
          </div>
 
           <div class="col-12">
@@ -22,14 +22,14 @@
 
          <div class="col-12">
              <small class="">
-               <b>asked by: </b><a href="" class="mr-2">{{ answer.question.asked_by }}</a>
+               <b>answered: </b><a href="" class="mr-2">{{ answer.question.asked_by }}</a>
                <b>posted: </b><span>{{ answer.question.posted_on|naturaltime}}</span>
              </small>
          </div>
 
-         <div class="col-12">
+         <div class="col-12 bg-light">
              <small>
-                {{ answer.text|safe }}
+                {{ answer.text.html|safe }}
              </small>
          </div>
 

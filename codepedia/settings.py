@@ -53,6 +53,8 @@ INSTALLED_APPS = [
 
     'core.apps.CoreConfig',
 
+
+    'django_quill',
     'widget_tweaks',
 ]
 

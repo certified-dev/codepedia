@@ -2,7 +2,7 @@ from django import forms
 from django.db import transaction
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
-from .models import Answer, Question, Tag, Comment
+from .models import Answer, Question, Tag, Comment, Question
 
 User = get_user_model()
 
@@ -13,6 +13,12 @@ class RegistrationForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = User
+
+
+class QuestionForm(forms.ModelForm):
+    class Meta:
+        model = Question
+        fields = ('title', 'body', 'tags')
 
 
 class AnswerForm(forms.ModelForm):

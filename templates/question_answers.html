@@ -4,10 +4,13 @@
 
 {% block title %}code | Question{% endblock title %}
 
- {% block js %}
- <script src="{% static 'vue.min.js' %}"></script>
- <script src="{% static 'axios.min.js' %}"></script>
- {% endblock js %}
+{% block css %}
+<style>
+#quill-id_text {
+  height: 200px;
+}
+</style>
+{% endblock css %}
 
 {% block content %}
 
@@ -24,8 +27,8 @@
          {% endfor %}
          </div>
 
-         <div class="col-12 bg-light" style="border:1px solid lightgray;">
-            <small>{{ question.body|safe }}</small>
+         <div class="col-12 bg-light border-left-0 border-right-0"" style="border:1px solid lightgray;">
+            <small>{{ question.body.html|safe }}</small>
          </div>
 
          <div class="col-12">
@@ -45,6 +48,7 @@
                {% endif %}
             </small>
          </div>
+
          <div class="col-12">
             <small>
                <span><b>asked:</b> {{ question.posted_on|naturaltime}}</span> 
@@ -68,7 +72,7 @@
       <div class="row">
 
          <div class="col-12 bg-light border-left-0 border-right-0" style="border:1px solid lightgray;">
-         <small>{{ answer.text|safe }}</small>
+         <small>{{ answer.text.html|safe }}</small>
          </div>
 
          <div class="col-12">
@@ -85,7 +89,9 @@
                   <a href="{% url 'update_answer' answer.question.pk answer.pk %}">edit</a>
                   <a id="submitted" href=".">delete</a>
                   {% endif %}
-                  <a href="#">add comment</a>
+                  <a data-toggle="collapse" href="#Comment" aria-expanded="false" aria-controls="Comment">
+                        add comment
+                     </a>
 
                   <div class="float-right">
                   <span><b>posted: </b>{{ answer.posted_on|naturaltime}}</span> {% if not answer.updated is None %}<span><b>edited: </b>{{ answer.updated_on|naturaltime }}</span>{% endif %}
@@ -102,20 +108,24 @@
             </div>
          {% endfor %}
 
-         <div class="col-12 mt-1">
-           <form method="post" action="{% url 'reply_answer' answer.pk %}" novalidate>
-           {% csrf_token %}
-              <div class="row">
-                <div class="col-12">
-                  <div class="input-group">
-                     <input type="text" class="form-control" name="text" id="id_text" placeholder="enter comment" aria-label="">
-                     <div class="input-group-append">
-                     <button class="btn btn-success" type="submit">Go</button>
+         <div class="col-12">
+         
+            <div class="collapse" id="Comment">
+               <form method="post" action="{% url 'reply_answer' answer.pk %}" novalidate>
+                  {% csrf_token %}
+                  <div class="row">
+                     <div class="col-12">
+                        <div class="input-group">
+                           <input type="text" class="form-control" name="text" id="id_text" placeholder="enter comment" aria-label="">
+                           <div class="input-group-append">
+                           <button class="btn btn-primary" type="submit">Go</button>
+                           </div>
+                        </div>
                      </div>
                   </div>
-                </div>
-              </div>
-           </form>
+               </form>
+            </div>
+           
          </div>
 
       </div> 
@@ -126,24 +136,38 @@
         <div class="row">
         {% if user.is_authenticated %}
 
-            {% comment %} {% if user_answers.count > 0 %}
+            {% if user_answers.count > 0 %}
                <div class="col-12 p-2">
-                  <button type="buttton" class="btn btn-sm btn-primary">Add another answer</button>
+                   <a class="btn btn-sm btn-primary" id="remove" data-toggle="collapse" href="#contentId" aria-expanded="false" aria-controls="contentId">
+                              Add another answer
+                           </a>
                </div>
+              
+                <div class="col-12">
+                     <div class="collapse" id="contentId"> 
+                        <form method="post" action="{% url 'reply_question' question.pk %}" novalidate>
+                           {% csrf_token %}
+                           {{ form.media }}            
+                        <div class="form-group mt-2">
+                           {{ form.text }}
+                           </div> 
+                           <button type="submit" class="btn btn-sm btn-primary">Post Your Answer</button>
+                        </form>
+                     </div>
+                </div>
             {% else %}
-            {% endif %} {% endcomment %}
-               <div class="col-12 bg-light">
+                 <div class="col-12">
                   <form method="post" action="{% url 'reply_question' question.pk %}" novalidate>
                      {% csrf_token %}
-                    <div class="form-group">
-                      <label for=""></label>
-                      <textarea class="form-control" name="text" id="id_text" rows="3"></textarea>
-                      </div>  
+                     {{ form.media }}            
+                    <div class="form-group mt-2">
+                      {{ form.text }}
+                      </div> 
                      <button type="submit" class="btn btn-sm btn-primary">Post Your Answer</button>
                   </form>
                </div >
-
-            
+            {% endif %} 
+               
 
         {% else %}
          <div class="col-12">

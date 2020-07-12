@@ -10,12 +10,16 @@
     {% comment %} <link rel="stylesheet" href="{% static 'Css/Custom-Account-Styles.css' %}"> {% endcomment %}
 
     <link type="text/css" rel="stylesheet" href="{% static 'bootstrap/bootstrap.min.css' %}">
-    {% block css %}
-    
-    {% endblock css %}
+    {% block css %}{% endblock %}
 
      <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="{% static 'fontawesome/css/all.css' %}">
+  </head> 
+
+  <body>
+    {% block body %}
+    
+    {% endblock %}
 
     <script src="{% static 'jquery.min.js' %}"></script>
     <script>
@@ -24,19 +28,15 @@
         e.preventDefault();
          $("#delete_answer").submit();
       });
-   });
+      });
+      $('#remove').click(function(){
+          $(this).remove();
+        });
    </script>
     <script src="{% static 'popper.min.js' %}"></script>
     <script src="{% static 'bootstrap/bootstrap.min.js' %}"></script>
-    
     {% block js %}{% endblock js %}
-     <script src="{% static 'vue.min.js' %}"></script>
-     <script src="{% static 'axios.min.js' %}"></script>
-
-  <body>
-    {% block body %}
     
-    {% endblock %}
   </body>
   
 </html>

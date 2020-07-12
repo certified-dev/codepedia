@@ -2,6 +2,14 @@
 
 {% load static %}
 
+{% block css %}
+<style>
+#quill-id_body {
+  height: 300px;
+}
+</style>
+{% endblock css %}
+
 {% block body %}
 <nav class="navbar navbar-expand-sm bg-light  navbar-light">
   <div class="container">
@@ -96,3 +104,8 @@
 </div>
 
 {% endblock %}
+
+{% block js %}
+<script src="{% static 'vue.min.js' %}"></script>
+<script src="{% static 'axios.min.js' %}"></script>
+{% endblock%}

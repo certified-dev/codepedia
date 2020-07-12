@@ -3,6 +3,8 @@ from django.urls import reverse
 from django.conf import settings
 from django.utils.text import slugify
 from django.contrib.auth.models import AbstractUser
+from django_quill.fields import QuillField
+from django.utils.html import mark_safe
 
 
 def update_points_helper(obj):
@@ -25,7 +27,7 @@ class Tag(models.Model):
 
 class Question(models.Model):
     title = models.CharField(max_length=1000)
-    body = models.TextField(max_length=10000)
+    body = QuillField()
     tags = models.ManyToManyField(Tag, related_name="question_tags")
     points = models.IntegerField(default=0)
     asked_by = models.ForeignKey(
@@ -60,7 +62,7 @@ class Question(models.Model):
 class Answer(models.Model):
     question = models.ForeignKey(
         Question, on_delete=models.CASCADE, related_name="answers")
-    text = models.TextField(max_length=5000)
+    text = QuillField()
     points = models.IntegerField(default=0)
     answered_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -70,8 +72,8 @@ class Answer(models.Model):
     def update_points(self):
         update_points_helper(self)
 
-    def __str__(self):
-        return self.text
+    # def __str__(self):
+    #     return mark_safe(self.text.html)
 
 
 class Comment(models.Model):

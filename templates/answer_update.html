@@ -10,7 +10,11 @@
 <p>Edit Answer</p>
   <form method="post" novalidate>
        {% csrf_token %}
-       {{ form.as_p }}
+       {{ form.media }}
+       <div class="form-group">
+        {{ form.text }}
+         <small id="helpId" class="text-muted">Help text</small>
+       </div>
       <button type="submit" class="btn btn-primary btn-sm">Save Edits</button>
     </form>
 </div>
