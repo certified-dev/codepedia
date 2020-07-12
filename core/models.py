@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from django.conf import settings
+from django.utils.text import slugify
 from django.contrib.auth.models import AbstractUser
 
 
@@ -23,8 +24,8 @@ class Tag(models.Model):
 
 
 class Question(models.Model):
-    title = models.CharField(max_length=100)
-    body = models.TextField(max_length=5000)
+    title = models.CharField(max_length=1000)
+    body = models.TextField(max_length=10000)
     tags = models.ManyToManyField(Tag, related_name="question_tags")
     points = models.IntegerField(default=0)
     asked_by = models.ForeignKey(
@@ -33,6 +34,7 @@ class Question(models.Model):
     posted_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(null=True, blank=True)
     hidden = models.BooleanField(default=False)
+    slug = models.SlugField(max_length=1000, null=True)
 
     def show_points(self):
         if self.points < 0:
@@ -47,7 +49,12 @@ class Question(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse("question_detail", kwargs={"pk": self.pk})
+        return reverse("question_detail", kwargs={"pk": self.pk, 'slug': self.slug})
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        return super().save(*args, **kwargs)
 
 
 class Answer(models.Model):

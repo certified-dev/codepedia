@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, CreateView, UpdateView, DetailView
 
-from .models import Question, Answer, Tag
+from .models import Question, Answer, Tag, User
 from .forms import AnswerForm, CommentForm
 
 
@@ -132,7 +132,7 @@ class AnswerUpdateView(UpdateView):
 
     def get_success_url(self):
         answer = self.get_object()
-        return reverse('question', kwargs={'pk': answer.question.pk})
+        return reverse('question_detail', kwargs={'pk': answer.question.pk, 'slug': answer.question.slug})
 
 
 @login_required
@@ -190,6 +190,17 @@ class UserAnswersView(ListView):
     def get_queryset(self):
         queryset = Answer.objects.filter(
             answered_by=self.request.user).order_by('posted_on')
+        return queryset
+
+
+class UsersListView(ListView):
+    model = User
+    template_name = "users.html"
+    context_object_name = 'users'
+
+    def get_queryset(self):
+        queryset = User.objects.exclude(
+            id=self.request.user.id).order_by('-points')
         return queryset
 
 
