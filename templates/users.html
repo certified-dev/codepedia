@@ -2,7 +2,8 @@
 
 {% load static humanize %}
 
-{% block title %}code | Home{% endblock title %}
+{% block title %}code | Users{% endblock title %}
+
 
 {% block content %}
   <div class="row">
@@ -11,11 +12,11 @@
         <div class="card">
           <img class="card-img-left" src="holder.js/100x180/" alt="">
           <div class="card-body">
-            <h6 class="card-title"><a href="#">{{ user }}</a></h6>
+            <h6 class="card-title"><a href="{% url 'user' user.pk %}">{{ user }}</a></h6>
             <p class="card-text">{{ user.points }}</p>
           </div>
         </div>
       </div>
-    {% endfor %}
+    {% endfor %} 
   </div>
 {% endblock %}

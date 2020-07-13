@@ -10,7 +10,7 @@
   height: 200px;
 }
 a.done:link, a.done:hover, a.done:visited, a.done:active{
-    color: forestgreen !important;
+    color: orange !important;
 }
 .ql-syntax {
    margin-bottom :0;
@@ -28,7 +28,7 @@ p {
       <div class="row">
 
          <div class="col-12">
-            <small><b class="text-secondary">{{ question.title }}</b> <span class="float-right"><i class="fas fa-chart-line"></i> [[ points ]] </span></small>
+            <b class="text-secondary">{{ question.title }}</b> <small><span class="float-right">points:  [[ points ]] </span></small>
          </div>
 
          <div class="col-12">
@@ -37,29 +37,19 @@ p {
          {% endfor %}
          </div>
 
-         <div class="col-12 bg-light border-left-0 border-right-0 pr-1 pl-1" style="border:1px solid lightgray;">
+         <div class="col-12 bg-light border-left-0 border-right-0" style="border:1px solid lightgray;">
             <small>{{ question.body.html|safe }}</small>
          </div>
 
          <div class="col-12">
             <small>
-               <i class="fas fa-user-circle"></i> {% if user.is_authenticated %}
-                {% if question.asked_by == user %}
-                    <a href="{% url 'user_profile' user.pk %}">{{ question.asked_by }}</a>
-                {% else %}
-                    <a href="{% url 'user' user.pk %}">{{ question.asked_by }}</a>
-                {% endif %}
-                {% else %}
-                  <a href="javascript:void(0)">{{ question.asked_by }}</a>
-                {% endif %}
+               <b>posted by: </b><a href="#">{{ question.asked_by }}</a>
 
                {% if not user == question.asked_by %}
-               <b>
-                <a href="javascript:void(0)" v-on:click="vote('upvote', upvoted, '{% url 'vote_question' question.pk question.slug %}')" :class="[[upvoted ? 'done' : '']]" class="text-secondary ml-3 mr-2">upvote <i class="fas fa-caret-square-up"></i></a>
-                <a href="javascript:void(0)" v-on:click="vote('downvote', downvoted, '{% url 'vote_question' question.pk question.slug %}')" :class="[[downvoted ? 'done' : '']]" class="text-secondary">downvote <i class="fas fa-caret-square-down"></i></a>
-               </b>
+                <a href="javascript:void(0)" v-on:click="vote('upvote', upvoted, '{% url 'vote_question' question.pk question.slug %}')" :class="[[upvoted ? 'done' : '']]" class="text-secondary">upvote</a>
+                <a href="javascript:void(0)" v-on:click="vote('downvote', downvoted, '{% url 'vote_question' question.pk question.slug %}')" :class="[[downvoted ? 'done' : '']]" class="text-secondary">downvote</a>
                {% endif %}
-            
+
                {% if user == question.asked_by %}
                <div class="float-right">
                 <a class="ml-2" href="{% url 'update_question' question.pk question.slug %}">edit</a>
@@ -98,17 +88,17 @@ p {
 
          <div class="col-12 pl-2 pr-2">
             <small>
-               <i class="fas fa-user-circle"></i>
+               <b>answered by: </b>
                {% if answer.answered_by == user %}
                     <a href="{% url 'user_profile' user.pk %}" class="mr-2">{{ answer.answered_by }}</a>
                 {% else %}
                     <a href="{% url 'user' user.pk %}" class="mr-2">{{ answer.answered_by }}</a>
                 {% endif %}
-               
+               <span class="mr-2"><i class="fas fa-chart-line"></i> {{ answer.points }}</span>
 
                   {% if not user == answer.answered_by %}
-                  <a href="#" class="text-secondary mr-2 ml-2"><i class="fas fa-caret-square-up"></i></a>
-                  <a href="#" class="text-secondary mr-3"><i class="fas fa-caret-square-down"></i></a>
+                  <a href="#">upvote</a>
+                  <a href="#">downvote</a>
                   {% endif %}
                
                   {% if user == answer.answered_by %}
@@ -118,8 +108,6 @@ p {
                   <a data-toggle="collapse" href="#Comment" aria-expanded="false" aria-controls="Comment">
                         <i class="fas fa-comment-dots" style="color:dodgerblue"></i>
                      </a>
-                  
-                  <span class="ml-2"><i class="fas fa-chart-line"></i> {{ answer.points }}</span>
 
                   <div class="float-right">
                   <span><b>posted: </b>{{ answer.posted_on|naturaltime}}</span> {% if not answer.updated is None %}<span><b>edited: </b>{{ answer.updated_on|naturaltime }}</span>{% endif %}
@@ -217,3 +205,8 @@ p {
 {{ upvoted|json_script:"upvoted" }}
 {{ downvoted|json_script:"downvoted" }}
 {% endblock %}
+
+
+
+
+

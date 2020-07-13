@@ -36,7 +36,10 @@
     <script src="{% static 'popper.min.js' %}"></script>
     <script src="{% static 'bootstrap/bootstrap.min.js' %}"></script>
     {% block js %}{% endblock js %}
-    
+    <script>
+     axios.defaults.xsrfCookieName = 'csrftoken';
+        axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+    </script>
   </body>
   
 </html>

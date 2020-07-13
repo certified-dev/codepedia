@@ -1,0 +1,43 @@
+{% extends "main.html" %}
+
+{% load static humanize %}
+
+{% block title %}code | User{% endblock title %}
+
+
+{% block content %}
+<p><b>{{ user_detail.username }}</b></p>
+
+<p>points: <b>{{ user_detail.points }}</b></p>
+
+<p>post: <b>{{ all_posts }}</b></p>
+
+<p>voted: <b>{{ votes }}</b></p>
+
+<p>questions: <b>{{ user_questions.count }}</b></p>
+
+
+<ul>
+{% for question in user_questions %}
+    
+    <li>{{ question.title }}</li>
+    
+{% empty %}
+    <span> you havent asked any question</span>
+{% endfor %}
+</ul>
+    
+
+<p>answer: <b>{{ user_answers.count }}</b></p>
+
+<ul>
+{% for answer in user_answers %}
+    
+    <li>{{ answer.question.title }}</li>
+    
+{% empty %}
+    <span> you havent asked any question</span>
+{% endfor %}
+</ul>
+
+{% endblock %}

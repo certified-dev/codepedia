@@ -6,6 +6,12 @@
 
 
 {% block content %}
+
+{{ form.media.css }}
+{% comment %} <style>
+      input, select {width: 100%}
+</style> {% endcomment %}
+
 <div class="container p-2" style="border:1px solid lightgray;">
  <p>Ask Question</p>
     <form method="post" novalidate>
@@ -27,6 +33,10 @@
     </form>
 
 </div>
+
+<script src="{% static 'jquery.min.js' %}"></script>
+    {{ form.media.js }}
+    
 {% endblock %}
 
 
