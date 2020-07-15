@@ -3,10 +3,11 @@ from django.urls import reverse
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django_quill.fields import QuillField
-from django.utils.html import mark_safe, escape, urlize
+from django.utils.html import mark_safe, urlize
 from functools import reduce
 from django.db.models import Q
-# from rest_framework import serializers
+from rest_framework import serializers
+from django.contrib.humanize.templatetags.humanize import naturaltime
 
 
 def update_points_helper(obj):
@@ -108,26 +109,33 @@ class User(AbstractUser):
 
     def update_test_points(self):
         questions = self.question_set.filter(~Q(points=0))
-        print(questions)
         points = map(lambda a: a.points, questions)
         user_points = reduce(lambda x, y: x + y, points, 0)
         self.points = user_points + self.adjustment_points
         self.save()
 
 
-# class UserField(serializers.Field):
-#     def to_representation(self, value):
-#         return value.username
+class UserField(serializers.Field):
+    def to_representation(self, value):
+        return value.username
 
 
-# class AnswerSerializer(serializers.ModelSerializer):
-#     user = UserField()
-#     text_html = serializers.SerializerMethodField()
+class AnswerSerializer(serializers.ModelSerializer):
+    answered_by = UserField()
+    text_html = serializers.SerializerMethodField()
+    posted_on = serializers.SerializerMethodField()
+    updated_on = serializers.SerializerMethodField()
 
-#     class Meta:
-#         model = Answer
-#         fields = ('text_html', 'points', 'user', 'id',
-#                   'created', 'posted_on', 'updated_on', 'hidden')
+    class Meta:
+        model = Answer
+        fields = ('text_html', 'points', 'answered_by', 'pk',
+                  'posted_on', 'updated_on')
 
-#     def get_text_html(self, obj):
-#         return urlize(escape(obj.text))
+    def get_text_html(self, obj):
+        return urlize(obj.text.html)
+
+    def get_posted_on(self, obj):
+        return naturaltime(obj.posted_on)
+
+    def get_updated_on(self, obj):
+        return naturaltime(obj.posted_on)

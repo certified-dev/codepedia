@@ -7,12 +7,8 @@ from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
 from django.views.generic import ListView, CreateView, UpdateView, DetailView
 
-from .models import Question, Answer, Tag, User
+from .models import Question, Answer, Tag, User, AnswerSerializer
 from .forms import AnswerForm, CommentForm, QuestionForm
-
-
-def test(request):
-    return render(request, 'test.html')
 
 
 class HomeView(ListView):
@@ -24,13 +20,6 @@ class HomeView(ListView):
         queryset = super(HomeView, self).get_queryset()
         queryset = Question.objects.filter(hidden=False).order_by('-pk')[:15]
         return queryset
-
-    def get_context_data(self, *args, **kwargs):
-        extra_context = {
-
-        }
-        kwargs.update(extra_context)
-        return super(HomeView, self).get_context_data(**kwargs)
 
 
 class QuestionListView(ListView):
@@ -105,26 +94,28 @@ class AnswerListView(ListView):
             downvoted = True
 
         # answers
-        answers = self.question.answers.order_by('posted_on')
-
-        for answer in answers:
-            answer.upvoted = False
-            answer.downvoted = False
+        answers = self.question.answers.exclude(
+            hidden=True).order_by('posted_on')
+        answers_serialized = AnswerSerializer(answers, many=True).data
+        for answer in answers_serialized:
+            answer['upvoted'] = False
+            answer['downvoted'] = False
 
             if not self.request.user.is_authenticated:
                 pass
-            elif self.request.user.upvoted_answers.filter(pk=answer.pk).exists():
-                answer.upvoted = True
-            elif self.request.user.downvoted_answers.filter(pk=answer.pk).exists():
-                answer.downvoted = True
+            elif self.request.user.upvoted_answers.filter(pk=answer['pk']).exists():
+                answer['upvoted'] = True
+            elif self.request.user.downvoted_answers.filter(pk=answer['pk']).exists():
+                answer['downvoted'] = True
 
         extra_context = {
-            'form': AnswerForm,
+            'form': AnswerForm(),
             'question': self.question,
             'points': self.question.points,
             'user_answers': user_answers,
             'upvoted': upvoted,
-            'downvoted': downvoted
+            'downvoted': downvoted,
+            'answers_serialized': answers_serialized
         }
         kwargs.update(extra_context)
         return super(AnswerListView, self).get_context_data(**kwargs)
@@ -271,7 +262,7 @@ def vote_question(request, pk, slug):
     return vote(request, pk, 'question')
 
 
-def vote_answer(request, pk, slug):
+def vote_answer(request, pk):
     return vote(request, pk, 'answer')
 
 
@@ -297,16 +288,18 @@ def update_vote(user, target, vote_type, question_or_answer):
 
 
 def vote(request, pk, question_or_answer):
-    if question_or_answer == 'question':
-        target = Question.objects.get(pk=pk)
-    else:
-        target = Answer.objects.get(pk=pk)
 
     if not request.user.is_authenticated:
         return HttpResponse('Not logged in', status=401)
 
-    if request.user.id == target.asked_by_id:
-        return HttpResponseBadRequest('Same user')
+    if question_or_answer == 'question':
+        target = Question.objects.get(pk=pk)
+        if request.user.id == target.asked_by_id:
+            return HttpResponseBadRequest('Same user')
+    else:
+        target = Answer.objects.get(pk=pk)
+        if request.user.id == target.answered_by_id:
+            return HttpResponseBadRequest('Same user')
 
     if request.method == 'POST':
         vote_type = request.POST.get('vote_type')
@@ -316,8 +309,8 @@ def vote(request, pk, question_or_answer):
         if question_or_answer == 'answer':
             target.answered_by.update_points()
 
-        if question_or_answer == "question":
-            target.asked_by.update_test_points()
+        # if question_or_answer == "question":
+        #     target.asked_by.update_test_points()
 
         return JsonResponse({'vote_type': vote_type, 'points': points})
 

@@ -26,9 +26,9 @@ class QuestionForm(forms.ModelForm):
     class Meta:
         model = Question
         fields = ('title', 'body', 'tags')
-        widgets = {
-            "tags": TagsWidget
-        }
+        # widgets = {
+        #     "tags": TagsWidget
+        # }
 
 
 class AnswerForm(forms.ModelForm):

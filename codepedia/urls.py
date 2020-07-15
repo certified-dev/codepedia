@@ -35,7 +35,7 @@ urlpatterns = [
     path('question/<int:pk>/<slug:slug>/vote/',
          views.vote_question, name="vote_question"),
 
-    path('answer/<int:pk>/<slug:slug>/vote/',
+    path('answer/<int:pk>/vote/',
          views.vote_answer, name="vote_answer"),
 
     path('users/',
@@ -55,8 +55,6 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
 
     path("select2/", include("django_select2.urls")),
-
-    path("test/", views.test),
 
     path('admin/', admin.site.urls)
 
