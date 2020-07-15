@@ -1,12 +1,18 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
+from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from django.utils.text import slugify
 from django.views.generic import ListView, CreateView, UpdateView, DetailView
 
 from .models import Question, Answer, Tag, User
 from .forms import AnswerForm, CommentForm, QuestionForm
+
+
+def test(request):
+    return render(request, 'test.html')
 
 
 class HomeView(ListView):
@@ -18,6 +24,13 @@ class HomeView(ListView):
         queryset = super(HomeView, self).get_queryset()
         queryset = Question.objects.filter(hidden=False).order_by('-pk')[:15]
         return queryset
+
+    def get_context_data(self, *args, **kwargs):
+        extra_context = {
+
+        }
+        kwargs.update(extra_context)
+        return super(HomeView, self).get_context_data(**kwargs)
 
 
 class QuestionListView(ListView):
@@ -41,6 +54,7 @@ class QuestionCreateView(CreateView):
     def form_valid(self, form):
         self.question = form.save(commit=False)
         self.question.asked_by = self.request.user
+        self.question.slug = slugify(form.cleaned_data['title'])
         self.question.save()
         return super(QuestionCreateView, self).form_valid(form)
 
@@ -55,6 +69,7 @@ class QuestionUpdateView(UpdateView):
     def form_valid(self, form):
         self.question = form.save(commit=False)
         self.question.updated_on = timezone.now()
+        self.question.slug = slugify(form.cleaned_data['title'])
         self.question.save()
         return super(QuestionUpdateView, self).form_valid(form)
 
@@ -78,19 +93,35 @@ class AnswerListView(ListView):
             user_answers = self.question.answers.filter(
                 answered_by=self.request.user)
 
+        # question
         upvoted = False
         downvoted = False
 
         if not self.request.user.is_authenticated:
             pass
-        elif self.request.user.upvoted_questions.filter(pk=self.question.pk).count() > 0:
+        elif self.request.user.upvoted_questions.filter(pk=self.question.pk).exists():
             upvoted = True
-        elif self.request.user.downvoted_questions.filter(pk=self.question.pk).count() > 0:
+        elif self.request.user.downvoted_questions.filter(pk=self.question.pk).exists():
             downvoted = True
 
+        # answers
+        answers = self.question.answers.order_by('posted_on')
+
+        for answer in answers:
+            answer.upvoted = False
+            answer.downvoted = False
+
+            if not self.request.user.is_authenticated:
+                pass
+            elif self.request.user.upvoted_answers.filter(pk=answer.pk).exists():
+                answer.upvoted = True
+            elif self.request.user.downvoted_answers.filter(pk=answer.pk).exists():
+                answer.downvoted = True
+
         extra_context = {
-            'form': AnswerForm(),
+            'form': AnswerForm,
             'question': self.question,
+            'points': self.question.points,
             'user_answers': user_answers,
             'upvoted': upvoted,
             'downvoted': downvoted
@@ -105,8 +136,8 @@ class AnswerListView(ListView):
 
 
 @login_required
-def reply_question(request, pk):
-    question = get_object_or_404(Question, pk=pk)
+def reply_question(request, pk, slug):
+    question = get_object_or_404(Question, pk=pk, slug=slug)
     if request.method == 'POST':
         form = AnswerForm(request.POST)
         if form.is_valid():
@@ -170,30 +201,6 @@ class TagQuestionView(DetailView):
     context_object_name = 'tag'
 
 
-class UserQuestionsView(ListView):
-    model = Question
-    template_name = "questions.html"
-    context_object_name = 'questions'
-    paginate_by = 10
-
-    def get_queryset(self):
-        queryset = Question.objects.filter(
-            asked_by=self.request.user, hidden=False).order_by('posted_on')
-        return queryset
-
-
-class UserAnswersView(ListView):
-    model = Answer
-    template_name = "answers.html"
-    context_object_name = 'answers'
-    paginate_by = 10
-
-    def get_queryset(self):
-        queryset = Answer.objects.filter(
-            answered_by=self.request.user).order_by('posted_on')
-        return queryset
-
-
 class UsersListView(ListView):
     model = User
     template_name = "users.html"
@@ -205,12 +212,67 @@ class UsersListView(ListView):
         return queryset
 
 
-def vote_question(request, pk):
-    return vote(request, pk, 'answer')
+class UserDetailView(DetailView):
+    model = User
+    template_name = "user.html"
+    context_object_name = 'user_detail'
+
+    def get_context_data(self, *args, **kwargs):
+        user_questions = Question.objects.filter(
+            asked_by_id=self.kwargs.get('pk')).order_by('-posted_on')
+        user_answers = Answer.objects.filter(
+            answered_by_id=self.kwargs.get('pk')).order_by('-posted_on')
+
+        user = User.objects.get(pk=self.kwargs.get('pk'))
+
+        upvoted_answers = user.upvoted_answers.count()
+        downvoted_answers = user.downvoted_answers.count()
+        upvoted_questions = user.upvoted_questions.count()
+        downvoted_questions = user.downvoted_questions .count()
+
+        extra_context = {
+            'user_questions': user_questions,
+            'user_answers': user_answers,
+            'all_posts':  user_answers.count() + user_questions.count(),
+            'votes': upvoted_answers + downvoted_answers + upvoted_questions + downvoted_questions
+        }
+        kwargs.update(extra_context)
+        return super(UserDetailView, self).get_context_data(**kwargs)
 
 
-def vote_answer(request, pk):
+@method_decorator([login_required], name="dispatch")
+class ProfileView(DetailView):
+    model = User
+    template_name = "user.html"
+    context_object_name = 'user_detail'
+
+    def get_context_data(self, *args, **kwargs):
+        user_questions = Question.objects.filter(
+            asked_by=self.request.user).order_by('-posted_on')
+        user_answers = Answer.objects.filter(
+            answered_by=self.request.user).order_by('-posted_on')
+
+        upvoted_answers = self.request.user.upvoted_answers.count()
+        downvoted_answers = self.request.user.downvoted_answers.count()
+        upvoted_questions = self.request.user.upvoted_questions.count()
+        downvoted_questions = self.request.user.downvoted_questions .count()
+
+        extra_context = {
+            'user_questions': user_questions,
+            'user_answers': user_answers,
+            'all_posts': user_answers.count() + user_questions.count(),
+            'votes': upvoted_answers + downvoted_answers + upvoted_questions + downvoted_questions
+        }
+        kwargs.update(extra_context)
+        return super(ProfileView, self).get_context_data(**kwargs)
+
+
+def vote_question(request, pk, slug):
     return vote(request, pk, 'question')
+
+
+def vote_answer(request, pk, slug):
+    return vote(request, pk, 'answer')
 
 
 def update_vote(user, target, vote_type, question_or_answer):
@@ -233,8 +295,31 @@ def update_vote(user, target, vote_type, question_or_answer):
     target.update_points()
     return target.points
 
-# def vote(request, pk, questio_or_answer):
-#     if question_or_answer == 'question':
-#         target = Question.objects.get(pk=pk)
-#     else:
-#         target = Answer.objects.get(pk=pk)
+
+def vote(request, pk, question_or_answer):
+    if question_or_answer == 'question':
+        target = Question.objects.get(pk=pk)
+    else:
+        target = Answer.objects.get(pk=pk)
+
+    if not request.user.is_authenticated:
+        return HttpResponse('Not logged in', status=401)
+
+    if request.user.id == target.asked_by_id:
+        return HttpResponseBadRequest('Same user')
+
+    if request.method == 'POST':
+        vote_type = request.POST.get('vote_type')
+        points = update_vote(request.user, target,
+                             vote_type, question_or_answer)
+
+        if question_or_answer == 'answer':
+            target.answered_by.update_points()
+
+        if question_or_answer == "question":
+            target.asked_by.update_test_points()
+
+        return JsonResponse({'vote_type': vote_type, 'points': points})
+
+    else:
+        return HttpResponseBadRequest('The request is not POST')

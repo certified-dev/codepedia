@@ -1,17 +1,19 @@
 from django.db import models
 from django.urls import reverse
 from django.conf import settings
-from django.utils.text import slugify
 from django.contrib.auth.models import AbstractUser
 from django_quill.fields import QuillField
-from django.utils.html import mark_safe
+from django.utils.html import mark_safe, escape, urlize
+from functools import reduce
+from django.db.models import Q
+# from rest_framework import serializers
 
 
 def update_points_helper(obj):
     upvotes = obj.upvoted_users.filter(
-        is_shadow_banned=False).distinct().count()
+        banned=False).distinct().count()
     downvotes = obj.downvoted_users.filter(
-        is_shadow_banned=False).distinct().count()
+        banned=False).distinct().count()
     downvotes += obj.downvoted_users.filter(is_staff=True).count()
     obj.points = upvotes - downvotes
     obj.save()
@@ -53,11 +55,6 @@ class Question(models.Model):
     def get_absolute_url(self):
         return reverse("question_detail", kwargs={"pk": self.pk, 'slug': self.slug})
 
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.title)
-        return super().save(*args, **kwargs)
-
 
 class Answer(models.Model):
     question = models.ForeignKey(
@@ -68,12 +65,10 @@ class Answer(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     posted_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(null=True)
+    hidden = models.BooleanField(default=False)
 
     def update_points(self):
         update_points_helper(self)
-
-    # def __str__(self):
-    #     return mark_safe(self.text.html)
 
 
 class Comment(models.Model):
@@ -97,8 +92,42 @@ class User(AbstractUser):
         Answer, related_name="upvoted_users")
     downvoted_answers = models.ManyToManyField(
         Answer, related_name="downvoted_users")
-    reputation = models.PositiveIntegerField(default=0)
     points = models.IntegerField(default=0)
+    adjustment_points = models.IntegerField(default=0)
+    banned = models.BooleanField(default=False)
 
     def __str__(self):
         return self.username
+
+    def update_points(self):
+        answers = self.answer_set.filter(~Q(points=0))
+        points = map(lambda a: a.points, answers)
+        user_points = reduce(lambda x, y: x + y, points, 0)
+        self.points = user_points + self.adjustment_points
+        self.save()
+
+    def update_test_points(self):
+        questions = self.question_set.filter(~Q(points=0))
+        print(questions)
+        points = map(lambda a: a.points, questions)
+        user_points = reduce(lambda x, y: x + y, points, 0)
+        self.points = user_points + self.adjustment_points
+        self.save()
+
+
+# class UserField(serializers.Field):
+#     def to_representation(self, value):
+#         return value.username
+
+
+# class AnswerSerializer(serializers.ModelSerializer):
+#     user = UserField()
+#     text_html = serializers.SerializerMethodField()
+
+#     class Meta:
+#         model = Answer
+#         fields = ('text_html', 'points', 'user', 'id',
+#                   'created', 'posted_on', 'updated_on', 'hidden')
+
+#     def get_text_html(self, obj):
+#         return urlize(escape(obj.text))

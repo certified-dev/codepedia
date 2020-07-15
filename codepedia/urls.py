@@ -12,15 +12,15 @@ urlpatterns = [
 
     path('questions/', views.QuestionListView.as_view(), name="question"),
 
-    path('question/<int:pk>-<slug:slug>/',
+    path('question/<int:pk>/<slug:slug>/',
          views.AnswerListView.as_view(), name="question_detail"),
 
     path('question/ask/', views.QuestionCreateView.as_view(), name="ask_question"),
 
-    path('question/<int:pk>-<slug:slug>/update/',
+    path('question/<int:pk>/<slug:slug>/update/',
          views.QuestionUpdateView.as_view(), name="update_question"),
 
-    path('question/<int:pk>/reply/',
+    path('question/<int:pk>/<slug:slug>/reply/',
          views.reply_question, name="reply_question"),
 
     path('question/answer/<int:pk>/reply/',
@@ -32,21 +32,20 @@ urlpatterns = [
     path('question/answer/<int:pk>/delete/',
          views.delete_answer, name="delete_answer"),
 
-    path('question/<int:pk>/vote/',
+    path('question/<int:pk>/<slug:slug>/vote/',
          views.vote_question, name="vote_question"),
 
-    path('answer/<int:pk>/vote/',
+    path('answer/<int:pk>/<slug:slug>/vote/',
          views.vote_answer, name="vote_answer"),
-
-    path('user/answers/',
-         views.UserAnswersView.as_view(), name="user_answers"),
-
-    path('user/questions/',
-         views.UserQuestionsView.as_view(), name="user_questions"),
 
     path('users/',
          views.UsersListView.as_view(), name="users"),
 
+    path('user/<int:pk>/',
+         views.UserDetailView.as_view(), name="user"),
+
+    path('user/<int:pk>/profile/',
+         views.ProfileView.as_view(), name="user_profile"),
 
     path('tags/', views.TagListView.as_view(), name="tags"),
 
@@ -55,6 +54,9 @@ urlpatterns = [
 
     path('accounts/', include('allauth.urls')),
 
+    path("select2/", include("django_select2.urls")),
+
+    path("test/", views.test),
 
     path('admin/', admin.site.urls)
 
