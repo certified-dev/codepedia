@@ -7,7 +7,7 @@
 {% block content %}
   {% for question in questions %}
 
-      <div  class="container mb-1 pt-1 pb-1 pl-3" style="border:1px solid lightgray;">
+      <div  class="container {% if forloop.last %} mb-2 {% else %} mb-1 {% endif %} pt-1 pb-1 pl-3" style="border:1px solid lightgray;">
          <div class="row">
 
            <div class="col-12">
@@ -22,16 +22,18 @@
 
            <div class="col-12">
              <small>
-                <i class="fas fa-user-circle"></i>
+                <i class="fas fa-user-circle text-secondary"></i>
                 {% if user.is_authenticated %}
                 {% if question.asked_by == user %}
                     <a href="{% url 'user_profile' user.pk %}">{{ question.asked_by }}</a>
                 {% else %}
-                    <a href="{% url 'user' user.pk %}">{{ question.asked_by }}</a>
+                    <a href="javascript:void(0)">{{ question.asked_by }}</a>
                 {% endif %}
                 {% else %}
                   <a href="javascript:void(0)">{{ question.asked_by }}</a>
                 {% endif %}
+                <i class="fas fa-clock text-secondary ml-2"></i>
+                <span>{{ question.posted_on|naturaltime}}</span>
 
                 <div class="float-right">
                 <span class="mr-2"><i class="fas fa-eye"  style="color: dodgerblue"></i> {{ question.views }}</span>
@@ -44,5 +46,7 @@
 
       </div>
     {% endfor %}
+
+    {% include "includes/pagination.html" %}
 
 {% endblock %}

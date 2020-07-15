@@ -37,14 +37,23 @@
 
         <div class="col-12">
              <small>
-                <b>posted by: </b><a href="">{{ question.asked_by }}</a>
-                <span class="text-secondary">|</span>
+                <i class="fas fa-user-circle text-secondary"></i>
+                {% if user.is_authenticated %}
+                {% if question.asked_by == user %}
+                    <a href="{% url 'user_profile' user.pk %}">{{ question.asked_by }}</a>
+                {% else %}
+                    <a href="javascript:void(0)">{{ question.asked_by }}</a>
+                {% endif %}
+                {% else %}
+                  <a href="javascript:void(0)">{{ question.asked_by }}</a>
+                {% endif %}
+                <i class="fas fa-clock text-secondary ml-2"></i>
                 <span>{{ question.posted_on|naturaltime}}</span>
 
                 <div class="float-right">
-                <span class="mr-2">views {{ question.views }}</span>
-                <span class="mr-2">answers {{ question.answers.count|default_if_none:"0" }}</span>
-                <span class="mr-2">points {{ question.points }}</span>
+                <span class="mr-2"><i class="fas fa-eye"  style="color: dodgerblue"></i> {{ question.views }}</span>
+                <span class="mr-2"><i class="fas fa-comment-dots"></i> {{ question.answers.count|default_if_none:"0" }}</span>
+                <span class="mr-2"><i class="fas fa-chart-line"></i> {{ question.points }}</span>
                 </div>
              </small>
            </div>

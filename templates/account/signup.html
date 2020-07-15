@@ -7,7 +7,7 @@
   
 {% block css %}
 <style>
-    .col-sm-5 {
+    .col-sm-4 {
         position: absolute;
         left: 50%;
         top: 50%;
@@ -44,7 +44,7 @@
         <div class="col-sm-5">
             <div class="card mt-5 mb-2">
                 <header class="card-header">
-                    <a href="" class="float-right btn btn-outline-primary mt-1">Log in</a>
+                    <a href="{% url 'account_login' %}" class="float-right btn btn-outline-primary mt-1">Log in</a>
                     <h4 class="card-title mt-2">Sign up</h4>
                 </header>
                 <article class="card-body">
@@ -127,10 +127,10 @@
                         </div>
                         <!-- form-group end.// -->
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary btn-block"> Register  </button>
+                            <button type="submit" class="btn btn-primary btn-block"> <i class="fas fa-check-circle"></i>  </button>
                         </div>
                         <!-- form-group// -->
-                        <small class="text-muted">By clicking the 'Sign Up' button, you confirm that you accept our <br> Terms of use and Privacy Policy.</small>
+                        <small class="text-muted">By clicking the 'Submit' button, you confirm that you accept our <br> Terms of use and Privacy Policy.</small>
                     </form>
                 </article>
                 <!-- card-body end .// -->

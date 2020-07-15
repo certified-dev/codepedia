@@ -11,9 +11,9 @@
 {% endblock css %}
 
 {% block body %}
-<nav class="navbar navbar-expand-sm bg-light  navbar-light">
+<nav class="navbar navbar-expand-sm bg-dark  navbar-dark">
   <div class="container">
-    <a class="navbar-brand" href="{% url 'home' %}">Code</a>
+    <a class="navbar-brand" href="{% url 'home' %}"><b>Code</b></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainMenu" aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -68,7 +68,7 @@
       {% if user.is_authenticated %}
         <ul class="navbar-nav ml-auto">
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="userMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="userMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {{ user.username }}
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">
@@ -141,7 +141,7 @@ function vote(voteType, voted, voteURL) {
   }).catch((error) => {
     // 401: Not logged in (not authorized)
     if(error.message.includes('401')) {
-      window.location.href = "/accounts/signup/";
+      window.location.href = "/accounts/login/";
     }
     // We should get here when the request is not
     // POST or the user's trying to vote on their own question. (400)
@@ -151,6 +151,82 @@ function vote(voteType, voted, voteURL) {
 var points = JSON.parse(document.getElementById('points').textContent);
 var upvoted = JSON.parse(document.getElementById('upvoted').textContent);
 var downvoted = JSON.parse(document.getElementById('downvoted').textContent);
+var answers = JSON.parse(document.getElementById('answers_serialized').textContent);
+
+Vue.component('answer', {
+  delimiters: ["[[", "]]"],
+  props: ['answer'],
+  methods: {vote: vote},
+  template: `
+  <div>
+
+   <div  class="container mb-1 pt-1 pb-1 pl-md-3" style="border:1px solid lightgray;">
+      <div class="row">
+
+         <div class="col-12 bg-light border-left-0 border-right-0 pl-2 pr-2" style="border:1px solid lightgray;">
+         <small><div class="answer-text" v-html="answer.text_html"></div></small>
+         </div>
+         
+         <div v-if="answer.answered_by != '{{ user.username }}'" class="col-12 pl-2 pr-2">
+            <small>
+               <i class="fas fa-user-circle text-secondary"></i>
+               {% if user.is_authenticated %}
+                   <a href="{% url 'user' user.pk %}">[[ answer.answered_by ]]</a>
+               {% else %}
+                   <a href="javascript:void(0)">[[ answer.answered_by ]]</a>
+               {% endif %}
+           
+                  <a href="javascript:void(0)" v-on:click="vote('upvote', answer.upvoted, '/answer/' + [[ answer.pk ]] + '/vote/')" class="text-secondary mr-2 ml-2" :class="[[answer.upvoted ? 'done' : '']]"><i class="fas fa-caret-square-up"></i></a>
+                  <a href="javascript:void(0)" v-on:click="vote('downvote', answer.downvoted, '/answer/' + [[ answer.pk ]] + '/vote/')" class="text-secondary  mr-3" :class="[[answer.downvoted ? 'done' : '']]"><i class="fas fa-caret-square-down"></i></a>
+
+                  <span><i class="fas fa-comment-dots" style="color:dodgerblue"></i> </span>
+                  
+                  <span class="ml-3"><i class="fas fa-chart-line"></i> [[ answer.points ]]</span>
+
+                  <div class="float-right mt-1">
+                  <span><i class="fas fa-pen-alt text-secondary"></i> [[ answer.posted_on ]]</span> 
+               </div>
+            </small>
+         </div>
+
+         <div v-if="answer.answered_by == '{{ user.username }}'" class="col-12 pl-2 pr-2">
+            <small>
+               <i class="fas fa-user-circle text-secondary"></i>
+
+                  {% if user.is_authenticated %}
+                      <a href="{% url 'user_profile' user.pk %}">[[ answer.answered_by ]]</a>
+                  {% else %}
+                     <a href="javascript:void(0)">[[ answer.answered_by ]]</a>
+                  {% endif %}                     
+                
+                  <a href="javascript:void(0)" class="ml-2 mr-2">edit</a>
+                  <a id="submitted" href="javascript:void(0)" class="mr-2">delete</a>
+
+                  <span><i class="fas fa-comment-dots" style="color:dodgerblue"></i> </span>
+                  
+                  <span class="ml-3"><i class="fas fa-chart-line"></i> [[ answer.points ]]</span>
+
+                  <div class="float-right mt-1">
+                  <span><i class="fas fa-pen-alt text-secondary"></i> [[ answer.posted_on ]]</span> 
+               </div>
+            </small>
+         </div>
+
+
+
+         <div class="col-12 pl-2 pr-2">
+         
+            <div class="collapse" id="Comment">
+               
+            </div>
+           
+         </div>
+
+      </div> 
+   </div>
+  </div>
+  `
+})
 
 var app = new Vue({
   delimiters: ["[[", "]]"],
@@ -159,17 +235,27 @@ var app = new Vue({
     downvoted: downvoted,
     upvoted: upvoted,
     points: points,
+    answers: answers,
+
+  },
+  computed: {
+    // The answers that are initially visible on the UI:
+    visibleAnswers: function () {
+      return this.answers.filter(function (answer) {
+        return answer.points > -2;
+      });
+    },
+    // true if at least one answer was hidden.
+    answersHidden: function() {
+      return this.answers.length > this.visibleAnswers.length;
+    }
   },
   methods: {
     vote: vote,
-    shout: function (){
-      alert('hfhfhfhj');
-    },
-    check: function (type,voted,url){
-      alert(url+voted+type);
+    toggleAllAnswersShown: function() {
+      this.allAnswersShown = !this.allAnswersShown;
     }
-  }
+  },
 });
 </script>
 {% endblock%}
-

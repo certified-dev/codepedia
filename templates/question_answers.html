@@ -22,33 +22,37 @@ p {
 {% endblock css %}
 
 {% block content %}
+<!-- vue-app start -->
 <div id="question">
    
   <div  class="container mb-2 pt-1 pb-1 pl-md-3" style="border:1px solid lightgray;">
       <div class="row">
 
-         <div class="col-12">
-            <small><b class="text-secondary">{{ question.title }}</b> <span class="float-right"><i class="fas fa-chart-line"></i> [[ points ]] </span></small>
+         <div class="col-12 pl-2 pr-2">
+            <small><b>{{ question.title|urlize }}</b> <span class="float-right mt-1"><i class="fas fa-chart-line text-secondary mt-1"></i> [[ points ]] </span></small>
          </div>
 
          <div class="col-12">
          {% for tag in question.tags.all %}
-            <small><a href="{% url 'tag_question' tag.pk %}" class="badge badge-info badge-pill">{{ tag }}</a></small>
+            <small><a href="{% url 'tag_question' tag.pk %}" class="badge badge-info badge-pill mb-1 mt-0">{{ tag }}</a></small>
          {% endfor %}
          </div>
 
-         <div class="col-12 bg-light border-left-0 border-right-0 pr-1 pl-1" style="border:1px solid lightgray;">
-            <small>{{ question.body.html|safe }}</small>
+         <div class="col-12 bg-light border-left-0 border-right-0 pr-2 pl-2" style="border:1px solid lightgray;">
+            <small>{{ question.body.html|safe|urlize }}</small>
          </div>
 
-         <div class="col-12">
+         <div class="col-12 pl-2">
             <small>
-               <i class="fas fa-user-circle"></i> {% if user.is_authenticated %}
-                {% if question.asked_by == user %}
-                    <a href="{% url 'user_profile' user.pk %}">{{ question.asked_by }}</a>
-                {% else %}
-                    <a href="{% url 'user' user.pk %}">{{ question.asked_by }}</a>
-                {% endif %}
+               <i class="fas fa-user-circle text-secondary"></i> 
+               {% if user.is_authenticated %}
+
+                  {% if question.asked_by == user %}
+                     <a href="{% url 'user_profile' user.pk %}">{{ question.asked_by }}</a>
+                  {% else %}
+                     <a href="javascript:void(0)">{{ question.asked_by }}</a>
+                  {% endif %}
+
                 {% else %}
                   <a href="javascript:void(0)">{{ question.asked_by }}</a>
                 {% endif %}
@@ -61,19 +65,31 @@ p {
                {% endif %}
             
                {% if user == question.asked_by %}
-               <div class="float-right">
-                <a class="ml-2" href="{% url 'update_question' question.pk question.slug %}">edit</a>
-                <a href="#">delete</a>
+               <div class="float-right mt-1">
+                <a class="mr-3" href="{% url 'update_question' question.pk question.slug %}"><i class="fas fa-edit"></i></a>
+                <a href="#"><i class="fas fa-trash"></i></a>
                 </div>
                {% endif %}
             </small>
          </div>
 
-         <div class="col-12">
+         <div class="col-12 pl-2 pr-2">
             <small>
-               <span><b>asked:</b> {{ question.posted_on|naturaltime}}</span> 
+               <span><i class="fas fa-pen-alt text-secondary"></i> 
+                  {{ question.posted_on|naturaltime }}
+               </span> 
+               
+               {% comment %}
+               {% if 'days' in '{{ question.posted_on|naturaltime}}' %}
+               {{ question.posted_on|naturalday }}
+               {% else %}
+               {{ question.posted_on|naturaltime }}
+               {% endif %}
+               {% endcomment %}
+           
+            
             {% if not question.updated_on is None %}
-                <span class="float-right"><b>edited:</b>   
+                <span class="float-right mt-1"><i class="fas fa-edit text-secondary"></i>   
                {{ question.updated_on|naturaltime }}</span>
                {% endif %}
             </small>
@@ -81,93 +97,34 @@ p {
 
       </div> 
    </div>
-</div>
 
-   {% for answer in answers %}
 
-   <form method="post" action="{% url 'delete_answer' answer.pk %}" id="delete_answer" onSubmit="return confirm('delete')">
-     {% csrf_token %}
-    </form>
 
-   <div  class="container mb-1 pt-1 pb-1 pl-md-3" style="border:1px solid lightgray;">
-      <div class="row">
+      <answer
+      v-if="!allAnswersShown"
+      v-for="answer in visibleAnswers"
+      v-bind:key="answer.pk"
+      v-bind:answer="answer"
+      ></answer>
 
-         <div class="col-12 bg-light border-left-0 border-right-0 pl-2 pr-2" style="border:1px solid lightgray;">
-         <small>{{ answer.text.html|safe }}</small>
-         </div>
+      <answer
+      v-if="allAnswersShown"
+      v-for="answer in answers"
+      v-bind:key="answer.pk"
+      v-bind:answer="answer"
+      ></answer>
 
-         <div class="col-12 pl-2 pr-2">
-            <small>
-               <i class="fas fa-user-circle"></i>
-               {% if answer.answered_by == user %}
-                    <a href="{% url 'user_profile' user.pk %}" class="mr-2">{{ answer.answered_by }}</a>
-                {% else %}
-                    <a href="{% url 'user' user.pk %}" class="mr-2">{{ answer.answered_by }}</a>
-                {% endif %}
-               
-
-                  {% if not user == answer.answered_by %}
-                  <a href="#" class="text-secondary mr-2 ml-2"><i class="fas fa-caret-square-up"></i></a>
-                  <a href="#" class="text-secondary mr-3"><i class="fas fa-caret-square-down"></i></a>
-                  {% endif %}
-               
-                  {% if user == answer.answered_by %}
-                  <a href="{% url 'update_answer' answer.question.pk answer.pk %}">edit</a>
-                  <a id="submitted" href=".">delete</a>
-                  {% endif %}
-                  <a data-toggle="collapse" href="#Comment" aria-expanded="false" aria-controls="Comment">
-                        <i class="fas fa-comment-dots" style="color:dodgerblue"></i>
-                     </a>
-                  
-                  <span class="ml-2"><i class="fas fa-chart-line"></i> {{ answer.points }}</span>
-
-                  <div class="float-right">
-                  <span><b>posted: </b>{{ answer.posted_on|naturaltime}}</span> {% if not answer.updated is None %}<span><b>edited: </b>{{ answer.updated_on|naturaltime }}</span>{% endif %}
-               </div>
-            </small>
-         </div>
-
-         <div class="col-12  pl-2 pr-2">
-         </div>
-
-         {% for comment in answer.comments.all %}
-             <div class="col-12 bg-light pl-md-4 border-left-0 border-right-0 border-bottom-0" style="border:1px solid lightgray;">
-             <small>{{ comment }} - 
-                 {% if comment.posted_by == user %}
-                    <a href="{% url 'user_profile' user.pk %}">{{ comment.posted_by }}</a>
-                  {% else %}
-                   <a href="{% url 'user' user.pk %}">{{ comment.posted_by }}</a>
-                 {% endif %} 
-              | {{ comment.posted_on|naturaltime }}</small>
-            </div>
-         {% endfor %}
-
-         <div class="col-12 pl-2 pr-2">
-         
-            <div class="collapse" id="Comment">
-               <form method="post" action="{% url 'reply_answer' answer.pk %}" novalidate>
-                  {% csrf_token %}
-                  <div class="row">
-                     <div class="col-12">
-                        <div class="input-group">
-                           <input type="text" class="form-control" name="text" id="id_text" placeholder="enter comment" aria-label="">
-                           <div class="input-group-append">
-                           <button class="btn btn-primary" type="submit">Go</button>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </form>
-            </div>
-           
-         </div>
-
-      </div> 
+   <div v-if="answersHidden" style="text-align: right; font-size: 14px; margin-bottom: 5px">
+      <a v-on:click="toggleAllAnswersShown" href="javascript:void(0)">
+         <span v-if="!allAnswersShown">Show all answers</span>
+         <span v-if="allAnswersShown">Hide some answers</span>
+      </a>
    </div>
-   {% endfor %}
+</div>
+<!-- vue-app end -->
 
    <div  class="container mb-3">
-        <div class="row">
+      <div class="row">
         {% if user.is_authenticated %}
 
             {% if user_answers.count > 0 %}
@@ -182,13 +139,13 @@ p {
                         <form method="post" action="{% url 'reply_question' question.pk question.slug %}" novalidate>
                            {% csrf_token %}
                            {{ form.media }}            
-                        <div class="form-group mt-2">
+                           <div class="form-group mt-2">
                            {{ form.text }}
                            </div> 
                            <button type="submit" class="btn btn-sm btn-primary">Post Your Answer</button>
                         </form>
                      </div>
-                </div>
+                 </div>
             {% else %}
                  <div class="col-12">
                   <form method="post" action="{% url 'reply_question' question.pk question.slug %}" novalidate>
@@ -208,12 +165,15 @@ p {
             <p><a href="{% url 'account_login' %}">login to reply</a></p>
           </div>
         {% endif %}
+
        </div>
-   </div> 
+     </div> 
 
 
 
 {{ points|json_script:"points" }}
 {{ upvoted|json_script:"upvoted" }}
 {{ downvoted|json_script:"downvoted" }}
+{{ answers_serialized|json_script:"answers_serialized" }}
+
 {% endblock %}

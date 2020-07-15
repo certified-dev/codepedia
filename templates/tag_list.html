@@ -8,22 +8,24 @@
 {% block content %}
 
 {% for tag in tags %}
-<div class="container mb-1 p-2 pl-3" style="border:1px solid lightgray;">
+<div class="container {% if forloop.last %} mb-2 {% else %} mb-1 {% endif %}  p-2 pl-2" style="border:1px solid lightgray;">
    <div class="row pl-1 pr-2">
-      <div class="col-12">
+      <div class="col-12 mb-2">
         <a href="{% url 'tag_question' tag.pk %}" class="badge badge-info badge-pill">{{ tag }}</a>
       </div>
 
-      <div class="col-12 bg-light" >
+      <div class="col-12 bg-light ml-1" >
         <small >{{ tag.description }}</small>
       </div>
 
       <div class="col-12">
-         <small><b>questions:</b> {{ tag.question_tags.count }}</small>
+         <small><b><a href="{% url 'tag_question' tag.pk %}" class="text-secondary">{{ tag.question_tags.count }} questions</a></b></small>
       </div>
     </div>
 </div>
 {% endfor %}
+
+{% include 'includes/pagination.html' %}
 
 {% endblock %}
 

@@ -6,38 +6,86 @@
 
 
 {% block content %}
-<p><b>{{ user_detail.username }}</b></p>
+<div class="card">
+    <img class="card-img-left" src="holder.js/100x180/" alt="">
+    <div class="card-body">
+        <h4 class="card-title"><b>{{ user_detail.username }}</b></h4>
+        <p class="card-text">{{ user_detail.points }}</p>
+    </div>
+</div>
 
-<p>points: <b>{{ user_detail.points }}</b></p>
+<div  class="container mt-1 mb-1" style="border:1px solid lightgray">
+   <div class="row">
+       <div class="col-12">
+           <div class="row">
+                <div class="col-4">
+                   <div class="row">
+                        <div class="col-12 text-center ">
+                            <b>POSTS</b>
+                        </div>
+                        <div class="col-12 text-center font-italic">
+                            <b>{{ all_posts }}</b>
+                        </div>
+                    </div>
+                </div>
 
-<p>post: <b>{{ all_posts }}</b></p>
+               <div class="col-4">
+                   <div class="row">
+                       <div class="col-12 text-center ">
+                          <b>VOTE CAST</b>
+                       </div>
+                       <div class="col-12 text-center font-italic">
+                          <b>{{ votes }}</b>
+                       </div>
+                    </div>
+                </div>    
 
-<p>voted: <b>{{ votes }}</b></p>
+                <div class="col-4">
+                   <div class="row">
+                       <div class="col-12 text-center ">
+                          <b>VOTE CAST</b>
+                       </div>
+                       <div class="col-12 text-center font-italic">
+                          <b>{{ votes }}</b>
+                       </div>
+                    </div>
+                </div>    
+                 
+           </div>
+       </div>
+   </div>
+</div>
 
-<p>questions: <b>{{ user_questions.count }}</b></p>
+<div  class="container mt-1 mb-1" style="border:1px solid lightgray">
+   <div class="row">
+       <div class="col-12">
+        <b>questions(</b>{{ user_questions.count }}<b>)</b>
+       </div>
+       <div class="col-12 bg-light  pl-4">
+       {% for question in user_questions %}
+          <span>{{ question.title }}</span>
+          <br>
+        {% empty %}
+         <span> you havent asked any question</span>
+        {% endfor %}
+       </div>
+    </div>
+</div>
 
-
-<ul>
-{% for question in user_questions %}
-    
-    <li>{{ question.title }}</li>
-    
-{% empty %}
-    <span> you havent asked any question</span>
-{% endfor %}
-</ul>
-    
-
-<p>answer: <b>{{ user_answers.count }}</b></p>
-
-<ul>
-{% for answer in user_answers %}
-    
-    <li>{{ answer.question.title }}</li>
-    
-{% empty %}
-    <span> you havent asked any question</span>
-{% endfor %}
-</ul>
+<div  class="container mt-1 mb-1" style="border:1px solid lightgray">
+   <div class="row">
+       <div class="col-12">
+        <b>answers(</b>{{ user_answers.count }}<b>)</b>
+       </div>
+       <div class="col-12 bg-light pl-4">
+       {% for answer in user_answers %}
+          <span>{{ answer.question.title }}</span>
+          <br>
+        {% empty %}
+         <span> you havent answered any questions</span>
+        {% endfor %}
+       </div>
+    </div>
+</div>
 
 {% endblock %}
