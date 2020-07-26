@@ -27,8 +27,9 @@
       $("#submitted").click(function(e){
         e.preventDefault();
          $("#delete_answer").submit();
+         });
       });
-      });
+
       $('#remove').click(function(){
           $(this).remove();
         });
@@ -37,9 +38,11 @@
     <script src="{% static 'bootstrap/bootstrap.min.js' %}"></script>
     {% block js %}{% endblock js %}
     <script>
-     axios.defaults.xsrfCookieName = 'csrftoken';
-        axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+       axios.defaults.xsrfCookieName = 'csrftoken';
+       axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
     </script>
   </body>
+  {% block footer %}
   
+  {% endblock %}
 </html>
