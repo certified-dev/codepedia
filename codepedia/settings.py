@@ -52,11 +52,12 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
 
     'core.apps.CoreConfig',
+    'pagedown.apps.PagedownConfig',
 
-
-    'django_quill',
     'django_select2',
     'widget_tweaks',
+    'crispy_forms',
+    'markdown_deux'
 ]
 
 AUTHENTICATION_BACKENDS = (
@@ -203,5 +204,13 @@ CACHES = {
     }
 }
 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 # Tell select2 which cache configuration to use:
 SELECT2_CACHE_BACKEND = "select2"
+
+SELECT2_JS = 'select2/select2.min.js'
+
+SELECT2_CSS = 'select2/select2.min.css'
+
+# SELECT2_I18N_PATH = 'assets/js/i18n'

@@ -2,12 +2,14 @@ from django.db import models
 from django.urls import reverse
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
-from django_quill.fields import QuillField
-from django.utils.html import mark_safe, urlize
+from django.utils.html import mark_safe, urlize, escape
 from functools import reduce
 from django.db.models import Q
 from rest_framework import serializers
 from django.contrib.humanize.templatetags.humanize import naturaltime
+from markdown2 import Markdown
+
+markdowner = Markdown(html4tags=True)
 
 
 def update_points_helper(obj):
@@ -16,7 +18,7 @@ def update_points_helper(obj):
     downvotes = obj.downvoted_users.filter(
         banned=False).distinct().count()
     downvotes += obj.downvoted_users.filter(is_staff=True).count()
-    obj.points = upvotes - downvotes
+    obj.score = upvotes - downvotes
     obj.save()
 
 
@@ -30,9 +32,9 @@ class Tag(models.Model):
 
 class Question(models.Model):
     title = models.CharField(max_length=1000)
-    body = QuillField()
+    body = models.TextField(max_length=10000)
     tags = models.ManyToManyField(Tag, related_name="question_tags")
-    points = models.IntegerField(default=0)
+    score = models.IntegerField(default=0)
     asked_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     views = models.PositiveIntegerField(default=0)
@@ -60,8 +62,8 @@ class Question(models.Model):
 class Answer(models.Model):
     question = models.ForeignKey(
         Question, on_delete=models.CASCADE, related_name="answers")
-    text = QuillField()
-    points = models.IntegerField(default=0)
+    body = models.TextField(max_length=10000)
+    score = models.IntegerField(default=0)
     answered_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     posted_on = models.DateTimeField(auto_now_add=True)
@@ -70,6 +72,9 @@ class Answer(models.Model):
 
     def update_points(self):
         update_points_helper(self)
+    
+    def __str__(self):
+        return self.body
 
 
 class Comment(models.Model):
@@ -93,25 +98,66 @@ class User(AbstractUser):
         Answer, related_name="upvoted_users")
     downvoted_answers = models.ManyToManyField(
         Answer, related_name="downvoted_users")
-    points = models.IntegerField(default=0)
+    points = models.IntegerField(default=1)
     adjustment_points = models.IntegerField(default=0)
     banned = models.BooleanField(default=False)
 
     def __str__(self):
         return self.username
 
-    def update_points(self):
-        answers = self.answer_set.filter(~Q(points=0))
-        points = map(lambda a: a.points, answers)
-        user_points = reduce(lambda x, y: x + y, points, 0)
-        self.points = user_points + self.adjustment_points
+    # def update_points(self):
+    #     answers = self.answer_set.filter(~Q(points=0))
+    #     points = map(lambda a: a.points, answers)
+    #     user_points = reduce(lambda x, y: x + y, points, 0)
+    #     self.points = user_points + self.adjustment_points
+    #     self.save()
+    def question_once_upvote_now_downvote(self):
+        self.points -= 12
         self.save()
 
-    def update_test_points(self):
-        questions = self.question_set.filter(~Q(points=0))
-        points = map(lambda a: a.points, questions)
-        user_points = reduce(lambda x, y: x + y, points, 0)
-        self.points = user_points + self.adjustment_points
+    def question_once_downvote_now_upvote(self):
+        self.points += 12
+        self.save()
+
+    def question_vote_up(self):
+        self.points += 10
+        self.save()
+
+    def question_vote_down(self):
+        self.points -= 2 
+        self.save()
+
+    def question_cancel_upvote(self):
+        self.points -= 10
+        self.save()
+
+    def question_cancel_downvote(self):
+        self.points += 2
+        self.save()
+
+
+    def answer_vote_down(self):
+        self.points -= 2
+        self.save()
+
+    def answer_vote_up(self):
+        self.points += 10
+        self.save()
+        
+    def answer_cancel_upvote(self):
+        self.points -= 10
+        self.save()    
+    
+    def answer_cancel_downvote(self):
+        self.points += 2
+        self.save()
+    
+    def answer_once_upvote_now_downvote(self):
+        self.points -= 12
+        self.save()
+
+    def answer_once_downvote_now_upvote(self):
+        self.points += 12
         self.save()
 
 
@@ -128,11 +174,11 @@ class AnswerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Answer
-        fields = ('text_html', 'points', 'answered_by', 'pk',
+        fields = ('text_html', 'score', 'answered_by', 'pk',
                   'posted_on', 'updated_on')
 
     def get_text_html(self, obj):
-        return urlize(obj.text.html)
+        return urlize(markdowner.convert(obj.body))
 
     def get_posted_on(self, obj):
         return naturaltime(obj.posted_on)

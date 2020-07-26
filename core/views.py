@@ -10,6 +10,8 @@ from django.views.generic import ListView, CreateView, UpdateView, DetailView
 from .models import Question, Answer, Tag, User, AnswerSerializer
 from .forms import AnswerForm, CommentForm, QuestionForm
 
+def test(request):
+    return render(request, 'test.html')
 
 class HomeView(ListView):
     model = Question
@@ -70,7 +72,6 @@ class AnswerListView(ListView):
     paginate_by = 10
 
     def get_context_data(self, session_key=None, **kwargs):
-
         session_key = 'viewed_question_{}'.format(self.question.pk)
         if not self.request.session.get(session_key, False):
             self.question.views += 1
@@ -111,7 +112,6 @@ class AnswerListView(ListView):
         extra_context = {
             'form': AnswerForm(),
             'question': self.question,
-            'points': self.question.points,
             'user_answers': user_answers,
             'upvoted': upvoted,
             'downvoted': downvoted,
@@ -137,6 +137,8 @@ def reply_question(request, pk, slug):
             answer.answered_by = request.user
             answer.save()
             return redirect(question)
+
+        return redirect(question)
 
 
 @method_decorator([login_required], name="dispatch")
@@ -241,7 +243,7 @@ class ProfileView(DetailView):
         user_questions = Question.objects.filter(
             asked_by=self.request.user).order_by('-posted_on')
         user_answers = Answer.objects.filter(
-            answered_by=self.request.user).order_by('-posted_on')
+            answered_by=self.request.user).distinct().order_by('-posted_on')
 
         upvoted_answers = self.request.user.upvoted_answers.count()
         downvoted_answers = self.request.user.downvoted_answers.count()
@@ -277,14 +279,13 @@ def update_vote(user, target, vote_type, question_or_answer):
     upvoted_targets.remove(target)
     downvoted_targets.remove(target)
 
-    # if this is an upvote, add an upvote. otherwise, add a downvote.
     if vote_type == 'upvote':
         upvoted_targets.add(target)
     elif vote_type == 'downvote':
         downvoted_targets.add(target)
 
     target.update_points()
-    return target.points
+    return target.score
 
 
 def vote(request, pk, question_or_answer):
@@ -303,16 +304,58 @@ def vote(request, pk, question_or_answer):
 
     if request.method == 'POST':
         vote_type = request.POST.get('vote_type')
-        points = update_vote(request.user, target,
+
+        state = None
+        if request.user.upvoted_questions.filter(pk=target.pk).exists():
+            state = 'once_upvoted_question'
+        elif request.user.downvoted_questions.filter(pk=target.pk).exists():
+            state = 'once_downvoted_question'
+        elif request.user.upvoted_answers.filter(pk=target.pk).exists():
+            state = 'once_upvoted_answer'
+        elif request.user.downvoted_answers.filter(pk=target.pk).exists():
+            state = 'once_downvoted_answer'
+
+        score = update_vote(request.user, target,
                              vote_type, question_or_answer)
 
-        if question_or_answer == 'answer':
-            target.answered_by.update_points()
+        if state == 'once_upvoted_question' and vote_type == 'downvote':
+            target.asked_by.question_once_upvote_now_downvote()
+        elif state == 'once_downvoted_question' and vote_type == 'upvote':
+            target.asked_by.question_once_downvote_now_upvote()
 
-        # if question_or_answer == "question":
-        #     target.asked_by.update_test_points()
+        elif question_or_answer == 'question' and vote_type == 'upvote':
+            target.asked_by.question_vote_up()
+        elif question_or_answer == 'question' and vote_type == 'downvote':
+            target.asked_by.question_vote_down()
 
-        return JsonResponse({'vote_type': vote_type, 'points': points})
+        elif vote_type == 'cancel_vote' and state == 'once_upvoted_question':
+            target.asked_by.question_cancel_upvote()
+        elif vote_type == 'cancel_vote' and state == 'once_downvoted_question':
+            target.asked_by.question_cancel_downvote()
+        
+
+        elif state == 'once_upvoted_answer' and vote_type == 'downvote':
+            request.user.points -= 1
+            request.user.save()
+            target.answered_by.answer_once_upvote_now_downvote()
+        elif state == 'once_downvoted_answer' and vote_type == 'upvote':
+            request.user.points += 1
+            request.user.save()
+            target.answered_by.answer_once_downvote_now_upvote()
+
+        elif question_or_answer == 'answer' and vote_type == 'upvote':
+            target.answered_by.answer_vote_up()
+        elif question_or_answer == 'answer' and vote_type == 'downvote':
+            request.user.points -= 1
+            request.user.save()
+            target.answered_by.answer_vote_down()
+
+        elif vote_type == 'cancel_vote' and state == 'once_upvoted_answer':
+            target.answered_by.answer_cancel_upvote()
+        elif vote_type == 'cancel_vote' and state == 'once_downvoted_answer':
+            target.answered_by.answer_cancel_downvote()
+
+        return JsonResponse({'vote_type': vote_type, 'score': score})
 
     else:
         return HttpResponseBadRequest('The request is not POST')

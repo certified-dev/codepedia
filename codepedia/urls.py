@@ -7,6 +7,9 @@ from django.urls import path, include
 from core import views
 
 urlpatterns = [
+     path("select2/", include("django_select2.urls")),
+
+     path('test/',views.test),
 
     path('', views.HomeView.as_view(), name="home"),
 
@@ -53,8 +56,6 @@ urlpatterns = [
          views.TagQuestionView.as_view(), name="tag_question"),
 
     path('accounts/', include('allauth.urls')),
-
-    path("select2/", include("django_select2.urls")),
 
     path('admin/', admin.site.urls)
 
