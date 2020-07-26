@@ -2,27 +2,35 @@
 
 {% load static humanize %}
 
-{% block title %}code | Tag{% endblock title %}
+{% block title %}{{ tag }} questions - code{% endblock title %}
 
 {% block content %}
 
- <div class="container mb-2 p-2" style="border:1px solid lightgray;">
+ <div class="container mb-1 p-2">
    <div class="row pl-2 pr-2">
    
      <div class="col-12">
-         <a href="{% url 'tag_question' tag.pk %}" class="badge badge-info badge-pill">{{ tag }}</a>
+      <b>Questions tagged [{{ tag }}]</b>
+      {% if tag.question_tags.count >= 1 %}
+      <a class="btn btn-sm btn-primary float-right" href="{% url 'ask_question' %}" role="button">Ask Question</a>
+      {% endif %}
+         
      </div>
 
-     <div class="col-12 bg-light border-left-0 border-right-0 mt-1" style="border:1px solid lightgray;">
+     <div class="col-12 mt-1">
         <small class="">{{ tag.description }}</small>
      </div>
 
    </div>
  </div> 
 
+<div class="container mb-2">
+   <small class="font-weight-bold">{{ tag.question_tags.count|intcomma }} questions</small>
+</div>
+
 {% for question in tag.question_tags.all reversed %}
 
-   <div class="container mb-1 pt-1 pb-1 pl-3" style="border:1px solid lightgray;">
+   <div class="container mb-1 pt-1 pb-1 pl-2 pr-2" style="border:1px solid lightgray;">
         <div class="row">
 
         <div class="col-12">

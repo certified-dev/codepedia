@@ -1,24 +1,52 @@
 {% extends "main.html" %}
 
-{% load static humanize %}
+{% load static humanize crispy_forms_tags widget_tweaks markdown_deux_tags %}
 
 {% block title %}code | Question{% endblock title %}
 
 {% block css %}
 <style>
-#quill-id_text {
-  height: 200px;
-}
 a.done:link, a.done:hover, a.done:visited, a.done:active{
     color: forestgreen !important;
 }
-.ql-syntax {
-   margin-bottom :0;
+code {
+  margin: 2px;
+  padding: 0px 3px;
+  border: 1px solid #ddd;
+  background-color: #f8f8f8;
+  border-radius: 2px;
+  color: #444;
+  font-size: 95%;
 }
-p {
-   margin-bottom :0;
+a code {
+  color: #447e9b;
+}
+
+/* Block code */
+pre {
+  white-space: pre;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin: 15px 0;
+  padding: 10px;
+  color: #333;
+
+  margin: 0 0 15px 0;
+  padding-left: 1em;
+  background-color: #eee;
+}
+
+pre code {
+  background-color: transparent;
+  border: 0;
+
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
 }
 </style>
+<link rel="stylesheet" href="{% static 'highlightjs/default.min.css' %}">
 {% endblock css %}
 
 {% block content %}
@@ -26,10 +54,11 @@ p {
 <div id="question">
    
   <div  class="container mb-2 pt-1 pb-1 pl-md-3" style="border:1px solid lightgray;">
+
       <div class="row">
 
          <div class="col-12 pl-2 pr-2">
-            <small><b>{{ question.title|urlize }}</b> <span class="float-right mt-1"><i class="fas fa-chart-line text-secondary mt-1"></i> [[ points ]] </span></small>
+            <small><b>{{ question.title|urlize }}</b> <span class="float-right mt-1"><i class="fas fa-chart-line text-secondary mt-1"></i> [[ score ]] </span></small>
          </div>
 
          <div class="col-12">
@@ -39,7 +68,7 @@ p {
          </div>
 
          <div class="col-12 bg-light border-left-0 border-right-0 pr-2 pl-2" style="border:1px solid lightgray;">
-            <small>{{ question.body.html|safe|urlize }}</small>
+            <small>{{ question.body|markdown }}</small>
          </div>
 
          <div class="col-12 pl-2">
@@ -59,8 +88,8 @@ p {
 
                {% if not user == question.asked_by %}
                <b>
-                <a href="javascript:void(0)" v-on:click="vote('upvote', upvoted, '{% url 'vote_question' question.pk question.slug %}')" :class="[[upvoted ? 'done' : '']]" class="text-secondary ml-3 mr-2">upvote <i class="fas fa-caret-square-up"></i></a>
-                <a href="javascript:void(0)" v-on:click="vote('downvote', downvoted, '{% url 'vote_question' question.pk question.slug %}')" :class="[[downvoted ? 'done' : '']]" class="text-secondary">downvote <i class="fas fa-caret-square-down"></i></a>
+                <a href="javascript:void(0)" v-on:click="vote('upvote', upvoted, '{% url 'vote_question' question.pk question.slug %}')" :class="[[upvoted ? 'done' : '']]" class="text-secondary ml-3 mr-2"> <i class="fas fa-caret-square-up"></i></a>
+                <a href="javascript:void(0)" v-on:click="vote('downvote', downvoted, '{% url 'vote_question' question.pk question.slug %}')" :class="[[downvoted ? 'done' : '']]" class="text-secondary"> <i class="fas fa-caret-square-down"></i></a>
                </b>
                {% endif %}
             
@@ -98,35 +127,24 @@ p {
       </div> 
    </div>
 
-
-
       <answer
-      v-if="!allAnswersShown"
-      v-for="answer in visibleAnswers"
-      v-bind:key="answer.pk"
-      v-bind:answer="answer"
-      ></answer>
-
-      <answer
-      v-if="allAnswersShown"
       v-for="answer in answers"
       v-bind:key="answer.pk"
       v-bind:answer="answer"
       ></answer>
 
-   <div v-if="answersHidden" style="text-align: right; font-size: 14px; margin-bottom: 5px">
+  {% comment %} <div v-if="answersHidden" style="text-align: right; font-size: 14px; margin-bottom: 5px">
       <a v-on:click="toggleAllAnswersShown" href="javascript:void(0)">
          <span v-if="!allAnswersShown">Show all answers</span>
          <span v-if="allAnswersShown">Hide some answers</span>
       </a>
-   </div>
+   </div>  {% endcomment %}
 </div>
 <!-- vue-app end -->
 
    <div  class="container mb-3">
       <div class="row">
         {% if user.is_authenticated %}
-
             {% if user_answers.count > 0 %}
                <div class="col-12 p-2">
                    <a class="btn btn-sm btn-primary" id="remove" data-toggle="collapse" href="#contentId" aria-expanded="false" aria-controls="contentId">
@@ -134,14 +152,19 @@ p {
                            </a>
                </div>
               
-                <div class="col-12">
+                <div class="col-12 p-0">
                      <div class="collapse" id="contentId"> 
                         <form method="post" action="{% url 'reply_question' question.pk question.slug %}" novalidate>
-                           {% csrf_token %}
-                           {{ form.media }}            
-                           <div class="form-group mt-2">
-                           {{ form.text }}
-                           </div> 
+                           {% csrf_token %}            
+                           {{ form.media }}
+                           {% for field in form.visible_fields %}
+                              <div class="form-group">
+                              <label for="{{ field.id_for_label }}"><small>Add an answer</small></label>
+                              {{ field|add_class:'form-control' }}
+                              <small id="helpId" class="form-text text-muted">make your answer as clear as possible,easy to understand</small>
+                              </div>
+                           {% endfor %}
+                          
                            <button type="submit" class="btn btn-sm btn-primary">Post Your Answer</button>
                         </form>
                      </div>
@@ -150,10 +173,16 @@ p {
                  <div class="col-12">
                   <form method="post" action="{% url 'reply_question' question.pk question.slug %}" novalidate>
                      {% csrf_token %}
-                     {{ form.media }}            
-                    <div class="form-group mt-2">
-                      {{ form.text }}
-                      </div> 
+                     {{ form.media }}
+                   
+                        {% for field in form.visible_fields %}
+                           <div class="form-group">
+                           <label for="{{ field.id_for_label }}"><small>Add an answer</small></label>
+                           {{ field|add_class:'form-control' }}
+                           <small id="helpId" class="form-text text-muted">make your answer as clear as possible,easy to understand</small>
+                           </div>
+                        {% endfor %}
+
                      <button type="submit" class="btn btn-sm btn-primary">Post Your Answer</button>
                   </form>
                </div >
@@ -171,9 +200,13 @@ p {
 
 
 
-{{ points|json_script:"points" }}
+{{ question.score|json_script:"score" }}
 {{ upvoted|json_script:"upvoted" }}
 {{ downvoted|json_script:"downvoted" }}
 {{ answers_serialized|json_script:"answers_serialized" }}
+
+<script src="{% static 'highlightjs/highlight.min.js' %}"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
 
 {% endblock %}

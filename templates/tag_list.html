@@ -7,6 +7,15 @@
 
 {% block content %}
 
+<form>
+  <div class="input-group mb-2">
+    <input type="text" class="form-control form-control-sm" name="" id="" aria-describedby="helpId" placeholder="seach tags here">
+    <div class="input-group-append">
+    <button type="button" class="btn btn-sm btn-primary">search</button>
+    </div>
+  </div>
+</form>
+
 {% for tag in tags %}
 <div class="container {% if forloop.last %} mb-2 {% else %} mb-1 {% endif %}  p-2 pl-2" style="border:1px solid lightgray;">
    <div class="row pl-1 pr-2">
@@ -14,7 +23,7 @@
         <a href="{% url 'tag_question' tag.pk %}" class="badge badge-info badge-pill">{{ tag }}</a>
       </div>
 
-      <div class="col-12 bg-light ml-1" >
+      <div class="col-12 ml-1" >
         <small >{{ tag.description }}</small>
       </div>
 

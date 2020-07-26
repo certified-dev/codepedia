@@ -1,40 +1,34 @@
 {% extends "main.html" %}
 
-{% load static %}
+{% load static widget_tweaks crispy_forms_tags %}
 
-{% block title %}code | Question{% endblock title %}
+{% block title %}Ask a Question - code{% endblock title %}
 
 
 {% block content %}
-
-{{ form.media.css }}
-{% comment %} <style>
-      input, select {width: 100%}
-</style> {% endcomment %}
-
-<div class="container p-2" style="border:1px solid lightgray;">
- <p>Ask Question</p>
-    <form method="post" novalidate>
-       {% csrf_token %}
-       {{ form.media }}
-       <div class="form-group">
-        {{ form.title }}
-       </div>
-       
-       <div class="form-group">
-        {{ form.body }}
-         <small id="helpId" class="text-muted">Help text</small>
-       </div>
-
-        <div class="form-group">
-        {{ form.tags }}
-       </div>
-       <button type="submit" class="btn btn-primary btn-sm">Submit</button>
-    </form>
-
+<div class="mb-2">
+  <marquee><h4>Ask a question</h4></marquee>
 </div>
 
-<script src="{% static 'jquery.min.js' %}"></script>
+   {{ form.media.css }}
+
+      <div class="card mb-3">
+         <div class="card-body">
+         <form method="post" novalidate>
+            {% csrf_token %}
+            <small>
+            {{ form|crispy }}
+            </small>
+         </div>
+      </div>
+    
+      <div class="form-group mb-5">
+         <button type="submit" class="btn btn-primary btn-sm">Post your question</button>
+         <a href="{% url 'home' %}" class="btn btn-sm btn-outline-danger">Cancel</a>
+      </div>
+
+    </form>
+    <script src="{% static 'jquery.min.js' %}"></script>
     {{ form.media.js }}
     
 {% endblock %}
