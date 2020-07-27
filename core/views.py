@@ -90,7 +90,7 @@ class AnswerListView(ListView):
     model = Answer
     template_name = "question_answers.html"
     context_object_name = "answers"
-    paginate_by = 10
+    paginate_by = 15
 
     def get_context_data(self, session_key=None, **kwargs):
         session_key = 'viewed_question_{}'.format(self.question.pk)
@@ -378,5 +378,29 @@ def vote(request, pk, question_or_answer):
 
         return JsonResponse({'vote_type': vote_type, 'score': score})
 
+    else:
+        return HttpResponseBadRequest('The request is not POST',  status=400)
+
+def accept(request, pk):
+    if not request.user.is_authenticated:
+        return HttpResponse('Not logged in', status=401)
+
+    answer = Answer.objects.get(pk=pk)
+
+    if answer.answered_by == answer.question.asked_by:
+        return HttpResponseBadRequest('Answered by question-poster', status=400)
+
+    if request.method == 'POST':
+        accept_type = request.POST.get('accept_type')
+        if accept_type == 'accept' and not answer.accepted:
+           answer.accepted = True
+           answer.save()
+           answer.answered_by.accepted_answer()
+           return JsonResponse({'accept_type': accept_type})
+        elif accept_type == 'cancel_accept' and answer.accepted:
+            answer.accepted = False
+            answer.save()
+            answer.answered_by.accepted_answer_cancel()
+            return JsonResponse({'accept_type': accept_type})
     else:
         return HttpResponseBadRequest('The request is not POST',  status=400)

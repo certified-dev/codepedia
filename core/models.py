@@ -68,11 +68,12 @@ class Answer(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     posted_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(null=True)
+    accepted = models.BooleanField(default=False)
     hidden = models.BooleanField(default=False)
 
     def update_points(self):
         update_points_helper(self)
-    
+
     def __str__(self):
         return self.body
 
@@ -124,7 +125,7 @@ class User(AbstractUser):
         self.save()
 
     def question_vote_down(self):
-        self.points -= 2 
+        self.points -= 2
         self.save()
 
     def question_cancel_upvote(self):
@@ -135,7 +136,6 @@ class User(AbstractUser):
         self.points += 2
         self.save()
 
-
     def answer_vote_down(self):
         self.points -= 2
         self.save()
@@ -143,21 +143,29 @@ class User(AbstractUser):
     def answer_vote_up(self):
         self.points += 10
         self.save()
-        
+
     def answer_cancel_upvote(self):
         self.points -= 10
-        self.save()    
-    
+        self.save()
+
     def answer_cancel_downvote(self):
         self.points += 2
         self.save()
-    
+
     def answer_once_upvote_now_downvote(self):
         self.points -= 12
         self.save()
 
     def answer_once_downvote_now_upvote(self):
         self.points += 12
+        self.save()
+
+    def accepted_answer(self):
+        self.points += 15
+        self.save()
+
+    def accepted_answer_cancel(self):
+        self.points -= 15
         self.save()
 
 
@@ -175,7 +183,7 @@ class AnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answer
         fields = ('text_html', 'score', 'answered_by', 'pk',
-                  'posted_on', 'updated_on')
+                  'posted_on', 'accepted', 'updated_on')
 
     def get_text_html(self, obj):
         return markdowner.convert(obj.body)

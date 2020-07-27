@@ -14,9 +14,11 @@
     </div>
   </div>
 
-  {% for question in questions %}
 
-      <div  class="container mb-0 pt-1 pb-1 pl-3 {% if not forloop.last %}border-bottom-0{% endif %}" style="border:1px solid lightgray;">
+     <div  class="container mb-0 pt-1 pb-1 pl-3" style="border:1px solid lightgray;">
+      {% for question in questions %}
+
+     
          <div class="row">
 
            <div class="col-12 pr-2 pl-2">
@@ -55,9 +57,11 @@
              </small>
            </div>
         </div> 
-
-      </div>
+        {% if not forloop.last %} <hr>{% endif %}
+     
+     
     {% endfor %}
+     </div>
 
 {% endblock %}
 

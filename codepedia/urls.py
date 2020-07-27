@@ -7,11 +7,11 @@ from django.urls import path, include
 from core import views
 
 urlpatterns = [
-     path("update_server/", views.update, name="update"),
-     
-     path("select2/", include("django_select2.urls")),
+    path("update_server/", views.update, name="update"),
 
-     path('test/',views.test),
+    path("select2/", include("django_select2.urls")),
+
+    path('answer/<int:pk>/accept/', views.accept, name="accept_answer"),
 
     path('', views.HomeView.as_view(), name="home"),
 

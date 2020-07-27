@@ -56,11 +56,11 @@
 
        {% if '/tags/' in request.path %}
           <li class="nav-item active">
-            <a class="nav-link" href="{% url 'tags' %}">Tags</a>
+            <a class="nav-link" href="{% url 'tags' %}">Tag</a>
           </li>
         {% else %}
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'tags' %}">Tags</a>
+            <a class="nav-link" href="{% url 'tags' %}">Tag</a>
           </li>
         {%endif%}
         
@@ -204,6 +204,40 @@ function vote(voteType, voted, voteURL) {
   });
 }
 
+function accept(accept_type, accepted, acceptURL) {
+  var bodyFormData = new FormData();
+  if (accepted) {
+    bodyFormData.set('accept_type', 'cancel_accept');
+  } else {
+    bodyFormData.set('accept_type', accept_type);
+  }
+  
+  axios({
+    method: 'post',
+    url: acceptURL,
+    data: bodyFormData,
+    headers: {'Content-Type': 'multipart/form-data' }
+  }).then((response) => {
+    var responseAcceptType = response.data.accept_type;
+ 
+    targetObj = this.answer;
+
+    if (responseAcceptType == 'accept') {
+      targetObj.accepted = true;
+    } else if (responseAcceptType == 'cancel_accept') {
+      targetObj.accepted = false;
+    }
+
+  }).catch((error) => {
+    if(error.message.includes('401')) {
+      window.location.href = "/accounts/login/";
+    } else if (error.message.includes('400')) {
+      alert('you cannot accept your own answers');
+    } 
+    
+  });
+}
+
 var score = JSON.parse(document.getElementById('score').textContent);
 var upvoted = JSON.parse(document.getElementById('upvoted').textContent);
 var downvoted = JSON.parse(document.getElementById('downvoted').textContent);
@@ -212,7 +246,10 @@ var answers = JSON.parse(document.getElementById('answers_serialized').textConte
 Vue.component('answer', {
   delimiters: ["[[", "]]"],
   props: ['answer'],
-  methods: {vote: vote},
+  methods: {
+    vote: vote,
+    accept: accept,
+   },
   template: `
   <div>
 
@@ -241,7 +278,7 @@ Vue.component('answer', {
                      </div>
                      {% if question.asked_by == user and question.asked_by != '[[ answer.answered_by ]]' %}
                      <div class="col-12 p-0 pl-2 text-center">
-                       <a href="javascript:void(0)" v-on:click="" class="text-secondary" :class="[[checked ? 'done' : '']]">
+                       <a href="javascript:void(0)" v-on:click="accept('accept', answer.accepted, '/answer/' + [[ answer.pk ]] + '/accept/')" class="text-secondary" :class="[[ answer.accepted ? 'done' : '']]">
                         <i class="fas fa-check fa-lg text"></i>
                         </a>
                      </div>
@@ -318,6 +355,8 @@ Vue.component('answer', {
                </div>
             </div>
          </div>
+
+         
          <div class="col-12">
             <div class="row">
                <div class="col-2">
@@ -345,7 +384,8 @@ var app = new Vue({
 
   },
   methods: {
-    vote: vote
+    vote: vote,
+    accept: accept
   },
 });
 </script>
