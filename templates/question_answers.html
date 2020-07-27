@@ -45,8 +45,13 @@ pre code {
   background: transparent;
   border: none;
 }
+.badge {
+  background-color: #e1ecf4; 
+  color: #39739d;
+}
 </style>
 <link rel="stylesheet" href="{% static 'highlightjs/foundation.min.css' %}">
+{% comment %} <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/foundation.min.css" integrity="sha512-RgUfG84wvjIwNHlKPU63D8S8IItsNhZZ5kfjpvhGAfr529lt67Ys4/2RAA/NYhsb2HBfcxUXMX3NEJswqpT1tg==" crossorigin="anonymous" /> {% endcomment %}
 {% endblock css %}
 
 {% block content %}
@@ -244,5 +249,6 @@ pre code {
 {{ answers_serialized|json_script:"answers_serialized" }}
 
 <script src="{% static 'highlightjs/highlight.min.js' %}"></script>
+{% comment %} <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/highlight.min.js" integrity="sha512-7t8APmYpzEsZP7CYoA7RfMPV9Bb+PJHa9x2WiUnDXZx3XHveuyWUtvNOexhkierl5flZ3tr92dP1mMS+SGlD+A==" crossorigin="anonymous"></script> {% endcomment %}
 <script>hljs.initHighlightingOnLoad();</script>
 {% endblock %}
