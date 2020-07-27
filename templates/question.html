@@ -20,17 +20,17 @@
       <div  class="container {% if not forloop.last %}border-bottom-0{% endif %} {% if forloop.last %} mb-2{% endif %} pt-1 pb-1 pl-3" style="border:1px solid lightgray;">
          <div class="row">
 
-           <div class="col-12">
+           <div class="col-12 pr-2 pl-2">
              <small><b><a href="{% url 'question_detail' question.pk question.slug %}">{{ question.title }}</a></b></small>
            </div>
 
-           <div class="col-12">
+           <div class="col-12 pr-2 pl-2">
             {% for tag in question.tags.all %}
              <small><a href="{% url 'tag_question' tag.pk %}" class="badge badge-pill">{{ tag }}</a></small>
             {% endfor %}
            </div>
 
-           <div class="col-12">
+           <div class="col-12 pr-2 pl-2">
              <small>
                 <i class="fas fa-user-circle text-secondary"></i>
                 {% if user.is_authenticated %}

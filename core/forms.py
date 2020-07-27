@@ -36,7 +36,7 @@ class QuestionForm(forms.ModelForm):
         fields = ('title', 'body', 'tags')
         widgets = {
             'title' : forms.TextInput(attrs={'placeholder': 'Be specific and imagine you’re asking a question to another person'}),
-            'body'  : NewPageDownWidget(attrs={'rows': 6,'placeholder': 'include all the information someone would need to answer your question'}),
+            'body'  : NewPageDownWidget(attrs={'rows': 8,'placeholder': 'include all the information someone would need to answer your question'}),
             "tags": TagsWidget(attrs={'data-width' : '100%','data-placeholder' : 'Add up to 5 tags to describe what your question is about'})
         }
 
@@ -52,7 +52,7 @@ class AnswerForm(forms.ModelForm):
         model = Answer
         fields = ('body',)
         widgets = {
-            'body'  : NewPageDownWidget(attrs={'rows': 5,'placeholder': 'make your answer as clear as possible,easy to understand'}),
+            'body'  : NewPageDownWidget(attrs={'rows': 8,'placeholder': 'make your answer as clear as possible,easy to understand'}),
         }
 
     def __init__(self, *args, **kwargs):

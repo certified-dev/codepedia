@@ -4,7 +4,7 @@
 
 {% block title %}code | Question{% endblock title %}
 
-{% block css %}
+{% block extracss %}
 <style>
 a.done:link, a.done:hover, a.done:visited, a.done:active{
     color: forestgreen !important;
@@ -45,14 +45,10 @@ pre code {
   background: transparent;
   border: none;
 }
-.badge {
-  background-color: #e1ecf4; 
-  color: #39739d;
-}
 </style>
 <link rel="stylesheet" href="{% static 'highlightjs/foundation.min.css' %}">
 {% comment %} <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/foundation.min.css" integrity="sha512-RgUfG84wvjIwNHlKPU63D8S8IItsNhZZ5kfjpvhGAfr529lt67Ys4/2RAA/NYhsb2HBfcxUXMX3NEJswqpT1tg==" crossorigin="anonymous" /> {% endcomment %}
-{% endblock css %}
+{% endblock %}
 
 {% block content %}
 <!-- vue-app start -->
@@ -62,15 +58,15 @@ pre code {
 
       <div class="row">
 
-         <div class="col-12 pl-2 pr-2">
+         <div class="col-12 pl-3 pr-2">
            <div class="row">
               <div class="col-12">
                  <small><b>{{ question.title|urlize }}</b></small>
               </div>
               <div class="col-12">
                 <small>
-                <span class="mr-2"><i class="fas fa-eye"  style="color: dodgerblue"></i> {{ question.views }}</span>
-                <span class="mr-2"><i class="fas fa-calendar-day text-secondary"></i> {{ question.posted_on|date:"D d M Y" }}</span>
+                <span class="mr-2"><span class='text-secondary'>viewed</span> {{ question.views }} times</span>
+                <span class="mr-2"><span class='text-secondary'>Asked</span> {{ question.posted_on|date:"D d M Y" }}</span>
                 </small>
               </div>
             </div>
@@ -80,19 +76,19 @@ pre code {
          
          <div class="col-12 pr-2 pl-2" >
             <div class="row">
-              <div class="col-1">
+              <div class="col-2">
                   <div class="row">
-                     <div class="col-12 text-center">
+                     <div class="col-12 p-0 pl-2 text-center">
                         <a href="javascript:void(0)" v-on:click="vote('upvote', upvoted, '{% url 'vote_question' question.pk question.slug %}')" :class="[[upvoted ? 'done' : '']]" class="text-secondary">
                          <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-caret-up-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
   <path d="M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
 </svg>
                          </a>
                      </div>
-                     <div class="col-12 text-center">
+                     <div class="col-12 p-0 pl-2 text-center">
                         <h3 class="mb-0 text-secondary">[[ score ]]</h3>
                      </div>
-                     <div class="col-12 text-center">
+                     <div class="col-12 p-0 pl-2 text-center">
                         <a href="javascript:void(0)" v-on:click="vote('downvote', downvoted, '{% url 'vote_question' question.pk question.slug %}')" :class="[[downvoted ? 'done' : '']]" class="text-secondary"> 
                         <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-caret-down-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
   <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
@@ -101,7 +97,8 @@ pre code {
                      </div>
                  </div>
               </div>
-              <div class="col-11 pl-0">
+              
+              <div class="col-10 pl-0">
                 <small>{{ question.body|markdown }}</small>
               </div>
             </div>
@@ -109,23 +106,37 @@ pre code {
          </div>
 
          <div class="col-12">
-            <div>
-            {% for tag in question.tags.all %}
-               <small><a href="{% url 'tag_question' tag.pk %}" class="badge badge-pill mb-1 mt-0">{{ tag }}</a></small>
-            {% endfor %}
+            <div class="row">
+               <div class="col-2">
+               </div>
+               <div class="col-10 pl-0">
+                  <div>
+                  {% for tag in question.tags.all %}
+                     <small><a href="{% url 'tag_question' tag.pk %}" class="badge mb-1 mt-0">{{ tag }}</a></small>
+                  {% endfor %}
+                  </div>
+               </div>
             </div>
          </div>
 
          <div class="col-12 pl-2">
-            
-            {% if question.asked_by == user %}
+          <div class="row">
+               <div class="col-2">
+               </div>
+               <div class="col-10 pl-0">
+                 {% if question.asked_by == user %}
                <small>
                {% if user.is_authenticated %}
                <span class="text-secondary"> 
                <i class="fas fa-user-circle text-secondary"></i> 
-               <a href="{% url 'user_profile' user.pk %}">{{ question.asked_by }}</a> | {{ question.posted_on|naturaltime }}</span> 
-               <a class="text-secondary ml-2 mr-2" href="{% url 'update_question' question.pk question.slug %}">edit</a>
+               <a href="{% url 'user_profile' user.pk %}">{{ question.asked_by }}</a> 
+               <span class= "text-secondary"> | </span> 
+               <a class="text-secondary" href="{% url 'update_question' question.pk question.slug %}">edit</a>
+               <span class= "text-secondary"> | </span>
                <a class="text-secondary" href="#">delete</a>
+               <span class= "text-secondary"> | </span>
+               {{ question.posted_on|naturaltime }}</span> 
+               
                </span> 
                {% endif %}
                </small>
@@ -133,34 +144,26 @@ pre code {
             <small>
                <span class="text-secondary"> 
                   <i class="fas fa-user-circle"></i> 
-                  <a href="javascript:void(0)">{{ question.asked_by }}</a>  | {{ question.posted_on|naturaltime }}
+                  <a href="javascript:void(0)">{{ question.asked_by }}</a>
+                  <span class= "text-secondary"> | </span>
+                  {{ question.posted_on|naturaltime }}
                </span> 
               </small>
             {% endif %}
+               </div>
+            </div>
          </div>
-
-         {% comment %} <div class="col-12 pl-2 pr-2">
-            <small>
-            {% if not question.updated_on is None %}
-               <span class="float-right mt-1 text-secondary"><i class="fas fa-pen-alt"></i> 
-                  <a href="{% url 'user_profile' user.pk %}">{{ question.asked_by }}</a><span class="text-secondary"> | </span>{{ question.updated_on|naturaltime }}
-               </span> 
-            {% endif %}
-            </small>
-         </div> {% endcomment %}
-
-
       </div> 
    </div>
 
    <div class="container mb-2">
       <div class="row">
-         <div class="col">
-         <small>
-            <span class="font-weight-bold">{{ answers.count|intcomma }} answers</span> 
-            
+         <div class="col pl-0 pr-0">
+         
+            <span class="pt-3">{{ answers.count|intcomma }} Answers</span> 
+            <small>
             <div class="btn-group float-right">
-               <button type="button" class="btn btn-sm btn-outline-secondary active">active</button> 
+               <button type="button" class="btn btn-sm btn-outline-secondary">active</button> 
                <button type="button" class="btn btn-sm btn-outline-secondary">oldest</button>
                <button type="button" class="btn btn-sm btn-outline-secondary">votes</button>
             </div>
@@ -176,12 +179,6 @@ pre code {
       v-bind:answer="answer"
       ></answer>
 
-  {% comment %} <div v-if="answersHidden" style="text-align: right; font-size: 14px; margin-bottom: 5px">
-      <a v-on:click="toggleAllAnswersShown" href="javascript:void(0)">
-         <span v-if="!allAnswersShown">Show all answers</span>
-         <span v-if="allAnswersShown">Hide some answers</span>
-      </a>
-   </div>  {% endcomment %}
 </div>
 <!-- vue-app end -->
 
@@ -189,7 +186,7 @@ pre code {
       <div class="row">
         {% if user.is_authenticated %}
             {% if user_answers.count > 0 %}
-               <div class="col-12 p-2">
+               <div class="col-12">
                    <a class="btn btn-sm btn-primary" id="remove" data-toggle="collapse" href="#contentId" aria-expanded="false" aria-controls="contentId">
                               Add another answer
                            </a>
@@ -202,9 +199,8 @@ pre code {
                            {{ form.media }}
                            {% for field in form.visible_fields %}
                               <div class="form-group">
-                              <label for="{{ field.id_for_label }}"><small>Add an answer</small></label>
+                              <label for="{{ field.id_for_label }}">Your Answer</label>
                               {{ field|add_class:'form-control' }}
-                              <small id="helpId" class="form-text text-muted">make your answer as clear as possible,easy to understand</small>
                               </div>
                            {% endfor %}
                           
@@ -220,9 +216,8 @@ pre code {
                    
                         {% for field in form.visible_fields %}
                            <div class="form-group">
-                           <label for="{{ field.id_for_label }}"><small>Add an answer</small></label>
+                           <label for="{{ field.id_for_label }}">Your Answer</label>
                            {{ field|add_class:'form-control' }}
-                           <small id="helpId" class="form-text text-muted">make your answer as clear as possible,easy to understand</small>
                            </div>
                         {% endfor %}
 
@@ -240,6 +235,14 @@ pre code {
 
        </div>
      </div> 
+
+     <div  class="container mb-3" id="cards">
+       Not the answer you're looking for? Browse other questions tagged 
+       {% for tag in question.tags.all %}
+         <a href="{% url 'tag_question' tag.pk %}" class="badge">{{ tag }}</a>
+       {% endfor %}
+       or  <a href="{% url 'ask_question' %}">ask your own question.</a>
+     </div>
 
 
 

@@ -317,11 +317,11 @@ def vote(request, pk, question_or_answer):
     if question_or_answer == 'question':
         target = Question.objects.get(pk=pk)
         if request.user.id == target.asked_by_id:
-            return HttpResponseBadRequest('Same user')
+            return HttpResponseBadRequest('Same user', status=400)
     else:
         target = Answer.objects.get(pk=pk)
         if request.user.id == target.answered_by_id:
-            return HttpResponseBadRequest('Same user')
+            return HttpResponseBadRequest('Same user',  status=400)
 
     if request.method == 'POST':
         vote_type = request.POST.get('vote_type')
@@ -379,4 +379,4 @@ def vote(request, pk, question_or_answer):
         return JsonResponse({'vote_type': vote_type, 'score': score})
 
     else:
-        return HttpResponseBadRequest('The request is not POST')
+        return HttpResponseBadRequest('The request is not POST',  status=400)

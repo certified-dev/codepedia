@@ -4,6 +4,16 @@
 
 {% block css %}
 <style>
+@media only screen and (max-width: 1026px) {
+    #cards {
+        display:none;
+       }
+         }
+
+.footer {
+
+
+}
 .badge {
   background-color: #e1ecf4; 
   color: #39739d;
@@ -30,6 +40,16 @@
         {% else %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'question' %}">Questions</a>
+          </li>
+        {%endif%}
+
+         {% if '/ask/' in request.path %}
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'ask_question' %}">Ask</a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'ask_question' %}">Ask</a>
           </li>
         {%endif%}
         
@@ -82,12 +102,12 @@
 
 <div class="container mt-3">
   <div class="row">
-     <div class="col-md-9">
+     <div class="col">
       {% block content %}
   
       {% endblock %}
     </div>
-    <div class="col-md-3">
+    <div class="col-sm-3" id="cards">
        <div class="row">
          <div class="col-12 mb-2">
             <div class="card">
@@ -129,8 +149,8 @@ I know that you can easily perform queries with the model like
 {% endblock %}
 
 {% block footer %}
-  <div class="footer bg-light p-4">
-    <div class="text-center">made with <i class="fas fa-heart" style="color:red"></i></div>
+  <div class="footer">
+    
   </div>
 {% endblock %}
 
@@ -176,7 +196,9 @@ function vote(voteType, voted, voteURL) {
     // 401: Not logged in (not authorized)
     if(error.message.includes('401')) {
       window.location.href = "/accounts/login/";
-    }
+    } else if (error.message.includes('400')) {
+      alert('you cannot vote on your posts');
+    } 
     // We should get here when the request is not
     // POST or the user's trying to vote on their own question. (400)
   });
@@ -195,78 +217,119 @@ Vue.component('answer', {
   <div>
 
    <div  class="container mb-1 pt-1 pb-1 pl-md-3">
-      <div class="row">
-
-         <div class="col-12 pl-2 pr-2">
-         <small><div class="answer-text" v-html="answer.text_html"></div></small>
+      <div class="row"> 
+         <div class="col-12 pr-2 pl-2" >
+            <div class="row">
+              <div class="col-2">
+                  <div class="row">
+                     <div class="col-12 p-0 pl-2 text-center">
+                        <a href="javascript:void(0)" v-on:click="vote('upvote', answer.upvoted, '/answer/' + [[ answer.pk ]] + '/vote/')" class="text-secondary" :class="[[answer.upvoted ? 'done' : '']]">
+                         <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-caret-up-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path d="M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+</svg>
+                         </a>
+                     </div>
+                     <div class="col-12 p-0 pl-2 text-center">
+                        <h3 class="mb-0 text-secondary">[[ answer.score ]]</h3>
+                     </div>
+                     <div class="col-12 p-0 pl-2 text-center">
+                        <a href="javascript:void(0)" v-on:click="vote('downvote', answer.downvoted, '/answer/' + [[ answer.pk ]] + '/vote/')" class="text-secondary" :class="[[answer.downvoted ? 'done' : '']]">
+                        <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-caret-down-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+</svg>
+                        </i></a>
+                     </div>
+                     {% if question.asked_by == user and question.asked_by != '[[ answer.answered_by ]]' %}
+                     <div class="col-12 p-0 pl-2 text-center">
+                       <a href="javascript:void(0)" v-on:click="" class="text-secondary" :class="[[checked ? 'done' : '']]">
+                        <i class="fas fa-check fa-lg text"></i>
+                        </a>
+                     </div>
+                     {% endif %}
+                    
+                 </div>
+              </div>
+              <div class="col-10 pl-0">
+                <small><div class="answer-text" v-html="answer.text_html"></div></small>
+              </div>
+            </div>
+         
          </div>
          
          <div v-if="answer.answered_by != '{{ user.username }}'" class="col-12 pl-2 pr-2">
-            <small>
-               <i class="fas fa-user-circle text-secondary"></i>
-               {% if user.is_authenticated %}
-                   <a href="javascript:void(0)">[[ answer.answered_by ]]</a>
-               {% else %}
-                   <a href="javascript:void(0)">[[ answer.answered_by ]]</a>
-               {% endif %}
-           
-                  <a href="javascript:void(0)" v-on:click="vote('upvote', answer.upvoted, '/answer/' + [[ answer.pk ]] + '/vote/')" class="text-secondary mr-2 ml-2" :class="[[answer.upvoted ? 'done' : '']]">
-                  <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-caret-up-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-  <path d="M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
-</svg>
-                  </a>
-                  <a href="javascript:void(0)" v-on:click="vote('downvote', answer.downvoted, '/answer/' + [[ answer.pk ]] + '/vote/')" class="text-secondary  mr-3" :class="[[answer.downvoted ? 'done' : '']]">
-                  <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-caret-down-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-  <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
-</svg>
-                  </a>
-
-                  <span><i class="fas fa-comment-dots text-secondary"></i> </span>
-                  
-                  <span class="ml-3"><i class="fas fa-chart-line text-secondary"></i> [[ answer.score ]]</span>
-
-                  <div class="float-right mt-1 text-secondary">
-                  <span><i class="fas fa-clock "></i> [[ answer.posted_on ]]</span> 
+           <div class="row">
+               <div class="col-2">
                </div>
-            </small>
+               <div class="col-10 pl-0">
+                  <small class="text-secondary">
+                    <i class="fas fa-user-circle text-secondary"></i>
+                    {% if user.is_authenticated %}
+                        <a href="javascript:void(0)">[[ answer.answered_by ]]</a>
+                    {% else %}
+                        <a href="javascript:void(0)">[[ answer.answered_by ]]</a>
+                    {% endif %}
+
+                        <span class="text-secondary"> | </span>
+                
+                        <span class="text-secondary"><a href="javascript:void(0)" class="text-secondary">add comment </a></span>
+
+                        <span class="text-secondary"> | </span>
+                
+                        <span> [[ answer.posted_on ]]</span> 
+                    
+                  </small>
+                  </div>
+               </div>
+            </div>
          </div>
 
          <div v-if="answer.answered_by == '{{ user.username }}'" class="col-12 pl-2 pr-2">
-            <small>
-               <i class="fas fa-user-circle text-secondary"></i>
+            <div class="row">
+               <div class="col-2">
+               </div>
+               <div class="col-10 pl-0">
+                  <small class="text-secondary">
+                  <i class="fas fa-user-circle text-secondary"></i>
 
                   {% if user.is_authenticated %}
                       <a href="{% url 'user_profile' user.pk %}">[[ answer.answered_by ]]</a>
                   {% else %}
                      <a href="javascript:void(0)">[[ answer.answered_by ]]</a>
-                  {% endif %}                     
+                  {% endif %}       
+
+                  <span class= "text-secondary"> | </span>
+                              
+                  <a href="javascript:void(0)" class="text-secondary">edit</a>
+
+                  <span class= "text-secondary"> | </span>
                 
-                  <a href="javascript:void(0)" class="ml-2 mr-2 text-secondary">edit</a>
-                  <a id="submitted" href="javascript:void(0)" class="mr-2 text-secondary">delete</a>
+                  <a id="submitted" href="javascript:void(0)" class="text-secondary">delete</a>
 
-                  <span><i class="fas fa-comment-dots text-secondary"></i> </span>
+                  <span class= "text-secondary"> | </span>
+
+                  <span class="text-secondary"><a href="javascript:void(0)" class="text-secondary">add comment</a></span>
                   
-                  <span class="ml-3"><i class="fas fa-chart-line text-secondary"></i> [[ answer.score ]]</span>
-
-                  <div class="float-right mt-1 text-secondary">
-                  <span><i class="fas fa-clock "></i> [[ answer.posted_on ]]</span> 
+                  <span class= "text-secondary"> | </span>
+                
+                  <span>[[ answer.posted_on ]]</span> 
+                    
+                  </small>
+                  </div>
                </div>
-            </small>
-         </div>
-
-
-
-         <div class="col-12 pl-2 pr-2">
-         
-            <div class="collapse" id="Comment">
-               
             </div>
-           
          </div>
-
+         <div class="col-12">
+            <div class="row">
+               <div class="col-2">
+               </div>
+               <div class="col-10 pl-0 bg-light text-center">
+                 <span class= "text-secondary font-italic"><small>comments display section </small></span>
+               </div>
+         </div>
+        <hr>
       </div> 
    </div>
-   <hr>
+    
   </div>
   `
 })

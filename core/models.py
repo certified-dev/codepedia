@@ -178,7 +178,7 @@ class AnswerSerializer(serializers.ModelSerializer):
                   'posted_on', 'updated_on')
 
     def get_text_html(self, obj):
-        return urlize(markdowner.convert(obj.body))
+        return markdowner.convert(obj.body)
 
     def get_posted_on(self, obj):
         return naturaltime(obj.posted_on)

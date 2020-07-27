@@ -1,19 +1,7 @@
-body 
-{ 
-	background-color: White;
-    font-family: sans-serif;
-}
-
 blockquote {
 	border-left: 2px dotted #888;
 	padding-left: 5px;
 	background: #d0f0ff;
-}
-.wmd-input 
-{ 
-	height: 300px;
-	width: 100%;
-	border: 1px solid DarkGray;
 }
 
 .wmd-button-row 
@@ -32,7 +20,6 @@ blockquote {
 	width: 1px; 
 	height: 20px; 
 	margin-left: 14px;
-	
 	position: absolute;
 	background-color: Silver;
 	display: inline-block; 
@@ -111,7 +98,6 @@ blockquote {
     width:100%;
 }
 
-
 .wmd-preview{
     width: 100%;
     max-height: 400px;
@@ -123,8 +109,6 @@ blockquote {
     border-radius: 4px;
     background: #f8f8f8;
 }
-
-
 
 .wmd-preview * {
   font-family: "Roboto", "Lucida Grande", "DejaVu Sans", "Bitstream Vera Sans",
@@ -165,7 +149,6 @@ blockquote {
   margin: 15px 0;
   padding: 10px;
   color: #333;
-
   margin: 0 0 15px 0;
   padding-left: 1em;
   background-color: #eee;
@@ -174,7 +157,6 @@ blockquote {
 .wmd-preview pre code {
   background-color: transparent;
   border: 0;
-
   margin: 0;
   padding: 0;
   background: transparent;
