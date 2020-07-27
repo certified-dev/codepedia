@@ -1,0 +1,594 @@
+[
+  {
+    "model": "core.tag",
+    "pk": 1,
+    "fields": {
+      "name": "python",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 2,
+    "fields": {
+      "name": "django",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 3,
+    "fields": {
+      "name": "javascript",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 4,
+    "fields": {
+      "name": "C#",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 5,
+    "fields": {
+      "name": "react",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 6,
+    "fields": {
+      "name": "reactjs",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 7,
+    "fields": {
+      "name": "angular",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 8,
+    "fields": {
+      "name": "angularjs",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 9,
+    "fields": {
+      "name": "html",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 10,
+    "fields": {
+      "name": "css",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 11,
+    "fields": {
+      "name": "node.js",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 12,
+    "fields": {
+      "name": "php",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 13,
+    "fields": {
+      "name": "npm",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 14,
+    "fields": {
+      "name": "flutter",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 15,
+    "fields": {
+      "name": "dart",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 16,
+    "fields": {
+      "name": "ruby",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 17,
+    "fields": {
+      "name": "vuetify",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 18,
+    "fields": {
+      "name": "bootsrap-vue",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 19,
+    "fields": {
+      "name": "pearl",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 20,
+    "fields": {
+      "name": "ruby-on-rails",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 21,
+    "fields": {
+      "name": "rest-framework",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 22,
+    "fields": {
+      "name": "jquery",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 23,
+    "fields": {
+      "name": "bootstrap",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 24,
+    "fields": {
+      "name": "andriod",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 25,
+    "fields": {
+      "name": "windows",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 26,
+    "fields": {
+      "name": "C++",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 27,
+    "fields": {
+      "name": "C",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 28,
+    "fields": {
+      "name": "java",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 29,
+    "fields": {
+      "name": "typescript",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 30,
+    "fields": {
+      "name": "opencv",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 31,
+    "fields": {
+      "name": "tensor-flow",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 32,
+    "fields": {
+      "name": "matpoltlib",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 33,
+    "fields": {
+      "name": "python-3.x",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 34,
+    "fields": {
+      "name": "mysql",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 35,
+    "fields": {
+      "name": "keras",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 36,
+    "fields": {
+      "name": "mongodb",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 37,
+    "fields": {
+      "name": "pycharm",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 38,
+    "fields": {
+      "name": "react-native",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 39,
+    "fields": {
+      "name": "vuex",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 40,
+    "fields": {
+      "name": "redux",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 41,
+    "fields": {
+      "name": "django-rest-framework",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 42,
+    "fields": {
+      "name": "database",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 43,
+    "fields": {
+      "name": "git",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 44,
+    "fields": {
+      "name": "json",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 45,
+    "fields": {
+      "name": "xml",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 46,
+    "fields": {
+      "name": "flask",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 47,
+    "fields": {
+      "name": "pytorch",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 48,
+    "fields": {
+      "name": "machine-learning",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 49,
+    "fields": {
+      "name": "scikit-learn",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 50,
+    "fields": {
+      "name": "django-models",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 51,
+    "fields": {
+      "name": "django-admin",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 52,
+    "fields": {
+      "name": "django-views",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 53,
+    "fields": {
+      "name": "djang-urls",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 54,
+    "fields": {
+      "name": "linux",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 55,
+    "fields": {
+      "name": "gunicorn",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 56,
+    "fields": {
+      "name": "github",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 57,
+    "fields": {
+      "name": "heroku",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 58,
+    "fields": {
+      "name": "postgresql",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 59,
+    "fields": {
+      "name": "visual-studio-code",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 60,
+    "fields": {
+      "name": "axios",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 61,
+    "fields": {
+      "name": "ajax",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 62,
+    "fields": {
+      "name": "htttp",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 63,
+    "fields": {
+      "name": "api",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 64,
+    "fields": {
+      "name": "web-scraping",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 65,
+    "fields": {
+      "name": "amazon-s3",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 66,
+    "fields": {
+      "name": "django-serializer",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 67,
+    "fields": {
+      "name": "django-filter",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 68,
+    "fields": {
+      "name": "vb.net",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 69,
+    "fields": {
+      "name": "django-forms",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 70,
+    "fields": {
+      "name": "wordpress",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 71,
+    "fields": {
+      "name": "ubuntu",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 72,
+    "fields": {
+      "name": "selenium",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 73,
+    "fields": {
+      "name": "xamarin",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  },
+  {
+    "model": "core.tag",
+    "pk": 74,
+    "fields": {
+      "name": "webpack",
+      "description": "Eaque sunt quaerat animi nihil consequatur iste, totam in est enim atque laudantium possimus voluptatibus necessitatibus natus. Nisi omnis aspernatur quis iure."
+    }
+  }
+]

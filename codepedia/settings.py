@@ -147,6 +147,8 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
 
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -213,4 +215,4 @@ SELECT2_JS = 'select2/select2.min.js'
 
 SELECT2_CSS = 'select2/select2.min.css'
 
-# SELECT2_I18N_PATH = 'assets/js/i18n'
+PAGEDOWN_IMAGE_UPLOAD_ENABLED = True

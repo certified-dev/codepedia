@@ -46,7 +46,7 @@ pre code {
   border: none;
 }
 </style>
-<link rel="stylesheet" href="{% static 'highlightjs/default.min.css' %}">
+<link rel="stylesheet" href="{% static 'highlightjs/foundation.min.css' %}">
 {% endblock css %}
 
 {% block content %}
@@ -58,73 +58,111 @@ pre code {
       <div class="row">
 
          <div class="col-12 pl-2 pr-2">
-            <small><b>{{ question.title|urlize }}</b> <span class="float-right mt-1"><i class="fas fa-chart-line text-secondary mt-1"></i> [[ score ]] </span></small>
+           <div class="row">
+              <div class="col-12">
+                 <small><b>{{ question.title|urlize }}</b></small>
+              </div>
+              <div class="col-12">
+                <small>
+                <span class="mr-2"><i class="fas fa-eye"  style="color: dodgerblue"></i> {{ question.views }}</span>
+                <span class="mr-2"><i class="fas fa-calendar-day text-secondary"></i> {{ question.posted_on|date:"D d M Y" }}</span>
+                </small>
+              </div>
+            </div>
+
+             <hr>
+         </div>
+         
+         <div class="col-12 pr-2 pl-2" >
+            <div class="row">
+              <div class="col-1">
+                  <div class="row">
+                     <div class="col-12 text-center">
+                        <a href="javascript:void(0)" v-on:click="vote('upvote', upvoted, '{% url 'vote_question' question.pk question.slug %}')" :class="[[upvoted ? 'done' : '']]" class="text-secondary">
+                         <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-caret-up-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path d="M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+</svg>
+                         </a>
+                     </div>
+                     <div class="col-12 text-center">
+                        <h3 class="mb-0 text-secondary">[[ score ]]</h3>
+                     </div>
+                     <div class="col-12 text-center">
+                        <a href="javascript:void(0)" v-on:click="vote('downvote', downvoted, '{% url 'vote_question' question.pk question.slug %}')" :class="[[downvoted ? 'done' : '']]" class="text-secondary"> 
+                        <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-caret-down-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+</svg>
+                        </i></a>
+                     </div>
+                 </div>
+              </div>
+              <div class="col-11 pl-0">
+                <small>{{ question.body|markdown }}</small>
+              </div>
+            </div>
+            
          </div>
 
          <div class="col-12">
-         {% for tag in question.tags.all %}
-            <small><a href="{% url 'tag_question' tag.pk %}" class="badge badge-info badge-pill mb-1 mt-0">{{ tag }}</a></small>
-         {% endfor %}
-         </div>
-
-         <div class="col-12 bg-light border-left-0 border-right-0 pr-2 pl-2" style="border:1px solid lightgray;">
-            <small>{{ question.body|markdown }}</small>
+            <div>
+            {% for tag in question.tags.all %}
+               <small><a href="{% url 'tag_question' tag.pk %}" class="badge badge-pill mb-1 mt-0">{{ tag }}</a></small>
+            {% endfor %}
+            </div>
          </div>
 
          <div class="col-12 pl-2">
-            <small>
-               <i class="fas fa-user-circle text-secondary"></i> 
+            
+            {% if question.asked_by == user %}
+               <small>
                {% if user.is_authenticated %}
-
-                  {% if question.asked_by == user %}
-                     <a href="{% url 'user_profile' user.pk %}">{{ question.asked_by }}</a>
-                  {% else %}
-                     <a href="javascript:void(0)">{{ question.asked_by }}</a>
-                  {% endif %}
-
-                {% else %}
-                  <a href="javascript:void(0)">{{ question.asked_by }}</a>
-                {% endif %}
-
-               {% if not user == question.asked_by %}
-               <b>
-                <a href="javascript:void(0)" v-on:click="vote('upvote', upvoted, '{% url 'vote_question' question.pk question.slug %}')" :class="[[upvoted ? 'done' : '']]" class="text-secondary ml-3 mr-2"> <i class="fas fa-caret-square-up"></i></a>
-                <a href="javascript:void(0)" v-on:click="vote('downvote', downvoted, '{% url 'vote_question' question.pk question.slug %}')" :class="[[downvoted ? 'done' : '']]" class="text-secondary"> <i class="fas fa-caret-square-down"></i></a>
-               </b>
-               {% endif %}
-            
-               {% if user == question.asked_by %}
-               <div class="float-right mt-1">
-                <a class="mr-3" href="{% url 'update_question' question.pk question.slug %}"><i class="fas fa-edit"></i></a>
-                <a href="#"><i class="fas fa-trash"></i></a>
-                </div>
-               {% endif %}
-            </small>
-         </div>
-
-         <div class="col-12 pl-2 pr-2">
-            <small>
-               <span><i class="fas fa-pen-alt text-secondary"></i> 
-                  {{ question.posted_on|naturaltime }}
+               <span class="text-secondary"> 
+               <i class="fas fa-user-circle text-secondary"></i> 
+               <a href="{% url 'user_profile' user.pk %}">{{ question.asked_by }}</a> | {{ question.posted_on|naturaltime }}</span> 
+               <a class="text-secondary ml-2 mr-2" href="{% url 'update_question' question.pk question.slug %}">edit</a>
+               <a class="text-secondary" href="#">delete</a>
                </span> 
-               
-               {% comment %}
-               {% if 'days' in '{{ question.posted_on|naturaltime}}' %}
-               {{ question.posted_on|naturalday }}
-               {% else %}
-               {{ question.posted_on|naturaltime }}
                {% endif %}
-               {% endcomment %}
-           
-            
-            {% if not question.updated_on is None %}
-                <span class="float-right mt-1"><i class="fas fa-edit text-secondary"></i>   
-               {{ question.updated_on|naturaltime }}</span>
-               {% endif %}
-            </small>
+               </small>
+            {% else %}
+            <small>
+               <span class="text-secondary"> 
+                  <i class="fas fa-user-circle"></i> 
+                  <a href="javascript:void(0)">{{ question.asked_by }}</a>  | {{ question.posted_on|naturaltime }}
+               </span> 
+              </small>
+            {% endif %}
          </div>
+
+         {% comment %} <div class="col-12 pl-2 pr-2">
+            <small>
+            {% if not question.updated_on is None %}
+               <span class="float-right mt-1 text-secondary"><i class="fas fa-pen-alt"></i> 
+                  <a href="{% url 'user_profile' user.pk %}">{{ question.asked_by }}</a><span class="text-secondary"> | </span>{{ question.updated_on|naturaltime }}
+               </span> 
+            {% endif %}
+            </small>
+         </div> {% endcomment %}
+
 
       </div> 
+   </div>
+
+   <div class="container mb-2">
+      <div class="row">
+         <div class="col">
+         <small>
+            <span class="font-weight-bold">{{ answers.count|intcomma }} answers</span> 
+            
+            <div class="btn-group float-right">
+               <button type="button" class="btn btn-sm btn-outline-secondary active">active</button> 
+               <button type="button" class="btn btn-sm btn-outline-secondary">oldest</button>
+               <button type="button" class="btn btn-sm btn-outline-secondary">votes</button>
+            </div>
+         </small>
+         </div>
+      </div>
+       
    </div>
 
       <answer
@@ -207,6 +245,4 @@ pre code {
 
 <script src="{% static 'highlightjs/highlight.min.js' %}"></script>
 <script>hljs.initHighlightingOnLoad();</script>
-
-
 {% endblock %}

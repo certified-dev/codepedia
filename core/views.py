@@ -1,7 +1,9 @@
+import git
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
@@ -9,6 +11,25 @@ from django.views.generic import ListView, CreateView, UpdateView, DetailView
 
 from .models import Question, Answer, Tag, User, AnswerSerializer
 from .forms import AnswerForm, CommentForm, QuestionForm
+
+
+@csrf_exempt
+def update(request):
+    if request.method == "POST":
+        '''
+        pass the path of the diectory where your project will be 
+        stored on PythonAnywhere in the git.Repo() as parameter.
+        Here the name of my directory is "test.pythonanywhere.com"
+        '''
+        repo = git.Repo("Karma.pythonanywhere.com/") 
+        origin = repo.remotes.origin
+
+        origin.pull()
+
+        return HttpResponse("Updated code on PythonAnywhere")
+    else:
+        return HttpResponse("Couldn't update the code on PythonAnywhere")
+
 
 def test(request):
     return render(request, 'test.html')
@@ -185,7 +206,7 @@ class TagListView(ListView):
     model = Tag
     template_name = "tag_list.html"
     context_object_name = 'tags'
-    paginate_by = 10
+    paginate_by = 12
 
 
 class TagQuestionView(DetailView):

@@ -14,6 +14,12 @@ class TagsWidget(s2forms.ModelSelect2MultipleWidget):
         "name__icontains",
     ]
 
+class NewPageDownWidget(PagedownWidget):
+    class Media:
+        css = {
+            'all': ('pagedown/pagedown.css',)
+        }
+
 
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(widget=forms.EmailInput(
@@ -24,15 +30,21 @@ class RegistrationForm(UserCreationForm):
 
 
 class QuestionForm(forms.ModelForm):
-    # body = forms.CharField(widget=PagedownWidget())
+    
     class Meta:
         model = Question
         fields = ('title', 'body', 'tags')
         widgets = {
             'title' : forms.TextInput(attrs={'placeholder': 'Be specific and imagine you’re asking a question to another person'}),
-            'body'  : PagedownWidget(attrs={'rows': 6,'placeholder': 'include all the information someone would need to answer your question'}),
+            'body'  : NewPageDownWidget(attrs={'rows': 6,'placeholder': 'include all the information someone would need to answer your question'}),
             "tags": TagsWidget(attrs={'data-width' : '100%','data-placeholder' : 'Add up to 5 tags to describe what your question is about'})
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['title'].widget.attrs.update({'class': 'form-control-sm'})
+        self.fields['body'].widget.attrs.update({'class': 'wmd-input pagedownwidget form-control form-control-sm'})
+        self.fields['tags'].widget.attrs.update({'class': 'form-control-sm'})
 
 
 class AnswerForm(forms.ModelForm):
@@ -40,8 +52,12 @@ class AnswerForm(forms.ModelForm):
         model = Answer
         fields = ('body',)
         widgets = {
-            'body'  : PagedownWidget(attrs={'rows': 5,'placeholder': 'make your answer as clear as possible,easy to understand'}),
+            'body'  : NewPageDownWidget(attrs={'rows': 5,'placeholder': 'make your answer as clear as possible,easy to understand'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['body'].widget.attrs.update({'class': 'wmd-input pagedownwidget form-control form-control-sm'})
 
 
 class CommentForm(forms.ModelForm):

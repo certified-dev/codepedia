@@ -2,7 +2,17 @@
 
 {% load static %}
 
+{% block css %}
+<style>
+.badge {
+  background-color: #e1ecf4; 
+  color: #39739d;
+}
+</style>
+{% endblock %}
+
 {% block body %}
+
 <nav class="navbar navbar-expand-sm bg-dark  navbar-dark">
   <div class="container">
     <a class="navbar-brand" href="{% url 'home' %}"><b>Code</b></a>
@@ -33,17 +43,7 @@
             <a class="nav-link" href="{% url 'tags' %}">Tags</a>
           </li>
         {%endif%}
-         
-
-        {% if '/ask/' in request.path %}
-           <li class="nav-item active">
-              <a class="nav-link" href="{% url 'ask_question' %}">Ask</a>
-           </li>
-        {% else %}
-           <li class="nav-item">
-              <a class="nav-link" href="{% url 'ask_question' %}">Ask</a>
-           </li>
-       {%endif%}
+        
 
        {% if '/users/' in request.path %}
           <li class="nav-item active">
@@ -80,7 +80,7 @@
   </div>
 </nav>
 
-<div class="container-sm mt-3">
+<div class="container mt-3">
   <div class="row">
      <div class="col-md-9">
       {% block content %}
@@ -88,7 +88,40 @@
       {% endblock %}
     </div>
     <div class="col-md-3">
-    
+       <div class="row">
+         <div class="col-12 mb-2">
+            <div class="card">
+              <div class="card-body">
+                <div class="card-text text-secondary"><small>
+                    model_1 is a foreign key (could be a manytomany or whatever) in model_0
+
+How can I perform a query in the model_1 objects checking the property of the model_0
+
+Something like model_0.objects.filter(model_0.random_property="Something")
+
+I know that you can easily perform queries with the model like 
+                  </small>
+                 </div>
+              </div>
+            </div>
+         </div>
+         <div class="col-12">
+            <div class="card mb-3">
+              <div class="card-body">
+                <div class="card-text text-secondary"><small>
+                   model_1 is a foreign key (could be a manytomany or whatever) in model_0
+
+How can I perform a query in the model_1 objects checking the property of the model_0
+
+Something like model_0.objects.filter(model_0.random_property="Something")
+
+I know that you can easily perform queries with the model like 
+                 </small>
+                </div>
+              </div>
+            </div>
+         </div>
+       </div>
     </div>
   </div>
 </div>
@@ -103,7 +136,9 @@
 
 {% block js %}
 <script src="{% static 'vue.js' %}"></script>
+{% comment %} <script src="https://cdn.jsdelivr.net/npm/vue"></script> {% endcomment %}
 <script src="{% static 'axios.min.js' %}"></script>
+{% comment %} <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> {% endcomment %}
 <script>
 function vote(voteType, voted, voteURL) {
   var bodyFormData = new FormData();
@@ -159,10 +194,10 @@ Vue.component('answer', {
   template: `
   <div>
 
-   <div  class="container mb-1 pt-1 pb-1 pl-md-3" style="border:1px solid lightgray;">
+   <div  class="container mb-1 pt-1 pb-1 pl-md-3">
       <div class="row">
 
-         <div class="col-12 bg-light border-left-0 border-right-0 pl-2 pr-2" style="border:1px solid lightgray;">
+         <div class="col-12 pl-2 pr-2">
          <small><div class="answer-text" v-html="answer.text_html"></div></small>
          </div>
          
@@ -175,15 +210,23 @@ Vue.component('answer', {
                    <a href="javascript:void(0)">[[ answer.answered_by ]]</a>
                {% endif %}
            
-                  <a href="javascript:void(0)" v-on:click="vote('upvote', answer.upvoted, '/answer/' + [[ answer.pk ]] + '/vote/')" class="text-secondary mr-2 ml-2" :class="[[answer.upvoted ? 'done' : '']]"><i class="fas fa-caret-square-up"></i></a>
-                  <a href="javascript:void(0)" v-on:click="vote('downvote', answer.downvoted, '/answer/' + [[ answer.pk ]] + '/vote/')" class="text-secondary  mr-3" :class="[[answer.downvoted ? 'done' : '']]"><i class="fas fa-caret-square-down"></i></a>
+                  <a href="javascript:void(0)" v-on:click="vote('upvote', answer.upvoted, '/answer/' + [[ answer.pk ]] + '/vote/')" class="text-secondary mr-2 ml-2" :class="[[answer.upvoted ? 'done' : '']]">
+                  <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-caret-up-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path d="M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+</svg>
+                  </a>
+                  <a href="javascript:void(0)" v-on:click="vote('downvote', answer.downvoted, '/answer/' + [[ answer.pk ]] + '/vote/')" class="text-secondary  mr-3" :class="[[answer.downvoted ? 'done' : '']]">
+                  <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-caret-down-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+</svg>
+                  </a>
 
-                  <span><i class="fas fa-comment-dots" style="color:dodgerblue"></i> </span>
+                  <span><i class="fas fa-comment-dots text-secondary"></i> </span>
                   
-                  <span class="ml-3"><i class="fas fa-chart-line"></i> [[ answer.score ]]</span>
+                  <span class="ml-3"><i class="fas fa-chart-line text-secondary"></i> [[ answer.score ]]</span>
 
-                  <div class="float-right mt-1">
-                  <span><i class="fas fa-pen-alt text-secondary"></i> [[ answer.posted_on ]]</span> 
+                  <div class="float-right mt-1 text-secondary">
+                  <span><i class="fas fa-clock "></i> [[ answer.posted_on ]]</span> 
                </div>
             </small>
          </div>
@@ -198,15 +241,15 @@ Vue.component('answer', {
                      <a href="javascript:void(0)">[[ answer.answered_by ]]</a>
                   {% endif %}                     
                 
-                  <a href="javascript:void(0)" class="ml-2 mr-2">edit</a>
-                  <a id="submitted" href="javascript:void(0)" class="mr-2">delete</a>
+                  <a href="javascript:void(0)" class="ml-2 mr-2 text-secondary">edit</a>
+                  <a id="submitted" href="javascript:void(0)" class="mr-2 text-secondary">delete</a>
 
-                  <span><i class="fas fa-comment-dots" style="color:dodgerblue"></i> </span>
+                  <span><i class="fas fa-comment-dots text-secondary"></i> </span>
                   
-                  <span class="ml-3"><i class="fas fa-chart-line"></i> [[ answer.score ]]</span>
+                  <span class="ml-3"><i class="fas fa-chart-line text-secondary"></i> [[ answer.score ]]</span>
 
-                  <div class="float-right mt-1">
-                  <span><i class="fas fa-pen-alt text-secondary"></i> [[ answer.posted_on ]]</span> 
+                  <div class="float-right mt-1 text-secondary">
+                  <span><i class="fas fa-clock "></i> [[ answer.posted_on ]]</span> 
                </div>
             </small>
          </div>
@@ -223,6 +266,7 @@ Vue.component('answer', {
 
       </div> 
    </div>
+   <hr>
   </div>
   `
 })

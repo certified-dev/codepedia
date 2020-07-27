@@ -7,6 +7,8 @@ from django.urls import path, include
 from core import views
 
 urlpatterns = [
+     path("update_server/", views.update, name="update"),
+     
      path("select2/", include("django_select2.urls")),
 
      path('test/',views.test),
@@ -56,6 +58,8 @@ urlpatterns = [
          views.TagQuestionView.as_view(), name="tag_question"),
 
     path('accounts/', include('allauth.urls')),
+
+    path('', include('pagedown.urls')),
 
     path('admin/', admin.site.urls)
 
