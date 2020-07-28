@@ -5,47 +5,6 @@
 {% block title %}code | Question{% endblock title %}
 
 {% block extracss %}
-<style>
-a.done:link, a.done:hover, a.done:visited, a.done:active{
-    color: forestgreen !important;
-}
-code {
-  margin: 2px;
-  padding: 0px 3px;
-  border: 1px solid #ddd;
-  background-color: #f8f8f8;
-  border-radius: 2px;
-  color: #444;
-  font-size: 95%;
-}
-a code {
-  color: #447e9b;
-}
-
-/* Block code */
-pre {
-  white-space: pre;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  margin: 15px 0;
-  padding: 10px;
-  color: #333;
-
-  margin: 0 0 15px 0;
-  padding-left: 1em;
-  background-color: #eee;
-}
-
-pre code {
-  background-color: transparent;
-  border: 0;
-
-  margin: 0;
-  padding: 0;
-  background: transparent;
-  border: none;
-}
-</style>
 <link rel="stylesheet" href="{% static 'highlightjs/foundation.min.css' %}">
 {% comment %} <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/foundation.min.css" integrity="sha512-RgUfG84wvjIwNHlKPU63D8S8IItsNhZZ5kfjpvhGAfr529lt67Ys4/2RAA/NYhsb2HBfcxUXMX3NEJswqpT1tg==" crossorigin="anonymous" /> {% endcomment %}
 {% endblock %}

@@ -3,37 +3,24 @@
 {% load static %}
 
 {% block css %}
-<style>
-@media only screen and (max-width: 1026px) {
-    #cards {
-        display:none;
-       }
-         }
-
-.footer {
-
-
-}
-.badge {
-  background-color: #e1ecf4; 
-  color: #39739d;
-}
-</style>
+<link type="text/css" rel="stylesheet" href="{% static 'css/main.css' %}">
 {% endblock %}
 
 {% block body %}
 
-<nav class="navbar navbar-expand-sm bg-dark  navbar-dark">
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
   <div class="container">
-    <a class="navbar-brand" href="{% url 'home' %}"><b>Code</b></a>
+    <a class="navbar-brand" href="{% url 'home' %}">
+    <img src="{% static 'img/web-programming.svg' %}" alt="" class="d-inline-block align-top"  width="30" height="30">
+    <b id="navy">Code</b>
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainMenu" aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="mainMenu">
 
-      <ul class="nav-bar nav">
-       
-        {% if '/question' in request.path %}
+    <ul class="navbar-nav">
+      {% if '/question' in request.path %}
           <li class="nav-item active">
             <a class="nav-link" href="{% url 'question' %}">Questions</a>
           </li>
@@ -43,7 +30,7 @@
           </li>
         {%endif%}
 
-         {% if '/ask/' in request.path %}
+           {% if '/ask/' in request.path %}
           <li class="nav-item active">
             <a class="nav-link" href="{% url 'ask_question' %}">Ask</a>
           </li>
@@ -52,9 +39,8 @@
             <a class="nav-link" href="{% url 'ask_question' %}">Ask</a>
           </li>
         {%endif%}
-        
 
-       {% if '/tags/' in request.path %}
+      {% if '/tags/' in request.path %}
           <li class="nav-item active">
             <a class="nav-link" href="{% url 'tags' %}">Tag</a>
           </li>
@@ -63,9 +49,7 @@
             <a class="nav-link" href="{% url 'tags' %}">Tag</a>
           </li>
         {%endif%}
-        
-
-       {% if '/users/' in request.path %}
+      {% if '/users/' in request.path %}
           <li class="nav-item active">
             <a class="nav-link" href="{% url 'users' %}">Users</a>
           </li>
@@ -75,7 +59,7 @@
           </li>
         {%endif%}
             
-     </ul>
+    </ul>
 
       {% if user.is_authenticated %}
         <ul class="navbar-nav ml-auto">
@@ -149,9 +133,59 @@ I know that you can easily perform queries with the model like
 {% endblock %}
 
 {% block footer %}
-  <div class="footer">
-    
+  <footer class="mainfooter" role="contentinfo">
+  <div class="footer-middle">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3 col-sm-6">
+        <!--Column1-->
+        <div class="footer-pad">
+          <h4>Heading 1</h4>
+          <ul class="list-unstyled">
+          <li><a href="#">Disclaimer</a></li>
+            <li><a href="#">FAQs</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <!--Column1-->
+        <div class="footer-pad">
+          <h4>Heading 2</h4>
+          <ul class="list-unstyled">
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Webmaster</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <!--Column1-->
+        <div class="footer-pad">
+          <h4>Heading 3</h4>
+          <ul class="list-unstyled">
+           <li><a href="#">Website Tutorial</a></li>
+            <li><a href="#">Accessibility</a></li>
+          </ul>
+        </div>
+      </div>
+    	<div class="col-md-3">
+    		<h4>Follow Us</h4>
+            <ul class="social-network social-circle">
+             <li><a href="https://facebook.com/karma.certified/" class="icoFacebook" title="Facebook"><i class="fab fa-facebook"></i></a></li>
+             <li><a href="#" class="icoGithub" title="Github"><i class="fab fa-github"></i></a></li>
+            </ul>				
+		</div>
+    </div>
+	<div class="row">
+		<div class="col-md-12 copy">
+			<p class="text-center">&copy; Copyright 2020 - Code  All rights reserved.</p>
+		</div>
+	</div>
+
+
   </div>
+  </div>
+</footer>
 {% endblock %}
 
 {% block js %}
