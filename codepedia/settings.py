@@ -26,7 +26,7 @@ SECRET_KEY = '7fyaii!%g#kseuow1*6rvy+v_mg6wd+cb-z8xp0iet9z@#6y=+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['karma.pythonanywhere.com', ]
 
 
 AUTH_USER_MODEL = 'core.User'
