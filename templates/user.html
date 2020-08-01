@@ -1,91 +1,117 @@
 {% extends "main.html" %}
 
-{% load static humanize %}
+{% load static humanize core_tags %}
 
-{% block title %}code | User{% endblock title %}
+{% block title %}User {{ user }} - Code{% endblock title %}
 
 
 {% block content %}
-<div class="card">
-    <img class="card-img-left" src="holder.js/100x180/" alt="">
-    <div class="card-body">
-        <h4 class="card-title"><b>{{ user_detail.username }}</b></h4>
-        <p class="card-text">{{ user_detail.points }}</p>
+<div class="row laptop pt-3">
+    <div class="col-12 pl-5  mt-5">
+        <a class="btn btn-sm btn-primary rounded-pill" href="#" role="button">Profile</a>
+        {% if user.username == user_detail.username %}
+         <a class="btn btn-sm rounded-pill" href="#" role="button">Edit profile and settings</a>
+        {% endif %}
     </div>
-</div>
-
-<div  class="container mt-1 mb-1" style="border:1px solid lightgray">
-   <div class="row">
-       <div class="col-12">
-           <div class="row">
-                <div class="col-4">
+    <div class="col-12 pt-3">
+        <div class="row">
+            <div class="col-3 pl-5 pr-5">
+            <div class="card">
+                <img class="card-img-top bg-light" src="" alt="">
+                <div class="card-body pb-2 text-center">
+                <img src="{{ user_detail|gravatar:150 }}" class="rounded mb-1 img-fluid" />
+                  {% comment %} {% if user_detail.display_photo %}
+                    <img src="{{ user_detail.display_photo.url }}" class="rounded mb-1 img-fluid"/>
+                  {% else %}
+                   <img src="{{ user_detail|gravatar:150 }}" class="rounded mb-1 img-fluid" />
+                  {% endif %}               {% endcomment %}
+                     <h4 class="mb-0">{{ user_detail.points|intcomma }}</h4>
+                </div>
+            </div>
+            </div>
+            <div class="col-6">
+               <div class="row">
+                <div class="col-12">
+                   <h2 class="mb-0"><b>{{ user_detail.username }}</b></h2>
+                </div>
+                 <div class="col-12 text-secondary">
+                   <h4>{{ user_detail.title }}Software Engineer</h4>
+                </div>
+                <div class="col-12">
+                   {{ user_detail.description }}{% lorem 1 b  %}
+                </div>
+            </div>
+            </div>
+            <div class="col-3">
+                <div class="row">
+                <div class="col-12">
                    <div class="row">
-                        <div class="col-12 text-center ">
-                            <b>POSTS</b>
+                    <div class="col-6">
+                      <div class="row">
+                        <div class="col-12">
+                          <h5 class="mb-0"><b>{{ user_questions.count }}</b></h5>
+                         </div>
+                         <div class="col-12 text-secondary">
+                         question{{ user_questions.count|pluralize }}
+                         </div>
                         </div>
-                        <div class="col-12 text-center font-italic">
-                            <b>{{ all_posts }}</b>
-                        </div>
+                    </div>
+                    <div class="col-6">
+
+                        <div class="row">
+                        <div class="col-12">
+                          <h5 class="mb-0"><b>{{ user_answers.count }}</b></h5>
+                         </div>
+                         <div class="col-12 text-secondary">
+                         answer{{ user_answers.count|pluralize }}
+                         </div>
+                    </div>
+                    
                     </div>
                 </div>
-
-               <div class="col-4">
-                   <div class="row">
-                       <div class="col-12 text-center ">
-                          <b>VOTE CAST</b>
-                       </div>
-                       <div class="col-12 text-center font-italic">
-                          <b>{{ votes }}</b>
-                       </div>
+                </div>
+                <div class="col-12"> 
+                   <div class="row pt-3">
+                    <div class="col-12 text-secondary">
+                    <i class="fas fa-location-arrow mr-2"></i> location
                     </div>
-                </div>    
-
-                <div class="col-4">
-                   <div class="row">
-                       <div class="col-12 text-center ">
-                          <b></b>
-                       </div>
-                       <div class="col-12 text-center font-italic">
-                          <b></b>
-                       </div>
+                    <div class="col-12 text-secondary ">
+                     <i class="fas fa-eye mr-2"></i> profile views
                     </div>
-                </div>    
-                 
-           </div>
-       </div>
+                    <div class="col-12 text-secondary">
+                      <i class="fas fa-clock mr-2"></i> last seen
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        
+
+        <div class="row pt-3">
+            <div class="col-3 pl-5 pr-5">
+           
+            </div>
+            <div class="col-6">
+               <b>Newest post{{ all_posts_count|pluralize }}</b> <span class="text-secondary">({{ all_posts_count }})</span>
+               <div class="row">
+                {% for post in all_posts %}
+                    <div class="col-12 border-bottom-0 mt-1 border-left-0 pt-2 border-right-0" style="border:1px solid lightgray">
+                        
+                         {% if post.is_question %}
+                         <a href="{% url 'question_detail' post.pk post.slug %}">{{ post }}</a> <span class="text-secondary float-right">{{ post.posted_on|naturaltime }}</span>
+                         {% else %}
+                           <a href="{% url 'question_detail' post.question.pk post.question.slug %}">{{ post.question }}</a> <span class="text-secondary float-right">{{ post.posted_on|naturaltime }}</span>
+                         {% endif %}
+                        
+                    </div>
+                {% endfor %}
+                    
+                </div>
+            </div>
+        </div>
+     </div>
+     </div>
    </div>
-</div>
-
-<div  class="container mt-1 mb-1" style="border:1px solid lightgray">
-   <div class="row">
-       <div class="col-12">
-        <b>questions(</b>{{ user_questions.count }}<b>)</b>
-       </div>
-       <div class="col-12 bg-light  pl-4">
-       {% for question in user_questions %}
-          <span>{{ question.title }}</span>
-          <br>
-        {% empty %}
-         <span> you havent asked any question</span>
-        {% endfor %}
-       </div>
-    </div>
-</div>
-
-<div  class="container mt-1 mb-1" style="border:1px solid lightgray">
-   <div class="row">
-       <div class="col-12">
-        <b>answers(</b>{{ user_answers.count }}<b>)</b>
-       </div>
-       <div class="col-12 bg-light pl-4">
-       {% for answer in user_answers %}
-          <span>{{ answer.question.title }}</span>
-          <br>
-        {% empty %}
-         <span> you havent answered any questions</span>
-        {% endfor %}
-       </div>
-    </div>
-</div>
 
 {% endblock %}

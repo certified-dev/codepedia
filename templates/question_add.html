@@ -6,11 +6,14 @@
 
 
 {% block content %}
-<div class="mb-2">
-  <marquee><h4>Ask a question</h4></marquee>
-</div>
+<div class="row  justify-content-center pt-3">
+    <div class="col-12 mt-5 laptop">
+         <h3>Ask a Question</h3>
+      </div>      
+        
+     <div class="col-sm-9">
 
-   {{ form.media.css }}
+     {{ form.media.css }}
 
       <div class="card mb-3">
          <div class="card-body">
@@ -30,6 +33,14 @@
     </form>
     <script src="{% static 'jquery.min.js' %}"></script>
     {{ form.media.js }}
+    
+    </div>
+    <div class="col-3 mt-5 laptop">
+       <div class="row">
+          
+       </div>
+    </div>
+  </div>
     
 {% endblock %}
 

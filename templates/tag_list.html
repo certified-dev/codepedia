@@ -2,75 +2,150 @@
 
 {% load static %}
 
-{% block title %}code | Tags{% endblock title %}
+{% block title %}Tags - Code{% endblock title %}
 
 {% block content %}
 
-<div class="container mb-2">
+<div class="container mb-2 mt-5 laptop">
+   <div class="row pt-3">
+     <div class="col-12">
+       <h3>Tag</h3>
+     </div>
 
-  <div class="row">
-
-    <div class="col-12">
-      <h3>Tag</h3>
-    </div>
-
-    <div class="col-12 mb-3">
-      A tag is a keyword or label that categorizes your question with other, similar questions. Using the right tags makes it easier for others to find and answer your question. 
-    </div>
+     <div class="col-12 mb-3">
+       A tag is a keyword or label that categorizes your question with other, similar questions. Using the right tags makes it easier for others to find and answer your question. 
+     </div>
 
      <div class="col-12">
-       <div class="row">
-         <div class="col-6 pl-0">
-         <form>
-            <div class="input-group mb-2">
-              <input type="text" class="form-control form-control-sm" name="" id="" aria-describedby="helpId" placeholder="seach tags here">
-              <div class="input-group-append">
-              <button type="button" class="btn btn-sm btn-primary"><i class="fas fa-search"></i></button>
+        <div class="row">
+          <div class="col-4">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="search tag">
               </div>
             </div>
-          </form>
-         </div>
-         <div class="col-6 pr-0">
-           <small>
-            <div class="btn-group float-right">
-              <button type="button" class="btn btn-sm btn-outline-secondary active">Popular</button> 
-              <button type="button" class="btn btn-sm btn-outline-secondary">Name</button>
-              <button type="button" class="btn btn-sm btn-outline-secondary">New</button>
-            </div>
-           </small>
-         </div>
-         </div>
-    </div>
-  </div>
+            <div class="col-8">
+            <small>
+              <div class="btn-group float-right">
+                
+                <button type="button" class="btn btn-sm btn-outline-secondary active">Popular</button> 
+                <button type="button" class="btn btn-sm btn-outline-secondary">Name</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary">New</button>
+               
+              </div>
+            </small>
+          </div>
+        </div>
+          
+      </div>
+      <div class="col-12">
+        <div class="row">
+            {% for tag in tags %}
+            <div class="col-3 p-0 pl-1 pr-1">
+                <div class="container {% if forloop.last %} mb-2 {% else %} mb-1 {% endif %}  p-2 pl-2" style="border:1px solid lightgray; border-radius:4px;">
+                  <div class="row pl-1 pr-2">
+                      <div class="col-12 mb-2">
+                        <a href="{% url 'tag_question' tag.pk %}" class="badge">{{ tag }}</a>
+                      </div>
 
+                      <div class="col-12 ml-1" >
+                        <small class="text-secondary">{{ tag.description }}</small>
+                      </div>
+
+                      <div class="col-12">
+                        <small><b><a href="{% url 'tag_question' tag.pk %}" class="text-secondary">{{ tag.question_tags.count }} questions</a></b></small>
+                      </div>
+                    </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+       </div>
+      <div class="col-12 mt-3">
+        {% include 'includes/pagination.html' %}
+     </div>
+
+   </div>
+  
 </div>
 
+{% comment %} <div class="mobile">
+   <div class="text-center mobile">
+     <div class="btn-group btn-group-sm mb-3">
+       <a class="btn btn-sm text-secondary" href="{% url 'question' %}" role="button">Questions</a>
+       <a class="btn btn-sm {% if 'tag' in request.path %}btn-primary{% endif %}" href="{% url 'tags' %}" role="button">Tags</a>
+       <a class="btn btn-sm text-secondary" href="{% url 'users' %}" role="button">Users</a>
+       <a class="btn btn-sm text-secondary" href="{% url 'ask_question' %}" role="button">Ask</a>
+     </div> 
+   </div>  {% endcomment %}
 
-<div class="container">
- <div class="row">
-   {% for tag in tags %}
-   <div class="col-4-sm p-0 pl-1 pr-1">
-      <div class="container {% if forloop.last %} mb-2 {% else %} mb-1 {% endif %}  p-2 pl-2" style="border:1px solid lightgray;">
-        <div class="row pl-1 pr-2">
-            <div class="col-12 mb-2">
-              <a href="{% url 'tag_question' tag.pk %}" class="badge badge-pill">{{ tag }}</a>
-            </div>
 
-            <div class="col-12 ml-1" >
-              <small class="text-secondary">{{ tag.description }}</small>
-            </div>
+<div class="container mb-2 mt-2 mobile">
+    <div  class="col-12 bg-light border-left-0 border-right-0" style="border:1px solid lightgray;">
+        <span class="font-weight-bold">Tags</span>
+       </div>
 
-            <div class="col-12">
-              <small><b><a href="{% url 'tag_question' tag.pk %}" class="text-secondary">{{ tag.question_tags.count }} questions</a></b></small>
-            </div>
+   <div class="col-12 mb-3 pt-2" style="border-bottom:1px solid lightgray;">
+       A tag is a keyword or label that categorizes your question with other, similar questions. Using the right tags makes it easier for others to find and answer your question. 
+     </div>
+
+     <div class="col-12 p-0">
+          <div class="form-group">
+            <input type="text" class="form-control form-control-sm" placeholder="search tag">
           </div>
       </div>
+          
+      <div class="col-12">
+          <div class="row">
+            {% for tag in tags %}
+            <small>
+            <div class="col-12 p-0 pl-1 pr-1">
+                <div class="container {% if forloop.last %} mb-2 {% else %} mb-1 {% endif %}  p-2 pl-2" style="border:1px solid lightgray; border-radius:4px;">
+                  <div class="row pl-1 pr-2">
+                      <div class="col-12 mb-2 pl-2 pr-2">
+                        <a href="{% url 'tag_question' tag.pk %}" class="badge">{{ tag }}</a>
+                      </div>
+
+                      <div class="col-12 ml-1 pl-2 pr-2" >
+                        <small class="text-secondary">{{ tag.description }}</small>
+                      </div>
+
+                      <div class="col-12 pl-2 pr-2">
+                        <small><a href="{% url 'tag_question' tag.pk %}" class="text-secondary">{{ tag.question_tags.count }} questions</a></small>
+                      </div>
+                    </div>
+                </div>
+              </div>
+              </small>
+            {% endfor %}
+          </div>
+       </div>
+      </div>
+
+
+   <div class="row mobile">
+      <div class="col-12 pr-4">
+          <div class="pagination float-right mr-3" style="margin-bottom: 3; margin-top: 10">
+         <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">&laquo; previous</a>
+        {% endif %}
+
+        <span class="current text-secondary">
+            page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next &raquo;</a>
+        {% endif %}
+      </span>
     </div>
-   {% endfor %}
- </div>
+     </div>
+
+   </div>
+  
 </div>
 
-{% include 'includes/pagination.html' %}
+
 
 {% endblock %}
 

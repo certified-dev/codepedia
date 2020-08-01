@@ -13,7 +13,9 @@ urlpatterns = [
 
     path('answer/<int:pk>/accept/', views.accept, name="accept_answer"),
 
-    path('', views.HomeView.as_view(), name="home"),
+    path('', views.home, name="home"),
+
+    path('home/', views.HomeQuestionView.as_view(), name="home_question"),
 
     path('questions/', views.QuestionListView.as_view(), name="question"),
 
@@ -49,8 +51,8 @@ urlpatterns = [
     path('user/<int:pk>/',
          views.UserDetailView.as_view(), name="user"),
 
-    path('user/<int:pk>/profile/',
-         views.ProfileView.as_view(), name="user_profile"),
+    path('user/<int:pk>/update',
+         views.UserUpdateView.as_view(), name="user_update"),
 
     path('tags/', views.TagListView.as_view(), name="tags"),
 

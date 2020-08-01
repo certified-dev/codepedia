@@ -52,6 +52,12 @@ class Question(models.Model):
     def update_points(self):
         update_points_helper(self)
 
+    def any_answer_accepted(self):
+        answer_accepted = False
+        if self.answers.filter(accepted=True).exists():
+            answer_accepted = True
+        return answer_accepted
+
     def __str__(self):
         return self.title
 
@@ -100,18 +106,14 @@ class User(AbstractUser):
     downvoted_answers = models.ManyToManyField(
         Answer, related_name="downvoted_users")
     points = models.IntegerField(default=1)
-    adjustment_points = models.IntegerField(default=0)
     banned = models.BooleanField(default=False)
+    location = models.CharField(max_length=100, blank="True")
+    title = models.CharField(max_length=100, blank="True")
+    display_photo = models.ImageField(upload_to='users', blank=True)
 
     def __str__(self):
         return self.username
 
-    # def update_points(self):
-    #     answers = self.answer_set.filter(~Q(points=0))
-    #     points = map(lambda a: a.points, answers)
-    #     user_points = reduce(lambda x, y: x + y, points, 0)
-    #     self.points = user_points + self.adjustment_points
-    #     self.save()
     def question_once_upvote_now_downvote(self):
         self.points -= 12
         self.save()
@@ -192,4 +194,4 @@ class AnswerSerializer(serializers.ModelSerializer):
         return naturaltime(obj.posted_on)
 
     def get_updated_on(self, obj):
-        return naturaltime(obj.posted_on)
+        return naturaltime(obj.updated_on)

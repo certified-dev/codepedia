@@ -94,6 +94,13 @@ TEMPLATES = [
     },
 ]
 
+TEMPLATES_LOADER = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+    'django.template.loaders.eggs.Loader',
+    'django.template.loaders.add_directories.load_template_source',
+)
+
 WSGI_APPLICATION = 'codepedia.wsgi.application'
 
 
@@ -175,7 +182,7 @@ ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 6
 
 ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 86400
 
-LOGIN_REDIRECT_URL = "home"
+LOGIN_REDIRECT_URL = "home_question"
 
 ACCOUNT_LOGOUT_REDIRECT_URL = 'home'
 

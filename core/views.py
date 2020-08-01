@@ -1,3 +1,5 @@
+
+from itertools import chain
 import git
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
@@ -10,7 +12,7 @@ from django.utils.text import slugify
 from django.views.generic import ListView, CreateView, UpdateView, DetailView
 
 from .models import Question, Answer, Tag, User, AnswerSerializer
-from .forms import AnswerForm, CommentForm, QuestionForm
+from .forms import AnswerForm, CommentForm, QuestionForm, UserUpdateForm
 
 
 @csrf_exempt
@@ -21,7 +23,7 @@ def update(request):
         stored on PythonAnywhere in the git.Repo() as parameter.
         Here the name of my directory is "test.pythonanywhere.com"
         '''
-        repo = git.Repo("Karma.pythonanywhere.com/") 
+        repo = git.Repo("Karma.pythonanywhere.com/")
         origin = repo.remotes.origin
 
         origin.pull()
@@ -31,17 +33,22 @@ def update(request):
         return HttpResponse("Couldn't update the code on PythonAnywhere")
 
 
-def test(request):
-    return render(request, 'test.html')
+def home(request):
+    if not request.user.is_authenticated:
+        return render(request, 'home.html')
+    else:
+        return redirect('home_question')
 
-class HomeView(ListView):
+
+class HomeQuestionView(ListView):
     model = Question
     context_object_name = "questions"
-    template_name = "home.html"
+    template_name = "home_question.html"
 
+    # filter according to user tag watch
     def get_queryset(self):
-        queryset = super(HomeView, self).get_queryset()
-        queryset = Question.objects.filter(hidden=False).order_by('-pk')[:15]
+        queryset = super(HomeQuestionView, self).get_queryset()
+        queryset = Question.objects.filter(hidden=False).order_by('-pk')[:20]
         return queryset
 
 
@@ -49,7 +56,7 @@ class QuestionListView(ListView):
     model = Question
     context_object_name = "questions"
     template_name = "question.html"
-    paginate_by = 10
+    paginate_by = 15
 
     def get_queryset(self):
         queryset = super(QuestionListView, self).get_queryset()
@@ -75,7 +82,7 @@ class QuestionCreateView(CreateView):
 class QuestionUpdateView(UpdateView):
     model = Question
     form_class = QuestionForm
-    template_name = "question_update.html"
+    template_name = "question_add.html"
     context_object_name = 'question'
 
     def form_valid(self, form):
@@ -90,7 +97,6 @@ class AnswerListView(ListView):
     model = Answer
     template_name = "question_answers.html"
     context_object_name = "answers"
-    paginate_by = 15
 
     def get_context_data(self, session_key=None, **kwargs):
         session_key = 'viewed_question_{}'.format(self.question.pk)
@@ -206,7 +212,8 @@ class TagListView(ListView):
     model = Tag
     template_name = "tag_list.html"
     context_object_name = 'tags'
-    paginate_by = 12
+    paginate_by = 16
+    ordering = ('id')
 
 
 class TagQuestionView(DetailView):
@@ -219,11 +226,8 @@ class UsersListView(ListView):
     model = User
     template_name = "users.html"
     context_object_name = 'users'
-
-    def get_queryset(self):
-        queryset = User.objects.exclude(
-            id=self.request.user.id).order_by('-points')
-        return queryset
+    paginate_by = 20
+    ordering = ('-points')
 
 
 class UserDetailView(DetailView):
@@ -238,6 +242,13 @@ class UserDetailView(DetailView):
             answered_by_id=self.kwargs.get('pk')).order_by('-posted_on')
 
         user = User.objects.get(pk=self.kwargs.get('pk'))
+        all_posts = list(chain(user_answers, user_questions))
+
+        for post in user_answers:
+            post.is_answer = True
+
+        for post in user_questions:
+            post.is_question = True
 
         upvoted_answers = user.upvoted_answers.count()
         downvoted_answers = user.downvoted_answers.count()
@@ -247,7 +258,8 @@ class UserDetailView(DetailView):
         extra_context = {
             'user_questions': user_questions,
             'user_answers': user_answers,
-            'all_posts':  user_answers.count() + user_questions.count(),
+            'all_posts':  all_posts,
+            'all_posts_count':  user_answers.count() + user_questions.count(),
             'votes': upvoted_answers + downvoted_answers + upvoted_questions + downvoted_questions
         }
         kwargs.update(extra_context)
@@ -255,30 +267,13 @@ class UserDetailView(DetailView):
 
 
 @method_decorator([login_required], name="dispatch")
-class ProfileView(DetailView):
+class UserUpdateView(UpdateView):
     model = User
-    template_name = "user.html"
-    context_object_name = 'user_detail'
+    form_class = UserUpdateForm
+    template_name = "edit.html"
 
-    def get_context_data(self, *args, **kwargs):
-        user_questions = Question.objects.filter(
-            asked_by=self.request.user).order_by('-posted_on')
-        user_answers = Answer.objects.filter(
-            answered_by=self.request.user).distinct().order_by('-posted_on')
-
-        upvoted_answers = self.request.user.upvoted_answers.count()
-        downvoted_answers = self.request.user.downvoted_answers.count()
-        upvoted_questions = self.request.user.upvoted_questions.count()
-        downvoted_questions = self.request.user.downvoted_questions .count()
-
-        extra_context = {
-            'user_questions': user_questions,
-            'user_answers': user_answers,
-            'all_posts': user_answers.count() + user_questions.count(),
-            'votes': upvoted_answers + downvoted_answers + upvoted_questions + downvoted_questions
-        }
-        kwargs.update(extra_context)
-        return super(ProfileView, self).get_context_data(**kwargs)
+    def form_valid(self, form):
+        return super(UserUpdateView, self).form_valid(form)
 
 
 def vote_question(request, pk, slug):
@@ -337,7 +332,7 @@ def vote(request, pk, question_or_answer):
             state = 'once_downvoted_answer'
 
         score = update_vote(request.user, target,
-                             vote_type, question_or_answer)
+                            vote_type, question_or_answer)
 
         if state == 'once_upvoted_question' and vote_type == 'downvote':
             target.asked_by.question_once_upvote_now_downvote()
@@ -353,7 +348,6 @@ def vote(request, pk, question_or_answer):
             target.asked_by.question_cancel_upvote()
         elif vote_type == 'cancel_vote' and state == 'once_downvoted_question':
             target.asked_by.question_cancel_downvote()
-        
 
         elif state == 'once_upvoted_answer' and vote_type == 'downvote':
             request.user.points -= 1
@@ -381,6 +375,7 @@ def vote(request, pk, question_or_answer):
     else:
         return HttpResponseBadRequest('The request is not POST',  status=400)
 
+
 def accept(request, pk):
     if not request.user.is_authenticated:
         return HttpResponse('Not logged in', status=401)
@@ -393,10 +388,10 @@ def accept(request, pk):
     if request.method == 'POST':
         accept_type = request.POST.get('accept_type')
         if accept_type == 'accept' and not answer.accepted:
-           answer.accepted = True
-           answer.save()
-           answer.answered_by.accepted_answer()
-           return JsonResponse({'accept_type': accept_type})
+            answer.accepted = True
+            answer.save()
+            answer.answered_by.accepted_answer()
+            return JsonResponse({'accept_type': accept_type})
         elif accept_type == 'cancel_accept' and answer.accepted:
             answer.accepted = False
             answer.save()

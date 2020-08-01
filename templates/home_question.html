@@ -1,0 +1,133 @@
+{% extends "main.html" %}
+
+{% load static humanize %}
+
+{% block title %}Code - Question and Answers{% endblock title %}
+
+{% block content %}
+   <div class="row laptop">
+     <div class="col-9 mt-5">
+      <div class="container mb-2 mt-2">
+        <div class="row">
+        <div class="col-12 mb-3">
+          <h3>Top Questions 
+            <a class="btn btn-sm btn-primary float-right" href="{% url 'ask_question' %}" role="button">Ask Question</a></h3>
+        </div>
+        </div>
+      </div>
+        
+      {% for question in questions %}
+        <div  class="container p-2 {% if not forloop.last %}border-bottom-0{% endif %}" style="border:1px solid lightgray;">
+          <div class="row">
+              <div class="col-3">
+                <div class="row">
+                    <div class="col-4">
+                      <div class="row">
+                        <div class="col-12 text-center">
+                          <span class="text-secondary">{{ question.score }}</span>
+                        </div>
+                          <div class="col-12  text-center">
+                            <span class="text-secondary"><small>vote{{ question.score|pluralize}}</small></span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-4 pl-1">
+                      <button type="button" class="btn btn-sm {% if question.answers.count <= 0 %}text-secondary{% endif %} {% if question.answers.count >= 1 and not question.any_answer_accepted %}btn-outline-success{% endif %} {% if question.answers.count >= 1 and question.any_answer_accepted %}btn-success{% endif %} text-center disabled" >{{ question.answers.count }}<br><small>answer{{ question.answer.count|pluralize }}</small></button>
+                  </div>
+                  <div class="col-4"> 
+                      <div class="row">
+                        <div class="col-12 text-center">
+                          <span class="text-secondary">{{ question.views }}</span>
+                        </div>
+                          <div class="col-12  text-center">
+                            <span class="text-secondary"><small>view{{ question.views|pluralize}}</small></span>
+                        </div>
+                      </div>
+                  </div>
+              </div>
+            </div>
+              <div class="col-9">
+                  <div class="row">
+                    <div class="col-12 pl-0">
+                      <small><b><a href="{% url 'question_detail' question.pk question.slug %}">{{ question.title }}</a></b></small>
+                    </div>
+                    <div class="col-12 pl-0">
+                      {% for tag in question.tags.all %}
+                        <a href="{% url 'tag_question' tag.pk %}" class="badge">{{ tag }}</a>
+                      {% endfor %}
+                      <span class="float-right text-secondary"><small>{{ question.posted_on|naturaltime}} <a href="javascript:void(0)">{{ question.asked_by }}</a> <b>{{ question.asked_by.points }}</b></small></span>
+                  </div>
+                  </div>
+              </div>
+          </div>
+        </div>
+
+        {% endfor %}
+    </div>
+    <div class="col-3 mt-5">
+       <div class="row">
+         
+       </div>
+    </div>
+  </div>
+
+  
+
+
+<div class="mobile">
+  <div class="text-center">
+     <div class="btn-group btn-group-sm mb-3">
+       <a class="btn btn-sm text-secondary" href="{% url 'question' %}" role="button">Questions</a>
+       <a class="btn btn-sm text-secondary" href="{% url 'tags' %}" role="button">Tags</a>
+       <a class="btn btn-sm text-secondary" href="{% url 'users' %}" role="button">Users</a>
+       <a class="btn btn-sm text-secondary" href="{% url 'ask_question' %}" role="button">Ask</a>
+     </div> 
+   </div> 
+
+     <div  class="container border-left-0 border-right-0 border-bottom-0 " style="border:1px solid lightgray;">
+       <div class="row">
+        <div class="col-12 p-1 bg-light">
+        <span>All questions</span>
+       </div>
+       </div>
+     </div>
+         
+     {% for question in questions %}
+
+      <div  class="container {% if not forloop.last %}border-bottom-0{% endif %} {% if forloop.last %} mb-5{% endif %} pt-1 pb-1 pl-3 mobile" style="border:1px solid lightgray;">
+         <div class="row">
+           <div class="col-1 bg-light">
+              <div class="row">
+                <div class="col-12 p-0 text-center">
+                  <small class="text-secondary"><svg width="1.3em" height="1.3em" viewBox="0 0 16 16" class="bi bi-caret-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path fill-rule="evenodd" d="M3.204 11L8 5.519 12.796 11H3.204zm-.753-.659l4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z"/>
+</svg>{{ question.score }}</small>
+                </div>
+                <div class="col-12 col-12 p-0 text-center">
+                   <small class="text-secondary"><i class="fas fa-comment-dots {% if question.any_answer_accepted %}text-success{% endif %}"></i>{{ question.answers.count }}</small>
+                </div>
+              </div> 
+           </div>
+           <div class="col-11">
+              <div class="row">
+                <div class="col-12 pl-1 pr-1">
+                   <small><b><a href="{% url 'question_detail' question.pk question.slug %}">{{ question.title }}</a></b></small>
+                </div>
+                <div class="col-12 pl-1 pr-1">
+                   {% for tag in question.tags.all %}
+                    <small><a href="{% url 'tag_question' tag.pk %}" class="badge">{{ tag }}</a></small>
+                   {% endfor %}
+                </div>
+                <div class="col-12 pl-1 pr-1">
+                   <small><span class="text-secondary">{{ question.posted_on|naturaltime}}</span> <a href="javascript:void(0)">{{ question.asked_by }}</a></small>
+                </div>
+              </div> 
+
+            </div>
+        </div> 
+
+      </div>
+    {% endfor %}
+    </div>
+
+{% endblock %}

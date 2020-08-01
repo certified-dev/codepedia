@@ -1,0 +1,106 @@
+{% extends "main.html" %}
+
+{% load static humanize %}
+
+{% block title %}User {{ user }} - Code{% endblock title %}
+
+
+{% block content %}
+<div class="row laptop ">
+     <div class="col-12 mt-5">
+        <span>profile</span> 
+        <a class="btn btn-sm  rounded-pill" href="#" role="button">Activity</a>
+        <a class="btn btn-sm rounded-pill" href="#" role="button">Edit profile and settings</a>
+        <span class="float-right"><b>{{ user_detail.username }}</b> <img src="{% static 'img/image.jpeg' %}" class="rounded" width="35" height="35"></span>
+      </div>
+      <div class="col-12 mt-3">
+      <div class="card-columns">
+          <div class="card">
+              <div class="card-body">
+                  <h4 class="card-title">Title</h4>
+                  <p class="card-text">Text</p>
+              </div>
+          </div>
+          <div class="card">
+              <div class="card-body">
+                  <h4 class="card-title">Title</h4>
+                  <p class="card-text">Text</p>
+              </div>
+          </div>
+          <div class="card">
+              <div class="card-body">
+                  <h4 class="card-title">Title</h4>
+                  <p class="card-text">Text</p>
+              </div>
+          </div>
+      </div>
+     </div>
+     <div class="col-12">
+      <div class="row">
+        <div class="col-6 mb-2 bg-light">
+        Question{{ user_questions.count|pluralize }} ({{ user_questions.count }})
+        <hr>
+          {% for question in user_questions %}
+          <span><a href="{% url 'question_detail' question.pk question.slug %}">{{ question.title }}</a></span>
+          <br>
+          {% empty %}
+         <span> you havent asked any questions</span>
+         {% endfor %}
+       </div>
+        <div class="col-6 mb-2 bg-light">
+        Answer{{ user_answers.count|pluralize }} ({{ user_answers.count }})
+        <hr>
+          {% for answer in user_answers %}
+          <span><a href="{% url 'question_detail' answer.question.pk answer.question.slug %}">{{ answer.question.title }}</a></span>
+          <br>
+          {% empty %}
+         <span> you havent answered any questions</span>
+         {% endfor %}
+       </div>
+       <div class="col-6 mb-2 bg-light">
+        Tags ()
+        <hr>
+         
+       </div>
+       <div class="col-6 mb-2 bg-light">
+        Votes cast ()
+        <hr>
+         <div class="row">
+            <div class="col-6">
+                <div class="row">
+                <div class="col-12">
+                all-time
+                </div>
+                <div class="col-12">
+                </div>
+                 <div class="col-12">
+                </div>
+            </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-12">
+                    all time
+                    </div>
+                    <div class="col-12">
+                    </div>
+                    <div class="col-12">
+                    </div>
+                </div>
+            </div>
+        </div>
+       </div>
+      </div>
+     </div>
+   </div>
+
+ <div class="text-center mobile">
+     <div class="btn-group btn-group-sm mb-3">
+       <a class="btn btn-sm text-secondary" href="{% url 'question' %}" role="button">Questions</a>
+       <a class="btn btn-sm text-secondary" href="{% url 'tags' %}" role="button">Tags</a>
+       <a class="btn btn-sm {% if 'user' in request.path %}btn-primary{% endif %}" href="{% url 'users' %}" role="button">Users</a>
+       <a class="btn btn-sm text-secondary" href="{% url 'ask_question' %}" role="button">Ask</a>
+     </div> 
+   </div> 
+
+{% endblock %}

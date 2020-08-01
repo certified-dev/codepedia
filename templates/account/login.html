@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
- {% load i18n widget_tweaks %}
+ {% load i18n widget_tweaks static %}
  
 {% block css %}
 <style>
@@ -34,7 +34,9 @@
     }
     
     .btn-Facebook:hover {
-        color: #fff;
+        background-color: #fff;
+        color: #405D9D;
+        border: 1px solid #405D9D;
     }
     
     .btn-GitHub {
@@ -43,7 +45,9 @@
     }
     
     .btn-GitHub:hover {
-        color: #fff;
+        background-color: #fff;
+        color: #24292e;
+        border: 1px solid #24292e;
     }
     
     .btn-Google {
@@ -52,15 +56,22 @@
     }
     
     .btn-Google:hover {
-        color: #fff;
+        background-color: #fff;
+        color: #ea4335;
+        border: 1px solid #ea4335;
     }
     
-    .col-sm-4 {
+    .col-sm-8 {
         position: absolute;
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
     }
+
+   body {
+  background-image: url({% static 'img/shattered.png'%});
+}
+
 </style>
 {% endblock%}
 
@@ -71,11 +82,10 @@
  {% endblock %}
  
   {% block body %}
-  
 
 <div class="container">
     <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-8 col-md-6 col-lg-4">
             <div class="card">
                 <header class="card-header">
                     <a href="{% url 'account_signup' %}" class="float-right btn btn-outline-primary mt-1">Sign Up</a>
@@ -147,4 +157,5 @@
         </div>
     </div>
 </div>
+
 {% endblock %}

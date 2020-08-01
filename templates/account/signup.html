@@ -1,18 +1,21 @@
 {% extends "base.html" %}
 
-{% load i18n widget_tweaks %} 
+{% load i18n widget_tweaks static %} 
 
 {% block title %} {% trans "Signup" %} {% endblock %}  
  
   
 {% block css %}
 <style>
-    .col-sm-4 {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
+ .col-sm-4 {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     }
+ body {
+  background-image: url({% static 'img/shattered.png'%});
+}
 </style> 
 {% endblock %} 
 
@@ -41,7 +44,7 @@
 
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-sm-5">
+        <div class="col-sm-8 col-md-6 col-lg-4">
             <div class="card mt-5 mb-2">
                 <header class="card-header">
                     <a href="{% url 'account_login' %}" class="float-right btn btn-outline-primary mt-1">Log in</a>
@@ -84,19 +87,19 @@
                         </div>
                         <!-- form-row end.// --> 
 
-                        <div class="form-group mb-4">
+                        <div class="form-group mb-3">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"> <i class="fa fa-user-circle"></i> </span>
                                 </div>
-                                <input name="username" class="form-control" placeholder="Username" type="text" id="id_username">
+                                <input name="username" class="form-control" placeholder="Username" type="text" id="id_username" required>
                             </div>
                             <small class="form-text text-muted">Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</small>
                         </div>
                         <!-- form-group end.// -->
 
 
-                        <div class="form-group mb-4">
+                       <div class="form-group mb-3">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
@@ -104,7 +107,7 @@
                                 <input name="email" class="form-control" placeholder="Email Address" type="email" id="id_email" maxlength="254" required>
                             </div>
                             <small class="form-text text-muted">We'll never share your email with anyone else.</small>
-                        </div>
+                        </div> 
                         <!-- form-group end.// -->
 
                         
@@ -122,7 +125,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
                                 </div>
-                                <input name="password2" class="form-control" placeholder="Confirm Password" type="password" id="id_password2" minlength="5">
+                                <input name="password2" class="form-control" placeholder="Confirm Password" type="password" id="id_password2" minlength="5" required>
                             </div>
                         </div>
                         <!-- form-group end.// -->

@@ -8,19 +8,19 @@
 
 {% block body %}
 
-<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+<nav class="navbar navbar-expand-sm bg-light navbar-light laptop fixed-top">
   <div class="container">
     <a class="navbar-brand" href="{% url 'home' %}">
-    <img src="{% static 'img/web-programming.svg' %}" alt="" class="d-inline-block align-top"  width="30" height="30">
-    <b id="navy">Code</b>
+    <img src="{% static 'img/code.svg' %}" alt="" width="30" height="30">
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainMenu" aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse" id="mainMenu">
 
     <ul class="navbar-nav">
-      {% if '/question' in request.path %}
+      {% if '/questions/' in request.path %}
           <li class="nav-item active">
             <a class="nav-link" href="{% url 'question' %}">Questions</a>
           </li>
@@ -30,7 +30,7 @@
           </li>
         {%endif%}
 
-           {% if '/ask/' in request.path %}
+           {% if '/ask' in request.path %}
           <li class="nav-item active">
             <a class="nav-link" href="{% url 'ask_question' %}">Ask</a>
           </li>
@@ -42,11 +42,11 @@
 
       {% if '/tags/' in request.path %}
           <li class="nav-item active">
-            <a class="nav-link" href="{% url 'tags' %}">Tag</a>
+            <a class="nav-link" href="{% url 'tags' %}">Tags</a>
           </li>
         {% else %}
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'tags' %}">Tag</a>
+            <a class="nav-link" href="{% url 'tags' %}">Tags</a>
           </li>
         {%endif%}
       {% if '/users/' in request.path %}
@@ -65,10 +65,10 @@
         <ul class="navbar-nav ml-auto">
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="userMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              {{ user.username }}
+              <i class="fas fa-user"></i> {{ user.username }}
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">
-              <a class="dropdown-item" href="{% url 'user_profile' user.pk %}"><i class="fas fa-user-circle"></i>&nbsp;Profile</a>
+              <a class="dropdown-item" href="{% url 'user' user.pk %}"><i class="fas fa-user-circle"></i>&nbsp;Profile</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="{% url 'account_logout' %}"><i class="fas fa-power-off">&nbsp;</i>Log out</a>
             </div>
@@ -84,6 +84,27 @@
   </div>
 </nav>
 
+<nav class="navbar navbar-expand-lg bg-light navbar-light mobile">
+  <a class="navbar-brand" href="{% url 'home' %}">
+    <img src="{% static 'img/code.svg' %}" alt="" width="30" height="30">
+    </a>
+    {% if user.is_authenticated %}
+        <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link"  href="{% url 'user' user.pk %}"><i class="fas fa-user-circle"></i> {{ user }}</a>
+      </li>
+    </ul>
+    {% else %}
+      <form class="form-inline ml-auto">
+        <a href="{% url 'account_login' %}" class="btn btn-sm btn-outline-secondary">Log in</a>
+        <a href="{% url 'account_signup' %}" class="btn btn-sm btn-primary ml-2">Sign up</a>
+      </form>
+    {% endif %}
+
+  </div>
+</nav>
+
+
 <div class="container mt-3">
   <div class="row">
      <div class="col">
@@ -91,48 +112,28 @@
   
       {% endblock %}
     </div>
-    <div class="col-sm-3" id="cards">
-       <div class="row">
-         <div class="col-12 mb-2">
-            <div class="card">
-              <div class="card-body">
-                <div class="card-text text-secondary"><small>
-                    model_1 is a foreign key (could be a manytomany or whatever) in model_0
-
-How can I perform a query in the model_1 objects checking the property of the model_0
-
-Something like model_0.objects.filter(model_0.random_property="Something")
-
-I know that you can easily perform queries with the model like 
-                  </small>
-                 </div>
-              </div>
-            </div>
-         </div>
-         <div class="col-12">
-            <div class="card mb-3">
-              <div class="card-body">
-                <div class="card-text text-secondary"><small>
-                   model_1 is a foreign key (could be a manytomany or whatever) in model_0
-
-How can I perform a query in the model_1 objects checking the property of the model_0
-
-Something like model_0.objects.filter(model_0.random_property="Something")
-
-I know that you can easily perform queries with the model like 
-                 </small>
-                </div>
-              </div>
-            </div>
-         </div>
-       </div>
-    </div>
   </div>
 </div>
 
 {% endblock %}
 
 {% block footer %}
+
+ <div id="layoutError_footer">
+    <footer class="py-4 bg-light mt-auto">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center justify-content-between small">
+                <div class="text-muted">Copyright &copy; Code 2020</div>
+                <div>
+                    <a href="#">Privacy Policy</a>
+                    &middot;
+                    <a href="#">Terms &amp; Conditions</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+  </div>
+
   <footer class="mainfooter" role="contentinfo">
   <div class="footer-middle">
   <div class="container">
@@ -154,7 +155,6 @@ I know that you can easily perform queries with the model like
           <ul class="list-unstyled">
             <li><a href="#">Privacy Policy</a></li>
             <li><a href="#">FAQs</a></li>
-            <li><a href="#">Webmaster</a></li>
           </ul>
         </div>
       </div>
@@ -327,6 +327,7 @@ Vue.component('answer', {
          
          </div>
          
+         
          <div v-if="answer.answered_by != '{{ user.username }}'" class="col-12 pl-2 pr-2">
            <div class="row">
                <div class="col-2">
@@ -340,13 +341,15 @@ Vue.component('answer', {
                         <a href="javascript:void(0)">[[ answer.answered_by ]]</a>
                     {% endif %}
 
-                        <span class="text-secondary"> | </span>
+                        <span class="mobile">
+                          <span class="text-secondary"> | </span>
                 
-                        <span class="text-secondary"><a href="javascript:void(0)" class="text-secondary">add comment </a></span>
+                          <span> [[ answer.posted_on ]]</span> 
+                        </span>
 
-                        <span class="text-secondary"> | </span>
-                
-                        <span> [[ answer.posted_on ]]</span> 
+                        <span class="laptop">
+                           <span class="float-right"><i class="fas fa-clock"></i> [[ answer.posted_on ]]</span> 
+                        </span>
                     
                   </small>
                   </div>
@@ -363,7 +366,7 @@ Vue.component('answer', {
                   <i class="fas fa-user-circle text-secondary"></i>
 
                   {% if user.is_authenticated %}
-                      <a href="{% url 'user_profile' user.pk %}">[[ answer.answered_by ]]</a>
+                      <a href="{% url 'user' user.pk %}">[[ answer.answered_by ]]</a>
                   {% else %}
                      <a href="javascript:void(0)">[[ answer.answered_by ]]</a>
                   {% endif %}       
@@ -375,14 +378,16 @@ Vue.component('answer', {
                   <span class= "text-secondary"> | </span>
                 
                   <a id="submitted" href="javascript:void(0)" class="text-secondary">delete</a>
-
-                  <span class= "text-secondary"> | </span>
-
-                  <span class="text-secondary"><a href="javascript:void(0)" class="text-secondary">add comment</a></span>
                   
-                  <span class= "text-secondary"> | </span>
+                   <span class="mobile">
+                      <span class="text-secondary"> | </span>
                 
-                  <span>[[ answer.posted_on ]]</span> 
+                      <span> [[ answer.posted_on ]]</span> 
+                    </span>
+
+                    <span class="laptop">
+                        <span class="float-right"><i class="fas fa-clock"></i> [[ answer.posted_on ]]</span> 
+                    </span>
                     
                   </small>
                   </div>
@@ -390,12 +395,18 @@ Vue.component('answer', {
             </div>
          </div>
 
-         
          <div class="col-12">
-            <div class="row">
-               <div class="col-2">
+         <div class="row">
+               <div class="col-2 pr-0">
                </div>
-               <div class="col-10 pl-0 bg-light text-center">
+               <div class="col-10 pl-0 pr-2 text-center">
+                  <small><a href="javascript:void(0)">add comment</a></small>
+               </div>
+               </div>
+            <div class="row">
+               <div class="col-2 pr-0">
+               </div>
+               <div class="col-10 pl-0 pr-2 bg-light text-center">
                  <span class= "text-secondary font-italic"><small>comments display section </small></span>
                </div>
          </div>

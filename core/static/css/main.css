@@ -1,10 +1,16 @@
-@media only screen and (max-width: 1026px) {
-  #cards {
+@media only screen and (max-width: 1000px) {
+  .mainfooter,
+  .laptop {
     display: none;
   }
 }
-#navy {
-  font-family: "Ranchers", cursive;
+
+@media only screen and (min-width: 1000px) {
+  #layoutError_footer,
+  #mobile-ask,
+  .mobile {
+    display: none;
+  }
 }
 
 footer {
@@ -164,4 +170,17 @@ pre code {
   padding: 0;
   background: transparent;
   border: none;
+}
+
+#layoutError {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+#layoutError #layoutError_content {
+  min-width: 0;
+  flex-grow: 1;
+}
+#layoutError #layoutError_footer {
+  min-width: 0;
 }

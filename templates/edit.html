@@ -1,0 +1,22 @@
+{% extends "main.html" %}
+
+{% load static humanize %}
+
+{% block title %}User {{ user }} - Edit - Code{% endblock title %}
+
+
+{% block content %}
+<div class="row laptop ">
+    <div class="col-12 mt-5">
+        <a class="btn btn-sm btn-primary rounded-pill" href="#" role="button">Profile</a>
+        <a class="btn btn-sm rounded-pill" href="#" role="button">Edit profile and settings</a>
+        <span class="float-right"><b>{{ user_detail.username }}</b> <img src="{% static 'img/image.jpeg' %}" class="rounded" width="35" height="35"></span>
+    </div>
+    <div class="col-12">
+      
+     </div>
+     
+     </div>
+   </div>
+
+{% endblock %}
