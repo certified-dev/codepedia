@@ -129,7 +129,7 @@
 
    {% for question in questions %}
 
-      <div  class="container mobile{% if not forloop.last %}border-bottom-0{% endif %} {% if forloop.last %} mb-2{% endif %} pl-3" style="border:1px solid lightgray;">
+      <div  class="container mobile  {% if not forloop.last %} border-bottom-0 {% endif %} {% if forloop.last %} mb-2{% endif %} pl-3" style="border:1px solid lightgray;">
          <div class="row">
            <div class="col-1 bg-light">
               <div class="row">
