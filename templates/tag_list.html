@@ -68,15 +68,6 @@
   
 </div>
 
-{% comment %} <div class="mobile">
-   <div class="text-center mobile">
-     <div class="btn-group btn-group-sm mb-3">
-       <a class="btn btn-sm text-secondary" href="{% url 'question' %}" role="button">Questions</a>
-       <a class="btn btn-sm {% if 'tag' in request.path %}btn-primary{% endif %}" href="{% url 'tags' %}" role="button">Tags</a>
-       <a class="btn btn-sm text-secondary" href="{% url 'users' %}" role="button">Users</a>
-       <a class="btn btn-sm text-secondary" href="{% url 'ask_question' %}" role="button">Ask</a>
-     </div> 
-   </div>  {% endcomment %}
 
 
 <div class="row pl-2 pr-2 mb-2 mt-2 mobile">
@@ -100,7 +91,7 @@
                       </div>
 
                       <div class="col-12 ml-1 pl-2 pr-2" >
-                        <small class="text-secondary">{{ tag.description }}</small>
+                        <span class="text-secondary">{{ tag.description }}</span>
                       </div>
 
                       <div class="col-12 pl-2 pr-2">
