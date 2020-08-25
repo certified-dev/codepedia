@@ -321,7 +321,8 @@ Vue.component('answer', {
                  </div>
               </div>
               <div class="col-10 pl-0">
-                <small><div class="answer-text" v-html="answer.text_html"></div></small>
+                <span style="font-size:12px"><div class="answer-text mobile" v-html="answer.text_html"></div></span>
+                <span style="font-size:14px"><div class="answer-text laptop" v-html="answer.text_html"></div></span>
               </div>
             </div>
          
@@ -410,7 +411,14 @@ Vue.component('answer', {
                  <span class= "text-secondary font-italic"><small>comments display section </small></span>
                </div>
          </div>
-        <hr>
+
+         <span class="mobile">
+         {% for answer in answers %}
+         {% if not forloop.last %}
+          <hr>
+         {% endif %}
+         {% endfor %}
+         </div>
       </div> 
    </div>
     

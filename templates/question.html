@@ -119,31 +119,29 @@
      </div> 
    </div> 
 
-     <div  class="container mobile border-left-0 border-right-0 border-bottom-0" style="border:1px solid lightgray;">
-       <div class="row">
+       <div class="row mobile border-left-0 border-right-0 border-bottom-0" style="border:1px solid lightgray;">
         <div class="col-12 p-1 bg-light">
         <span>All questions</span>
        </div>
        </div>
-     </div>
 
    {% for question in questions %}
 
-      <div  class="container mobile  {% if not forloop.last %} border-bottom-0 {% endif %} {% if forloop.last %} mb-2{% endif %} pl-3" style="border:1px solid lightgray;">
-         <div class="row">
-           <div class="col-1 bg-light">
+         <div class="row {% if not forloop.last %}border-bottom-0{% endif %} pl-0 mobile" style="border:1px solid lightgray;">
+           <div class="col-2" style="{% if question.any_answer_accepted %} background-color: #ddf1e1; {% else %} background-color: #f8f9fa; {% endif %}">
               <div class="row">
                 <div class="col-12 p-0 text-center">
-                  <small class="text-secondary"><svg width="1.3em" height="1.3em" viewBox="0 0 16 16" class="bi bi-caret-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <small class="text-secondary">
+                  {{ question.score }}<svg width="1.3em" height="1.3em" viewBox="0 0 16 16" class="bi bi-caret-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
   <path fill-rule="evenodd" d="M3.204 11L8 5.519 12.796 11H3.204zm-.753-.659l4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z"/>
-</svg>{{ question.score }}</small>
+</svg></small>
                 </div>
                 <div class="col-12 col-12 p-0 text-center">
-                   <small class="text-secondary"><i class="fas fa-comment-dots {% if question.any_answer_accepted %}text-success{% endif %}"></i>{{ question.answers.count }}</small>
+                   <small class="{% if question.any_answer_accepted %}text-success{% else %}text-secondary{% endif %}">{{ question.answers.count }} <i class="fas fa-comment-dots"></i></small>
                 </div>
               </div> 
            </div>
-           <div class="col-11">
+           <div class="col-10">
               <div class="row">
                 <div class="col-12 pl-1 pr-1">
                    <small><b><a href="{% url 'question_detail' question.pk question.slug %}">{{ question.title }}</a></b></small>
@@ -161,12 +159,7 @@
             </div>
         </div> 
 
-      </div>
-    
-
-     
     {% endfor %}
-
  
   <div class="row">
      <div class="col mt-2 mb-3">

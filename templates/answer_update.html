@@ -14,7 +14,15 @@
         {{ form.body }}
          <small id="helpId" class="text-muted">Help text</small>
        </div>
-      <button type="submit" class="btn btn-primary btn-sm">Save Edits</button>
+       
+      <button type="submit" class="btn btn-primary btn-sm">
+       {% if 'update' in request.path %}
+      Save Edits
+      {% else %}
+      Post your answer
+      {% endif %}
+     
+      </button>
     </form>
 </div>
 {% endblock %}

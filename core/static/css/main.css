@@ -13,6 +13,10 @@
   }
 }
 
+body {
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
 footer {
   /* background: #16222a;
   background: -webkit-linear-gradient(59deg, #3a6073, #16222a);

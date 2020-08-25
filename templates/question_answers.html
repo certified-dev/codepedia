@@ -11,7 +11,7 @@
 
 {% block content %}
 
-<div class="row">
+<div class="row justify-content-center">
      <div class="col-sm-9 mt-2">
        
    <div class="text-center mobile">
@@ -25,7 +25,7 @@
 
 <!-- vue-app start -->
 <div id="question">
-   <div  class="container mb-2 pt-1 pb-1 pl-md-3 mobile" style="border:1px solid lightgray;">
+   <div  class="container pt-1 pb-1 pl-md-3 mobile" style="border:1px solid lightgray;">
 
       <div class="row">
 
@@ -55,7 +55,7 @@
                   </div>
                 </div>
                 <div class="col-10 pt-2 pl-2">
-                   <h6>{{ question.title|urlize }}</>
+                   <h6>{{ question.title|urlize }}</h6>
                    <br>
                    {% for tag in question.tags.all %}
                     <small><a href="{% url 'tag_question' tag.pk %}" class="badge mb-1 mt-0">{{ tag }}</a></small>
@@ -70,7 +70,7 @@
          </div>
          
          <div class="col-12 pr-2 pl-2" >
-            <small>{{ question.body|markdown }}</small>
+            <span style="font-size:12px">{{ question.body|markdown }}</span>
          </div>
 
          <div class="col-12 pl-2">
@@ -80,11 +80,11 @@
                <span class="text-secondary"> 
                <i class="fas fa-user-circle text-secondary"></i> 
                <a href="{% url 'user' user.pk %}">{{ question.asked_by }}</a> 
-               <span class= "text-secondary"> | </span> 
-               <a class="text-secondary" href="{% url 'update_question' question.pk question.slug %}">edit</a>
-               <span class= "text-secondary"> | </span>
-               <a class="text-secondary" href="#">delete</a>
-               <span class= "text-secondary"> | </span>
+               <span class= "text-secondary mr-1"> | </span> 
+               <a class="text-secondary mr-2" href="{% url 'update_question' question.pk question.slug %}">edit</a>
+               
+               <a class="text-secondary ml-1" href="#">delete</a>
+               <span class= "text-secondary ml-1"> | </span>
                {{ question.posted_on|naturaltime }}</span> 
                
                </span> 
@@ -169,7 +169,7 @@
               </div>
               
               <div class="col-10 pl-0">
-                <small>{{ question.body|markdown }}</small>
+                <span style="font-size:14px">{{ question.body|markdown }}</span>
               </div>
             </div>
             
@@ -283,18 +283,18 @@
 </div>
 <!-- vue-app end -->
 
-   <div  class="container mb-3">
-      <div class="row">
-        {% if user.is_authenticated %}
+      <div  class="container mb-3">
+        <div class="row">
+         {% if user.is_authenticated %}
             {% if user_answers.count > 0 %}
-               <div class="col-12">
+               <div class="col-12 mt-3">
                <div id="answer_div"> 
-                   <a class="btn btn-sm btn-primary" id="remove" data-toggle="collapse" href="#contentId" aria-expanded="false" aria-controls="contentId">
+                      
+                     <a class="btn btn-sm btn-primary btn-block" id="remove" data-toggle="collapse" href="#contentId" aria-expanded="false" aria-controls="contentId">
                               Add another answer
                      </a>      
                   </div>
                </div>
-              
                 <div class="col-12 p-0">
                      <div class="collapse" id="contentId"> 
                         <form method="post" action="{% url 'reply_question' question.pk question.slug %}" novalidate>
@@ -302,10 +302,17 @@
                            {{ form.media }}
                            {% for field in form.visible_fields %}
                               <div class="form-group">
+                              <div class="row mobile">
+                               <div class="col-12 bg-light border-left-0 border-right-0" style="border:1px solid lightgray;">
                               <label for="{{ field.id_for_label }}">Your Answer</label>
+                            </div>
+                           </div>
+                           <label for="{{ field.id_for_label }}" class="laptop">Your Answer</label>
                               {{ field|add_class:'form-control' }}
                               </div>
                            {% endfor %}
+
+                           <hr class="mobile">
                           
                            <button type="submit" class="btn btn-sm btn-primary">Post Your Answer</button>
                         
@@ -320,10 +327,17 @@
                    
                         {% for field in form.visible_fields %}
                            <div class="form-group">
-                           <label for="{{ field.id_for_label }}">Your Answer</label>
+                             <div class="row mobile">
+                               <div class="col-12 bg-light mt-1 border-left-0 border-right-0" style="border:1px solid lightgray;">
+                              <label for="{{ field.id_for_label }}" class="mb-0">Your Answer</label>
+                            </div>
+                           </div>
+                           <label for="{{ field.id_for_label }}" class="laptop">Your Answer</label>
                            {{ field|add_class:'form-control' }}
                            </div>
                         {% endfor %}
+
+                        <hr class="mobile">
 
                      <button type="submit" class="btn btn-sm btn-primary">Post Your Answer</button>
                     
@@ -333,8 +347,8 @@
                
 
         {% else %}
-         <div class="col-12">
-            <p><a href="{% url 'account_login' %}">login to reply</a></p>
+         <div class="col-12 laptop">
+            <p><a href="{% url 'account_login' %}">login to answer this question</a></p>
           </div>
         {% endif %}
 
