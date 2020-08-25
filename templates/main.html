@@ -189,10 +189,10 @@
 {% endblock %}
 
 {% block js %}
-<script src="{% static 'vue.js' %}"></script>
-{% comment %} <script src="https://cdn.jsdelivr.net/npm/vue"></script> {% endcomment %}
-<script src="{% static 'axios.min.js' %}"></script>
-{% comment %} <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> {% endcomment %}
+{% comment %} <script src="{% static 'vue.js' %}"></script> {% endcomment %}
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+{% comment %} <script src="{% static 'axios.min.js' %}"></script> {% endcomment %}
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
 function vote(voteType, voted, voteURL) {
   var bodyFormData = new FormData();
