@@ -13,9 +13,10 @@
   }
 }
 
-body {
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-}
+/* body {
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+} */
 
 footer {
   /* background: #16222a;
@@ -27,13 +28,18 @@ footer {
 }
 
 footer a {
-  color: #fff;
-  font-size: 14px;
-  transition-duration: 0.2s;
+  color: #fa944b;
 }
 
 footer a:hover {
-  color: #fa944b;
+  text-decoration: none;
+}
+
+footer ul a {
+  color: #fff;
+}
+
+footer ul a:hover {
   text-decoration: none;
 }
 

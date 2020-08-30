@@ -33,7 +33,7 @@ urlpatterns = [
     path('question/answer/<int:pk>/reply/',
          views.reply_answer, name="reply_answer"),
 
-    path('question/<int:pk>/answer/<int:answer_pk>/',
+    path('question/<int:pk>/answer/<int:answer_pk>/update/',
          views.AnswerUpdateView.as_view(), name="update_answer"),
 
     path('question/answer/<int:pk>/delete/',
@@ -51,7 +51,7 @@ urlpatterns = [
     path('user/<int:pk>/',
          views.UserDetailView.as_view(), name="user"),
 
-    path('user/<int:pk>/update',
+    path('user/<int:pk>/update/',
          views.UserUpdateView.as_view(), name="user_update"),
 
     path('tags/', views.TagListView.as_view(), name="tags"),

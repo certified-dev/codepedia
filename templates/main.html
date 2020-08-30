@@ -84,7 +84,7 @@
   </div>
 </nav>
 
-<nav class="navbar navbar-expand-lg bg-light navbar-light mobile">
+<nav class="navbar bg-light navbar-light mobile">
   <a class="navbar-brand" href="{% url 'home' %}">
     <img src="{% static 'img/code.svg' %}" alt="" width="30" height="30">
     </a>
@@ -172,7 +172,7 @@
     		<h4>Follow Us</h4>
             <ul class="social-network social-circle">
              <li class=""><a href="https://facebook.com/karma.certified/" class="icoFacebook" title="Facebook"><i class="fab fa-facebook"></i></a></li>
-             <li><a href="#" class="icoGithub" title="Github"><i class="fab fa-github"></i></a></li>
+             <li><a href="https://github.com/certified-dev/" class="icoGithub" title="Github"><i class="fab fa-github"></i></a></li>
             </ul>				
 		</div>
     </div>
@@ -310,31 +310,36 @@ Vue.component('answer', {
 </svg>
                         </i></a>
                      </div>
-                     {% if question.asked_by == user and question.asked_by != '[[ answer.answered_by ]]' %}
+                     {% if question.asked_by == user %}
                      <div class="col-12 p-0 pl-2 text-center">
                        <a href="javascript:void(0)" v-on:click="accept('accept', answer.accepted, '/answer/' + [[ answer.pk ]] + '/accept/')" class="text-secondary" :class="[[ answer.accepted ? 'done' : '']]">
                         <i class="fas fa-check fa-lg text"></i>
                         </a>
+                     </div>
+                     {% else %}
+                        <div v-if="answer.accepted" class="col-12 p-0 pl-2 text-center">
+                        <i class="fas fa-check fa-lg text text-success"></i>
                      </div>
                      {% endif %}
                     
                  </div>
               </div>
               <div class="col-10 pl-0">
-                <span style="font-size:12px"><div class="answer-text mobile" v-html="answer.text_html"></div></span>
-                <span style="font-size:14px"><div class="answer-text laptop" v-html="answer.text_html"></div></span>
+                <span style="font-size:13px"><div class="answer-text mobile" v-html="answer.text_html"></div></span>
+                <span style="font-size:15px"><div class="answer-text laptop" v-html="answer.text_html"></div></span>
               </div>
             </div>
-         
          </div>
          
          
-         <div v-if="answer.answered_by != '{{ user.username }}'" class="col-12 pl-2 pr-2">
+         
+        <div v-if="answer.answered_by != '{{ user.username }}'" class="col-12 pl-2 pr-2">
            <div class="row">
                <div class="col-2">
                </div>
                <div class="col-10 pl-0">
-                  <small class="text-secondary">
+
+                <small class="text-secondary mobile">
                     <i class="fas fa-user-circle text-secondary"></i>
                     {% if user.is_authenticated %}
                         <a href="javascript:void(0)">[[ answer.answered_by ]]</a>
@@ -352,7 +357,42 @@ Vue.component('answer', {
                            <span class="float-right"><i class="fas fa-clock"></i> [[ answer.posted_on ]]</span> 
                         </span>
                     
-                  </small>
+                  </small> 
+
+
+                <div class="row pb-2 laptop">
+                  <div class="col-8 pl-3">
+                  </div>
+
+                  <div class="col-3 ml-5 bg-light pb-1 mr-1">
+                    <div class="row">
+                      <div class="col-12">
+                        <span class="text-secondary"><small> [[ answer.posted_on ]]</small></span>
+                      </div>
+                      <div class="col-12">
+                            <div class="row">
+                              <div class="col-3">
+                                <img :src="answer.answered_by_image"  class="rounded" width="28" height="28"/>
+                              </div>
+                              <div class="col-9 p-0 pl-1">
+                              
+                              <small>
+                              <span>
+                              <a href="javascript:void(0)"> [[ answer.answered_by ]]</a>
+                               </span>
+                               <span>
+                             <b class="text-secondary">[[ answer.answered_by_points ]]</b>
+                              </span>
+                             </small>
+                             
+                              </div>
+                             </div>              
+                          </div>
+                       </div>    
+                     </div>
+                  </div>
+
+
                   </div>
                </div>
             </div>
@@ -363,7 +403,8 @@ Vue.component('answer', {
                <div class="col-2">
                </div>
                <div class="col-10 pl-0">
-                  <small class="text-secondary">
+
+                 <small class="text-secondary mobile">
                   <i class="fas fa-user-circle text-secondary"></i>
 
                   {% if user.is_authenticated %}
@@ -374,7 +415,7 @@ Vue.component('answer', {
 
                   <span class= "text-secondary"> | </span>
                               
-                  <a href="javascript:void(0)" class="text-secondary">edit</a>
+                  <a :href=" '/question/' + '{{ question.pk }}' +'/answer/' + answer.pk + '/update/' " class="text-secondary">edit</a>
 
                   <span class= "text-secondary"> | </span>
                 
@@ -390,34 +431,105 @@ Vue.component('answer', {
                         <span class="float-right"><i class="fas fa-clock"></i> [[ answer.posted_on ]]</span> 
                     </span>
                     
+                  </small> 
+
+                <div class="row pb-2 laptop">
+                  <div class="col-8 pl-2">
+                    <small>
+                    <a class="text-secondary" :href=" '/question/' + '{{ question.pk }}' +'/answer/' + answer.pk + '/update/' ">edit</a>
+                    <span class= "mr-3"></span>
+                    <a class="text-secondary" href="#" onclick="alert('are you sure you want to?')">delete</a>
                   </small>
+                  </div>
+                  <div class="col-3 ml-5 bg-light pb-1 mr-1">
+                    <div class="row">
+                      <div class="col-12">
+                        <span class="text-secondary"><small> [[ answer.posted_on ]]</small></span>
+                      </div>
+                      <div class="col-12">
+                            <div class="row">
+                              <div class="col-3">
+                               <img :src="answer.answered_by_image"  class="rounded" width="28" height="28"/>
+                              </div>
+                              <div class="col-9 p-0 pl-1">
+                              
+                              <small>
+                              <span>
+                              <a href="javascript:void(0)"> [[ answer.answered_by ]]</a>
+                               </span>
+                               <span>
+                             <b class="text-secondary">[[ answer.answered_by_points ]]</b>
+                              </span>
+                             </small>
+                             
+                              </div>
+                             </div>              
+                          </div>
+                       </div>    
+               </div>
+                       </div>    
+                     </div>
+                  </div>
+
+
                   </div>
                </div>
             </div>
          </div>
 
-         <div class="col-12">
-         <div class="row">
-               <div class="col-2 pr-0">
-               </div>
-               <div class="col-10 pl-0 pr-2 text-center">
-                  <small><a href="javascript:void(0)">add comment</a></small>
-               </div>
-               </div>
-            <div class="row">
-               <div class="col-2 pr-0">
-               </div>
-               <div class="col-10 pl-0 pr-2 bg-light text-center">
-                 <span class= "text-secondary font-italic"><small>comments display section </small></span>
-               </div>
-         </div>
+        
 
-         <span class="mobile">
-         {% for answer in answers %}
-         {% if not forloop.last %}
-          <hr>
-         {% endif %}
-         {% endfor %}
+            <div class="row" v-if="answer.comments.length > 0">
+
+              <div class="col-2 pr-0 ">
+                </div>
+                  <div class="col-10 pr-0 pl-1 bg-light mobile">
+                    <div v-for="comment in answer.comments" class= "text-secondary font-italic border-bottom"  style="font-size:13px">
+                   
+                    [[ comment.text ]] - <a href="#">[[ comment.posted_by ]]</a> <span class="primary">[[ comment.posted_on ]]</span>
+                    <span v-if="comment.posted_by == '{{ request.user.username }}'"> <span class="text-danger">Edit Delete</span></span>
+                   
+                    </div>
+                  </div>
+
+                  <div class="col-10 pl-0 pr-2 laptop">
+                    <div v-for="comment in answer.comments" class= "font-italic border-top border-bottom shaw" style="font-size:14px" hover="show()">
+                    [[ comment.text ]] - <a href="#" class="badge">[[ comment.posted_by ]]</a> <span class="text-secondary">[[ comment.posted_on ]]</span>
+                    <span v-if="comment.posted_by == '{{ request.user.username }}'"> <span class="text-danger newt" style="display:none"> Edit  Delete</span></span>
+                    </div>            
+                  </div>
+
+            </div>
+
+           <div :id=" 'now_add_comment-' + answer.pk"></div>
+
+         
+          <div class="row pt-2 laptop">
+            <div class="col-2 pr-0">
+              </div>
+              <div class="col-10 pl-0 pr-2">
+                <small><a href="javascript:void(0)" class="add" :id=" 'add_comment-' + answer.pk ">add a comment</a></small>
+              </div>
+            </div>
+
+             <div class="row mobile">
+            <div class="col-2 pr-0">
+              </div>
+              <div class="col-10 pl-0 pr-2 text-center">
+                <small><a href="javascript:void(0)" class="add" :id=" 'add_comment-' + answer.pk ">add a comment</a></small>
+              </div>
+            </div>
+            
+            <div class="row laptop">
+              <div class="col-12">
+                 <hr>
+                </div>
+            </div>
+
+          </div>
+             
+        </div>
+
          </div>
       </div> 
    </div>
@@ -425,6 +537,8 @@ Vue.component('answer', {
   </div>
   `
 })
+
+
 
 var app = new Vue({
   delimiters: ["[[", "]]"],

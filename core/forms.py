@@ -26,8 +26,46 @@ class RegistrationForm(UserCreationForm):
     email = forms.EmailField(widget=forms.EmailInput(
         attrs={'placeholder': 'Enter email address'}), required=True)
 
-    class Meta(UserCreationForm.Meta):
+    class Meta:
         model = User
+        fields = ('username', 'email', 'password1', 'password2')
+
+    def save(seld, commit=True):
+        user = super().save(commit=False)
+        user.email = self.cleaned_data['email']
+        if commit:
+            user.save()
+        return user
+
+
+class UserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'username',
+                  'title', 'location', 'description', 'email')
+        widgets = {
+            'title': forms.TextInput(attrs={'placeholder': 'No title has been set'}),
+            'email': forms.TextInput(attrs={'placeholder': 'No email has been added'}),
+            'location': forms.TextInput(attrs={'placeholder': 'Enter a location'}),
+            'description': NewPageDownWidget(attrs={'rows': 8, 'placeholder': ''})
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update(
+            {'class': 'form-control form-control-sm'})
+        self.fields['title'].widget.attrs.update(
+            {'class': 'form-control form-control-sm'})
+        self.fields['email'].widget.attrs.update(
+            {'class': 'form-control form-control-sm'})
+        self.fields['location'].widget.attrs.update(
+            {'class': 'form-control form-control-sm'})
+        self.fields['first_name'].widget.attrs.update(
+            {'class': 'form-control form-control-sm'})
+        self.fields['last_name'].widget.attrs.update(
+            {'class': 'form-control form-control-sm'})
+        self.fields['description'].widget.attrs.update(
+            {'class': 'wmd-input pagedownwidget form-control form-control-sm'})
 
 
 class QuestionForm(forms.ModelForm):
@@ -67,7 +105,3 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ('text',)
-
-
-class UserUpdateForm(forms.ModelForm):
-    pass

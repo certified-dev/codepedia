@@ -38,12 +38,11 @@
             <div class="col-sm-3 mb-3">
              <div class="row">
                <div class="col-4 text-center">
-              <img src="{{ user|gravatar:45 }}" class="fluid rounded mb-1" width="45" height="45"/>
-               {% comment %} {% if user.display_photo %}
+                {% if user.display_photo %}
                     <img src="{{ user.display_photo.url }}" class=" rounded mb-1 img-fluid" width="45" height="45"/>
                   {% else %}
-                   <img src="{{ user|gravatar:150 }}" class="fluid rounded mb-1"/>
-                  {% endif %}         {% endcomment %}
+                   <img src="{{ user|gravatar:45 }}" class="img-fluid rounded mb-1" width="45" height="45"/>
+                  {% endif %}         
                </div>
                <div class="col-8">
                  <div class="row">
@@ -78,7 +77,6 @@
 </div>
 
 <div  class="container mb-1 mobile">
-
     <div class="col">
       <div class="form-group">
           <input type="text" class="form-control form-control-sm" placeholder="Filter by user">
@@ -90,22 +88,21 @@
             <div class="col-12 mb-3">
              <div class="row">
                <div class="col-3 text-center pr-0">
-               <img src="{{ user|gravatar:45 }}" class="fluid rounded mb-1" width="45" height="45"/>
-               {% comment %} {% if user.display_photo %}
-                    <img src="{{ user.display_photo.url }}" class=" rounded mb-1 img-fluid" width="45" height="45"/>
+                {% if user.display_photo %}
+                    <img src="{{ user.display_photo.url }}" class=" rounded mb-1 img-fluid" width="65" height="65"/>
                   {% else %}
-                   <img src="{{ user|gravatar:150 }}" class="fluid rounded mb-1"/>
-                  {% endif %}         {% endcomment %}
+                   <img src="{{ user|gravatar:65 }}" class="fluid rounded mb-1"  width="65" height="65"/>
+                  {% endif %}         
                </div>
                <div class="col-9">
                  <div class="row">
-                   <div class="col-12 pl-0">
+                   <div class="col-12 pl-2">
                    <a href="{% url 'user' user.pk %}">{{ user }}</a>
                   </div>
-                  <div class="col-12 pl-0">
+                  <div class="col-12 pl-2">
                     <span class="text-secondary">{{ user.location }}</span>
                   </div>
-                  <div class="col-12 pl-0">
+                  <div class="col-12 pl-2">
                   <span class="text-secondary"><b>{{ user.points }}</b></span>
                   </div>
                   <div class="col-12 text-secondary pl-0">

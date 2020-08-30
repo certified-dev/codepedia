@@ -2,15 +2,119 @@
 
 {% load static humanize core_tags %}
 
-{% block title %}User {{ user }} - Code{% endblock title %}
+{% block title %}User - {{ user }} - Code{% endblock title %}
 
 
 {% block content %}
+<div class="text-center mobile">
+  <div class="btn-group btn-group-sm mb-3">
+    <a class="btn btn-sm text-secondary" href="{% url 'question' %}" role="button">Questions</a>
+    <a class="btn btn-sm text-secondary" href="{% url 'tags' %}" role="button">Tags</a>
+    <a class="btn btn-sm btn-primary" href="{% url 'users' %}" role="button">Users</a>
+    <a class="btn btn-sm text-secondary" href="{% url 'ask_question' %}" role="button">Ask</a>
+  </div> 
+</div> 
+
+<div class="row mobile">
+   <div class="col-12 border bg-light pt-2 pb-2">
+      <div class="row">
+       <div class="col-12 ">
+         
+       <div class="row">
+        <div class="col-3">
+            {% if user_detail.display_photo %}
+              <img src="{{ user_detail.display_photo.url }}" class=" rounded mb-1 img-fluid" width="65" height="65"/>
+              {% else %}
+             <img src="{{ user_detail|gravatar:65 }}" class="fluid rounded mb-1"  width="65" height="65"/>
+            {% endif %}    
+        </div>
+        <div class="col-9 pl-0">
+        
+          <div class="row">
+           <div class="col-12">
+             <b>{{ user_detail.username}}</b>
+           </div>
+           <div class="col-12">
+             <b>{{ user_detail.points }}</b>
+           </div>
+          </div>
+
+        </div>
+       </div>
+
+       </div>
+     </div>
+   </div>
+
+{% if user_detail.description %}
+   <div class="col-12 border-bottom">
+     <p>{{ user_detail.description }}</p>
+   </div>
+ {% endif %}
+
+   <div class="col-12 border-bottom">
+      <div class="row pt-2 pb-2">
+         <div class="col-4 text-center">
+           {{ user_questions.count|default_if_none:"0" }}
+           <br>
+           <small>question{{ user_question|pluralize}}</small>
+          </div>
+          <div class="col-4 text-center">
+            {{ user_answers.count|default_if_none:"0" }}
+             <br>
+           <small>answer{{ user_answers|pluralize}}</small>
+          </div>
+          <div class="col-4 text-center">
+            {{ votes|default_if_none:"0" }}
+             <br>
+           <small>vote{{ votes|pluralize }}</small>
+          </div>
+      </div>
+   </div>
+
+ {% if user_detail.location %}
+    <div class="col-12 pb-1 border-bottom">
+     <i class="fas fa-search-location"></i> {{ user_detail.location }}
+   </div>
+ {% endif %}
+
+ {% if user.username == user_detail.username %}
+   <div class="col-12 pb-2 pt-2 border-bottom">
+      <a class="btn btn-outline-info btn-block" href="{% url 'user_update' user.pk %}" role="button"><i class="fa fa-edit" aria-hidden="true"></i> Update profile</a>  
+   </div>
+  {% endif %}
+
+ <div class="col-12 pb-1 border-bottom bg-light">
+ <span class="text-dark mb-2">Newest post{{ all_posts_count|pluralize }}({{ all_posts_count }})</span>
+ </div>
+ 
+ <div class="col-12 pb-1 border-bottom">
+    <div class="row pt-1 pb-1">
+       {% for post in all_posts %}
+       <div class="col-12 pb-1 pt-1 border-bottom {% if forloop.last %}border-bottom-0{% endif %} ">
+           {% if post.is_question %}
+           <i class="fa fa-question fa-1x text-dark" aria-hidden="true"></i>
+            <a href="{% url 'question_detail' post.pk post.slug %}" style="font-size:14px">{{ post }}</a> 
+            {% else %}
+            <i class="fas fa-1x fa-comment-dots text-dark"></i>
+              <a href="{% url 'question_detail' post.question.pk post.question.slug %}" style="font-size:14px">{{ post.question }}</a> 
+            {% endif %}
+       </div>
+       {% endfor %}
+       </div>
+     
+   </div>
+  
+ 
+</div>
+
+
+
 <div class="row laptop pt-3">
     <div class="col-12 pl-5  mt-5">
         <a class="btn btn-sm btn-primary rounded-pill" href="#" role="button">Profile</a>
         {% if user.username == user_detail.username %}
-         <a class="btn btn-sm rounded-pill" href="#" role="button">Edit profile and settings</a>
+         <a class="btn btn-sm rounded-pill" href="{% url 'user_update' user.pk %}" role="button">Edit profile and settings</a>
         {% endif %}
     </div>
     <div class="col-12 pt-3">
@@ -19,12 +123,11 @@
             <div class="card">
                 <img class="card-img-top bg-light" src="" alt="">
                 <div class="card-body pb-2 text-center">
-                <img src="{{ user_detail|gravatar:150 }}" class="rounded mb-1 img-fluid" />
-                  {% comment %} {% if user_detail.display_photo %}
+                 {% if user_detail.display_photo %}
                     <img src="{{ user_detail.display_photo.url }}" class="rounded mb-1 img-fluid"/>
                   {% else %}
                    <img src="{{ user_detail|gravatar:150 }}" class="rounded mb-1 img-fluid" />
-                  {% endif %}               {% endcomment %}
+                  {% endif %}             
                      <h4 class="mb-0">{{ user_detail.points|intcomma }}</h4>
                 </div>
             </div>
@@ -35,10 +138,10 @@
                    <h2 class="mb-0"><b>{{ user_detail.username }}</b></h2>
                 </div>
                  <div class="col-12 text-secondary">
-                   <h4>{{ user_detail.title }}Software Engineer</h4>
+                   <h4>{{ user_detail.title }}</h4>
                 </div>
                 <div class="col-12">
-                   {{ user_detail.description }}{% lorem 1 b  %}
+                   {{ user_detail.description }}
                 </div>
             </div>
             </div>
@@ -46,7 +149,8 @@
                 <div class="row">
                 <div class="col-12">
                    <div class="row">
-                    <div class="col-6">
+
+                    <div class="col-4">
                       <div class="row">
                         <div class="col-12">
                           <h5 class="mb-0"><b>{{ user_questions.count }}</b></h5>
@@ -54,32 +158,50 @@
                          <div class="col-12 text-secondary">
                          question{{ user_questions.count|pluralize }}
                          </div>
-                        </div>
+                      </div>
                     </div>
-                    <div class="col-6">
 
-                        <div class="row">
+                    <div class="col-4">
+                      <div class="row">
                         <div class="col-12">
                           <h5 class="mb-0"><b>{{ user_answers.count }}</b></h5>
                          </div>
                          <div class="col-12 text-secondary">
                          answer{{ user_answers.count|pluralize }}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-4">
+                      <div class="row">
+                        <div class="col-12">
+                          <h5 class="mb-0"><b>{{ votes }}</b></h5>
                          </div>
+                         <div class="col-12 text-secondary">
+                         votes{{ votes.count|pluralize }}
+                        </div>
+                      </div>
                     </div>
-                    
-                    </div>
+
                 </div>
+                
                 </div>
                 <div class="col-12"> 
                    <div class="row pt-3">
                     <div class="col-12 text-secondary">
-                    <i class="fas fa-location-arrow mr-2"></i> location
+                    {% if user_detail.location %}
+                    <i class="fas fa-location-arrow mr-2"></i> {{ user_detail.location }}
+                    {% endif %}
                     </div>
                     <div class="col-12 text-secondary ">
-                     <i class="fas fa-eye mr-2"></i> profile views
+                     {% if user_detail.views %}
+                     <i class="fas fa-eye mr-2"></i>
+                     {% endif %}
                     </div>
                     <div class="col-12 text-secondary">
-                      <i class="fas fa-clock mr-2"></i> last seen
+                     {% if user_detail.last_seen %}
+                      <i class="fas fa-clock mr-2"></i> 
+                      {% endif %}
                     </div>
                 </div>
                 </div>
@@ -88,6 +210,7 @@
         </div>
         
 
+     
         <div class="row pt-3">
             <div class="col-3 pl-5 pr-5">
            
@@ -96,11 +219,13 @@
                <b>Newest post{{ all_posts_count|pluralize }}</b> <span class="text-secondary">({{ all_posts_count }})</span>
                <div class="row">
                 {% for post in all_posts %}
-                    <div class="col-12 border-bottom-0 mt-1 border-left-0 pt-2 border-right-0" style="border:1px solid lightgray">
+                    <div class="col-12 border-bottom-0 mt-1 border-bottom border-top pt-2">
                         
                          {% if post.is_question %}
+                         <i class="fas fa-question-circle text-secondary"></i>
                          <a href="{% url 'question_detail' post.pk post.slug %}">{{ post }}</a> <span class="text-secondary float-right">{{ post.posted_on|naturaltime }}</span>
                          {% else %}
+                         <i class="fas fa-reply text-secondary"></i>
                            <a href="{% url 'question_detail' post.question.pk post.question.slug %}">{{ post.question }}</a> <span class="text-secondary float-right">{{ post.posted_on|naturaltime }}</span>
                          {% endif %}
                         
@@ -110,8 +235,10 @@
                 </div>
             </div>
         </div>
+        
      </div>
      </div>
    </div>
 
+ 
 {% endblock %}

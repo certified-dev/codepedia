@@ -2,7 +2,7 @@
 
 {% load static widget_tweaks crispy_forms_tags %}
 
-{% block title %}Ask a Question - code{% endblock title %}
+{% block title %}Ask a Question - Code{% endblock title %}
 
 
 {% block content %}
@@ -25,14 +25,26 @@
          </div>
       </div>
     
-      <div class="form-group mb-5">
-      <button type="submit" class="btn btn-primary btn-sm">
-      {% if 'update' in request.path %}
-      Save Edits
-      {% else %}
-      Post your question
-      {% endif %}
-      </button>
+      <div class="form-group mb-5 laptop">
+         <button type="submit" class="btn btn-primary btn-sm">
+         {% if 'update' in request.path %}
+         Save Edits
+         {% else %}
+         Post your question
+         {% endif %}
+         </button>
+         
+         <a href="{% url 'home' %}" class="btn btn-sm btn-outline-danger">Cancel</a>
+      </div>
+
+      <div class="form-group mb-5 mobile text-center">
+         <button type="submit" class="btn btn-primary btn-sm">
+         {% if 'update' in request.path %}
+         Save Edits
+         {% else %}
+         Post your question
+         {% endif %}
+         </button>
          
          <a href="{% url 'home' %}" class="btn btn-sm btn-outline-danger">Cancel</a>
       </div>
@@ -44,7 +56,34 @@
     </div>
     <div class="col-3 mt-5 laptop">
        <div class="row">
-          
+          <div class="col-12 mb-3 mt-2">
+           <div class="card shadow-sm">
+             <div class="card-header"> hello World</div>
+             <div class="card-body">
+               <p class="card-text">
+                  <ul>
+                    <li>Active item</li>
+                    <li>Item</li>
+                    <li>Disabled item</li>
+                 </ul>
+               </p>
+             </div>
+           </div>
+         </div>
+         <div class="col-12">
+           <div class="card shadow-sm">
+             <div class="card-header"> hello World</div>
+             <div class="card-body">
+               <p class="card-text">
+                  <ul>
+                    <li>Active item</li>
+                    <li>Item</li>
+                    <li>Disabled item</li>
+                 </ul>
+               </p>
+             </div>
+           </div>
+         </div>
        </div>
     </div>
   </div>

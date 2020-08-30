@@ -37,7 +37,7 @@
                    </div>
                  </div>
                  <div class="col-12 text-center pb-3">
-                    <button type="button" class="btn btn-sm {% if question.answers.count <= 0 %}text-secondary{% endif %} {% if question.answers.count >= 1 and not question.any_answer_accepted %}btn-outline-success{% endif %} {% if question.answers.count >= 1 and question.any_answer_accepted %}btn-success{% endif %} text-center">{{ question.answers.count }}<br><small>answer{{ question.answers.count|pluralize }}</small></button>
+                    <button type="button" class="btn btn-sm {% if question.answers.count <= 0 %}text-secondary{% endif %} {% if question.answers.count >= 1 and not question.any_answer_accepted %}btn-outline-success{% endif %} {% if question.answers.count >= 1 and question.any_answer_accepted %}btn-success{% endif %} text-center" disabled>{{ question.answers.count }}<br><small>answer{{ question.answers.count|pluralize }}</small></button>
                  </div>
                  <div class="col-12 text-center pb-2">
                       <span class="text-secondary"><small>{{ question.views }} view{{ question.views|pluralize }}</small></span>
@@ -67,13 +67,11 @@
                           <div class="col-12">
                             <div class="row">
                               <div class="col-3">
-                              <img src="{{ question.asked_by|gravatar:28 }}" class="rounded" width="28" height="28"/>
-                               {% comment %} {% if question.asked_by.display_photo.url %}
+                               {% if question.asked_by.display_photo %}
                                   <img src="{{ question.asked_by.display_photo.url }}"  class="rounded" width="28" height="28"/>
                                 {% else %}
                                   <img src="{{ question.asked_by|gravatar:28 }}" class="rounded" width="28" height="28"/>
-                                {% endif %} {% endcomment %}
-                              
+                                {% endif %} 
                               </div>
                               <div class="col-9 p-0 pl-1">
                               <small><a href="javascript:void(0)">{{ question.asked_by }}</a>
@@ -104,6 +102,34 @@
     </div>
     <div class="col-3 mt-5">
        <div class="row">
+        <div class="col-12 mb-3 mt-3">
+           <div class="card shadow-sm">
+             <div class="card-header"> hello World</div>
+             <div class="card-body">
+               <p class="card-text">
+                  <ul>
+                    <li>Active item</li>
+                    <li>Item</li>
+                    <li>Disabled item</li>
+                 </ul>
+               </p>
+             </div>
+           </div>
+         </div>
+         <div class="col-12">
+           <div class="card shadow-sm">
+             <div class="card-header"> hello World</div>
+             <div class="card-body">
+               <p class="card-text">
+                  <ul>
+                    <li>Active item</li>
+                    <li>Item</li>
+                    <li>Disabled item</li>
+                 </ul>
+               </p>
+             </div>
+           </div>
+         </div>
          
        </div>
     </div>

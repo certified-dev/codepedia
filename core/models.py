@@ -8,6 +8,7 @@ from django.db.models import Q
 from rest_framework import serializers
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from markdown2 import Markdown
+from hashlib import md5
 
 markdowner = Markdown(html4tags=True)
 
@@ -96,6 +97,18 @@ class Comment(models.Model):
         return self.text
 
 
+class Question_Comment(models.Model):
+    text = models.CharField(max_length=5000)
+    posted_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    posted_on = models.DateTimeField(auto_now_add=True)
+    question = models.ForeignKey(
+        Question, on_delete=models.CASCADE, related_name="question_comments")
+
+    def __str__(self):
+        return self.text
+
+
 class User(AbstractUser):
     upvoted_questions = models.ManyToManyField(
         Question, related_name="upvoted_users")
@@ -114,6 +127,9 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+    def get_absolute_url(self):
+        return reverse("user", kwargs={"pk": self.pk})
 
     def question_once_upvote_now_downvote(self):
         self.points -= 12
@@ -177,16 +193,31 @@ class UserField(serializers.Field):
         return value.username
 
 
+class CommentSerializer(serializers.ModelSerializer):
+    posted_on = serializers.SerializerMethodField()
+    posted_by = UserField()
+
+    class Meta:
+        model = Comment
+        fields = ('text', 'posted_by', 'posted_on')
+
+    def get_posted_on(self, obj):
+        return naturaltime(obj.posted_on)
+
+
 class AnswerSerializer(serializers.ModelSerializer):
+    comments = CommentSerializer(many=True)
     answered_by = UserField()
     text_html = serializers.SerializerMethodField()
     posted_on = serializers.SerializerMethodField()
     updated_on = serializers.SerializerMethodField()
+    answered_by_points = serializers.SerializerMethodField()
+    answered_by_image = serializers.SerializerMethodField()
 
     class Meta:
         model = Answer
-        fields = ('text_html', 'score', 'answered_by', 'pk',
-                  'posted_on', 'accepted', 'updated_on')
+        fields = ('text_html', 'score', 'answered_by', 'pk', 'answered_by_points',
+                  'posted_on', 'accepted', 'updated_on', 'comments', 'answered_by_image')
 
     def get_text_html(self, obj):
         return markdowner.convert(obj.body)
@@ -196,3 +227,15 @@ class AnswerSerializer(serializers.ModelSerializer):
 
     def get_updated_on(self, obj):
         return naturaltime(obj.updated_on)
+
+    def get_answered_by_points(self, obj):
+        return obj.answered_by.points
+
+    def get_answered_by_image(self, obj):
+        if obj.answered_by.display_photo:
+            return obj.answered_by.display_photo.url
+        else:
+            email_hash = md5(
+                str(obj.answered_by.email.strip().lower()).encode()).hexdigest()
+            avatar_url = "http://www.gravatar.com/avatar/%s" % email_hash + "?s=28&d=identicon&r=PG"
+            return avatar_url

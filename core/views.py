@@ -270,10 +270,13 @@ class UserDetailView(DetailView):
 class UserUpdateView(UpdateView):
     model = User
     form_class = UserUpdateForm
-    template_name = "edit.html"
+    template_name = "profile_edit.html"
 
     def form_valid(self, form):
         return super(UserUpdateView, self).form_valid(form)
+
+    def form_invalid(self, form):
+        return super(UserUpdateView, self).form_invalid(form)
 
 
 def vote_question(request, pk, slug):

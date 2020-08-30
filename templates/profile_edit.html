@@ -1,0 +1,205 @@
+{% extends "main.html" %}
+
+{% load static humanize core_tags %}
+
+{% block title %}User - {{ user }} - Edit - Code{% endblock title %}
+
+
+{% block content %}
+<style>
+.btn-dark {
+   border-radius: 0 0 5px 5px;
+ }
+
+ .pic {
+   border-radius: 5px 5px 0 0;
+ }
+
+ .btn-dark:hover {
+   background-color: #4a5056;
+   border: 1px solid #4a5056;
+ }
+</style>
+
+ <!-- Modal -->
+  <div class="modal fade" id="modelId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Upload photo</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+
+        {% if user.display_photo %}
+          <img src="{{ user.display_photo.url }}" class="rounded mb-1 img-fluid d-block mx-auto"/>
+        {% else %}
+         <img src="{{ user|gravatar:120 }}" class="mb-1 img-fluid d-block mx-auto" width="100" height="100">
+        {% endif %}         
+
+          <form enctype="multipart/form-data" method="post" novalidate>
+              <input type="file" class="form-control form-control-sm" accept="image/*" name="photo" id="id_display_photo">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Upload</button>
+        </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row mobile">
+    <div class="col-12">
+      <h5>Edit profile</h5>
+      <div class="card mb-2">
+        <div class="card-body">
+          <form method="post" novalidate>
+              {% csrf_token %}  
+             <div class="form-group">
+              <label for="">Display name</label>
+              {{ form.username }}
+            </div>
+            <div class="form-group">
+            <label for="">Location</label>
+            {{ form.location }}
+          </div>
+          <div class="form-group">
+            <label for="">Title</label>
+            {{ form.title }}
+          </div>
+            <div class="form-group">
+            <label for="">First name</label>
+            {{ form.first_name }}
+          </div>
+          <div class="form-group">
+            <label for="">Last name</label>
+            {{ form.last_name }}
+          </div>
+           <div class="form-group">
+            <label for="">Email</label>
+            {{ form.email }}
+          </div>
+          {% comment %} <div class="form-group">
+            <label for="">About me</label>
+            {{ form.description }}
+          </div> {% endcomment %}
+          <button type="submit" class="btn btn-sm btn-primary">Save changes</button>  
+          <a href="{% url 'user' user.pk %}" class="btn btn-sm btn-outline-danger">Cancel</a>
+          </form>       
+        </div>
+      </div> 
+    </div>
+    <div class="col-12">
+      <button type="button" class="btn btn-outline-secondary btn-lg btn-block"  data-toggle="modal" data-target="#modelId">change picture</button>
+    </div>
+  </div>
+
+
+ <div class="row laptop pt-3">
+    <div class="col-12 pl-5  mt-5">
+        <a class="btn btn-sm rounded-pill" href="{% url 'user' user.pk %}" role="button">Profile</a>
+         <a class="btn btn-sm btn-primary rounded-pill" href="{% url 'user_update' user.pk %}" role="button">Edit profile and settings</a>
+    </div>
+    <div class="col-12 pt-3">
+      <div class="row">
+        <div class="col-3">
+          <div class="col-12 pt-1">
+           <small>PERSONNAL INFORMATION</small>   
+          </div>
+          <div class="col-12 pt-1">
+           <small class="font-weight-bold">Edit profile</small>   
+          </div>
+          <div class="col-12 pt-1">
+           <small class="text-secondary">Others</small>   
+          </div>
+        </div>
+        <div class="col-9">
+          <div class="col-12">
+             <h4>Edit your profile</h4>
+          </div>
+          <hr>
+          <div class="col-12">
+             <h5 class="mb-3">Public information</h5>
+          </div>
+
+           <div class="row">
+             <div class="col-3">
+                {% if user.display_photo %}
+                  <img src="{{ user.display_photo }}" class=" img-fluid d-block mx-auto pic"/>
+                {% else %}
+                   <img src="{{ user|gravatar:184 }}"class=" img-fluid d-block mx-auto pic"/> 
+                {% endif %}  
+                <button type="button" class="btn btn-dark btn-block" data-toggle="modal" data-target="#modelId">change picture</button> 
+             </div>
+              <div class="col-6">
+
+               {{ form.media.css }}
+              <form method="post" novalidate>
+               {% csrf_token %}        
+                <div class="form-group">
+                  <label for=""><b>Display name</b></label>
+                  {{ form.username }}
+                </div>
+                <div class="form-group">
+                  <label for=""><b>Location</b></label>
+                  {{ form.location }}
+                </div>
+                <div class="form-group">
+                  <label for=""><b>Title</b></label>
+                  {{ form.title }}
+                </div>
+             </div>
+          <div class="col-12">
+            <div class="form-group">
+              <label for=""><b>About me</b></label>
+              {{ form.description }}
+            </div>
+          </div>
+
+           <div class="col-12">
+            <hr/>
+             <h5 class="mt-3">Private information<span class="text-muted">(not shown publicly)</span></h5>
+          </div>
+          <div class="col-6 mt-2">
+            <div class="form-group">
+              <label for=""><b>First name</b></label>
+              {{ form.first_name }}
+            </div>
+             <div class="form-group">
+              <label for=""><b>Last name</b></label>
+              {{ form.last_name }}
+            </div>
+            <div class="form-group">
+              <label for=""><b>Email</b></label>
+              {{ form.email }}
+            </div>
+          </div> 
+          <div class="col-12">
+            <hr/>   
+          </div>
+           <div class="col-6 mt-3">
+            <button type="submit" class="btn btn-primary">Save changes</button>  
+             <a href="{% url 'user' user.pk %}" class="btn btn-outline-danger">Cancel</a>  
+          </div>
+           </form>
+           </div>
+        </div>
+      </div>
+      <script src="{% static 'jquery.min.js' %}"></script>
+        {{ form.media.js }}
+     </div>
+     </div>
+  </div> 
+
+ 
+{% endblock %}
+
+     
+               
+            
+

@@ -37,6 +37,25 @@
       $('#remove').click(function(){
           $('#answer_div').remove();
         });
+
+        $('.shaw').hover(function(){
+          $('.newt').show();
+        });
+
+      $(".add").click(function() {
+        var answer_id = this.id
+        var code = '<div class="col-12 pl-2 laptop"><form><div class="row pt-2"><div class="col-2"></div><div class="col-10 pl-0"><div class="row"><div class="col-10 pr-2"><div class="form-group"><textarea class="form-control form-control-sm"  rows="2" placeholder="Use comments to ask for more information"></textarea><small id="helpId" class="form-text text-muted">enter at least 15  characters.</small></div></div><div class="col-2 p-0 text-center"><button type="submit" class="btn btn-primary btn-sm">Add Comment</button></div></div></div></div></form></div>  <div class="row pt-2 mobile"><div class="col-12 pl-2 pr-0"><div class="form-group"><textarea class="form-control form-control-sm" rows="2"></textarea></div></div><div class="col-12 pl-2"><div class="row"><div class="col-5"><input class="btn btn-primary btn-sm" type="button" value="Add Comment"></div><div class="col-7 pl-0"><small id="helpId" class="form-text text-muted">enter at least 15 characters.</small></div></div></div></div>' 
+        $("#now_" + answer_id).append(code);
+        $(".add").remove();
+      });
+
+       $(".add2").click(function() {
+        var answer_id = this.id
+        var code = '<div class="row pt-2 laptop"><div class="col-2"></div><div class="col-10 pl-0"><div class="row"><div class="col-10 pr-2"><div class="form-group"> <textarea class="form-control form-control-sm"  rows="2" placeholder="Use comments to ask for more information"></textarea><small id="helpId" class="form-text text-muted">enter at least 15  characters.</small></div></div><div class="col-2 p-0"><button type="button" class="btn btn-primary btn-sm">Add Comment</button></div></div></div></div> <div class="row pt-2 mobile"><div class="col-12 pl-2 pr-0"><div class="form-group"><textarea class="form-control form-control-sm" rows="2"></textarea></div></div><div class="col-12 pl-2"><div class="row"><div class="col-5"><input class="btn btn-primary btn-sm" type="button" value="Add Comment"></div><div class="col-7 pl-0"><small id="helpId" class="form-text text-muted">enter at least 15 characters.</small></div></div></div></div>' 
+        $(".now_" + answer_id).append(code);
+        $(".add2").remove();
+      });
+
       });
     </script>
     {% comment %} <script src="{% static 'popper.min.js' %}"></script> {% endcomment %}

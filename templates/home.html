@@ -21,6 +21,7 @@
 {% endblock %}
 
 {% block body %}
+<link type="text/css" rel="stylesheet" href="{% static 'css/main.css' %}">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <a class="navbar-brand" href="{% url 'home' %}">
     <img src="{% static 'img/web-programming.svg' %}" alt="" class="d-inline-block align-top"  width="30" height="30">
@@ -37,15 +38,91 @@
 </nav>
 
 
-<div class="jumbotron">
-  <h1 class="display-3">Code</h1>
+<div class="jumbotron mb-0">
+  <h1 class="display-3"><i class="fas fa-code"></i>Code</h1>
   <p class="lead">Mini StackOverflow Clone</p>
   <hr class="my-2">
-  <p>More info</p>
-  <p class="lead">
-    <a class="btn btn-primary btn-lg" href="Jumbo action link" role="button">login</a>
+  <h5>
+  <p>Hi, Tester<br>Welcome to my latest project, a clone of our favourite question and answer forum <b>STACKOVERFLOW</b>;</p>
+  <p><i class="fas fa-plus"></i> Create An Account by sign up either the normal or using social signup which include github,facebook and google<br>
+  or if you already have an account, login and ask or answer away <i class="fas fa-running"></i>
   </p>
-</div>
+  <p>Fell free to check it out and lemme know what you think <i class="fas fa-reply"></i></p>
+  </h5>
+   <p class="lead">
+    <a class="btn btn-outline btn-lg" href="{% url 'account_login' %}" role="button">login <i class="fas fa-forward"></i></a>
+     <a class="btn btn-outline-success btn-lg" href="{% url 'account_signup' %}" role="button">signup <i class="fas fa-user-plus"></i></a>
+  </p>
 
+  <p class="mt-4"><i class="fas fa-mail-bulk"></i> CONTACT ME ON:<br> <a href=""><i class="fab fa-3x fa-facebook-square" style="color:#4267b2"></i></a> <a href=""><i class="fab fa-3x fa-whatsapp text-success ml-4 mr-4"></i></a> <a href="."><i class="fab fa-3x fa-twitter text-primary"></i></a></p>
+
+</div>
+<div id="layoutError_footer" class="mobile">
+    <footer class="py-4 bg-light mt-auto">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center justify-content-between small">
+                <div class="text-muted">Copyright &copy; Code 2020</div>
+                <div>
+                    <a href="#">Privacy Policy</a>
+                    &middot;
+                    <a href="#">Terms &amp; Conditions</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+  </div>
+
+  <footer class="mainfooter mt-0" role="contentinfo">
+  <div class="footer-middle">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3 col-sm-6">
+        <!--Column1-->
+        <div class="footer-pad">
+          <h4>Heading 1</h4>
+          <ul class="list-unstyled">
+          <li><a href="#">Disclaimer</a></li>
+            <li><a href="#">FAQs</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <!--Column1-->
+        <div class="footer-pad">
+          <h4>Heading 2</h4>
+          <ul class="list-unstyled">
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">FAQs</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <!--Column1-->
+        <div class="footer-pad">
+          <h4>Heading 3</h4>
+          <ul class="list-unstyled">
+           <li><a href="#">Website Tutorial</a></li>
+            <li><a href="#">Accessibility</a></li>
+          </ul>
+        </div>
+      </div>
+    	<div class="col-md-3">
+    		<h4>Follow Us</h4>
+            <ul class="social-network social-circle">
+             <li class=""><a href="https://facebook.com/karma.certified/" class="icoFacebook" title="Facebook"><i class="fab fa-facebook"></i></a></li>
+             <li><a href="https://github.com/certified-dev/" class="icoGithub" title="Github"><i class="fab fa-github"></i></a></li>
+            </ul>				
+		</div>
+    </div>
+	<div class="row">
+		<div class="col-md-12 copy">
+			<p class="text-center">&copy; Copyright 2020 - Code  All rights reserved.</p>
+		</div>
+	</div>
+
+
+  </div>
+  </div>
+</footer>
 {% endblock %}
 

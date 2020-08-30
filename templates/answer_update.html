@@ -1,30 +1,106 @@
 {% extends "main.html" %}
 
-{% load static %}
+{% load static crispy_forms_tags markdown_deux_tags %}
 
-{% block title %}code | Question-Edit{% endblock title %}
+{% block title %}Edit - Code{% endblock title %}
 
 
 {% block content %}
-<div class="container p-2" style="border:1px solid lightgray;">
-<p>Edit Answer</p>
-  <form method="post" novalidate>
-       {% csrf_token %}
-       <div class="form-group">
-        {{ form.body }}
-         <small id="helpId" class="text-muted">Help text</small>
-       </div>
-       
-      <button type="submit" class="btn btn-primary btn-sm">
-       {% if 'update' in request.path %}
-      Save Edits
-      {% else %}
-      Post your answer
-      {% endif %}
-     
-      </button>
+
+   <div class="text-center mobile">
+     <div class="btn-group btn-group-sm mb-3">
+       <a class="btn btn-sm text-secondary"  href="{% url 'question' %}" role="button">Questions</a>
+       <a class="btn btn-sm text-secondary" href="{% url 'tags' %}" role="button">Tags</a>
+       <a class="btn btn-sm text-secondary" href="{% url 'users' %}" role="button">Users</a>
+       <a class="btn btn-sm text-secondary" href="{% url 'ask_question' %}" role="button">Ask</a>
+     </div> 
+   </div> 
+
+<div class="row  justify-content-center">
+    <div class="col-12 mt-5 laptop">
+         <h3 class="mt-5"></h3>
+      </div>      
+        
+     <div class="col-sm-9">
+
+     {{ form.media }}
+
+      <div class="card mb-3">
+         <div class="card-body">
+         <small class="mobile"><b>{{ answer.question.title }}</b></small>
+         <div class="laptop mb-3"><b>{{ answer.question.title }}</b></div>
+         <span class="laptop" style="font-size:14px">{{ answer.question.body|markdown }}</span>
+
+         <h5 class="laptop">Answer</h5>
+         <form method="post" novalidate>
+            {% csrf_token %}
+            <small>
+            {{ form|crispy }}
+            </small>
+         </div>
+      </div>
+    
+      <div class="form-group mb-3 laptop">
+         <button type="submit" class="btn btn-primary btn-sm">
+         {% if 'update' in request.path %}
+         Save Edits
+         {% else %}
+        Post your answer
+         {% endif %}
+         </button>
+         
+         <a href="{% url 'home' %}" class="btn btn-sm btn-outline-danger">Cancel</a>
+      </div>
+
+      <div class="form-group mb-3 mobile text-center">
+         <button type="submit" class="btn btn-primary btn-sm">
+         {% if 'update' in request.path %}
+         Save Edits
+         {% else %}
+         Post your answer
+         {% endif %}
+         </button>
+         
+         <a href="{% url 'home' %}" class="btn btn-sm btn-outline-danger">Cancel</a>
+      </div>
+
     </form>
-</div>
+    
+    </div>
+    <div class="col-3 laptop">
+       <div class="row">
+          <div class="col-12 mb-3 mt-2">
+           <div class="card shadow-sm">
+             <div class="card-header"> hello World</div>
+             <div class="card-body">
+               <p class="card-text">
+                  <ul>
+                    <li>Active item</li>
+                    <li>Item</li>
+                    <li>Disabled item</li>
+                 </ul>
+               </p>
+             </div>
+           </div>
+         </div>
+         <div class="col-12">
+           <div class="card shadow-sm">
+             <div class="card-header"> hello World</div>
+             <div class="card-body">
+               <p class="card-text">
+                  <ul>
+                    <li>Active item</li>
+                    <li>Item</li>
+                    <li>Disabled item</li>
+                 </ul>
+               </p>
+             </div>
+           </div>
+         </div>
+       </div>
+    </div>
+  </div>
+
 {% endblock %}
 
 

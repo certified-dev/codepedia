@@ -12,28 +12,28 @@
 {% block content %}
 
 <div class="row justify-content-center">
-     <div class="col-sm-9 mt-2">
-       
+
+<div class="col-sm-9 ">    
    <div class="text-center mobile">
-     <div class="btn-group btn-group-sm mb-3">
-       <a class="btn btn-sm {% if 'question' in request.path %}btn-primary active{% endif %}" href="{% url 'question' %}" role="button">Questions</a>
-       <a class="btn btn-sm text-secondary" href="{% url 'tags' %}" role="button">Tags</a>
-       <a class="btn btn-sm text-secondary" href="{% url 'users' %}" role="button">Users</a>
-       <a class="btn btn-sm text-secondary" href="{% url 'ask_question' %}" role="button">Ask</a>
-     </div> 
+      <div class="btn-group btn-group-sm mb-3">
+         <a class="btn btn-sm {% if 'question' in request.path %}btn-primary active{% endif %}" href="{% url 'question' %}" role="button">Questions</a>
+         <a class="btn btn-sm text-secondary" href="{% url 'tags' %}" role="button">Tags</a>
+         <a class="btn btn-sm text-secondary" href="{% url 'users' %}" role="button">Users</a>
+         <a class="btn btn-sm text-secondary" href="{% url 'ask_question' %}" role="button">Ask</a>
+      </div> 
    </div> 
 
 <!-- vue-app start -->
 <div id="question">
-   <div  class="container pt-1 pb-1 pl-md-3 mobile" style="border:1px solid lightgray;">
+   <div  class="container pt-0 pl-md-3 mobile">
 
       <div class="row">
 
-         <div class="col-12 pl-3 pr-2">
+         <div class="col-12 pl-3 pr-2 border">
            <div class="row">
               <div class="col-12">
               <div class="row">
-                <div class="col-2">
+                <div class="col-2 bg-light">
                     <div class="row">
                      <div class="col-12 p-0 pl-2 text-center">
                         <a href="javascript:void(0)" v-on:click="vote('upvote', upvoted, '{% url 'vote_question' question.pk question.slug %}')" :class="[[upvoted ? 'done' : '']]" class="text-secondary">
@@ -65,12 +65,10 @@
                  
               </div>
             </div>
-
-             <hr>
          </div>
          
-         <div class="col-12 pr-2 pl-2" >
-            <span style="font-size:12px">{{ question.body|markdown }}</span>
+         <div class="col-12 pr-2 pl-2 pt-1">
+            <span style="font-size:14px">{{ question.body|markdown }}</span>
          </div>
 
          <div class="col-12 pl-2">
@@ -83,7 +81,7 @@
                <span class= "text-secondary mr-1"> | </span> 
                <a class="text-secondary mr-2" href="{% url 'update_question' question.pk question.slug %}">edit</a>
                
-               <a class="text-secondary ml-1" href="#">delete</a>
+               <a class="text-secondary ml-1" href="javascript:void(0)"  onclick="alert('are you sure you want to?')">delete</a>
                <span class= "text-secondary ml-1"> | </span>
                {{ question.posted_on|naturaltime }}</span> 
                
@@ -100,11 +98,34 @@
               </small>
             {% endif %}
          </div>
+
+         {% if question.question_comments.count > 0 %}
+         <div class="col-12 pl-0 pr-0">
+            {% for comment in question.question_comments.all %}      
+               <div class= "text-secondary font-italic border-bottom border-top bg-light"  style="font-size:13px">
+                  {{ comment.text }} - <a href="#">{{ comment.posted_by }}</a> <span class="primary"> {{ comment.posted_on }}</span>
+                  {% if comment.posted_by == user %}
+                   <span class="text-danger">Edit Delete</span>
+                 {% endif %} 
+               </div> 
+               
+               {% endfor %}
+           </div>      
+         {% endif %}
+
+         <div class="col-12 pl-2 now_question_add_comment-{{ question.pk }}">
+         
+         </div>
+
+          <div class="col-12 pl-2 bg-light text-center">
+               <small><a href="javascript:void(0)" class="add2" id="question_add_comment-{{ question.pk }}">add a comment</a></small>
+         </div>
+         
       </div> 
    </div>
 
 
-   <div class="laptop pb-3">
+   <div class="laptop pb-4">
    </div>
   <div  class="container mb-2 pt-1 pb-3 pl-md-3 laptop mt-5" style="border:1px solid lightgray;">
 
@@ -169,7 +190,7 @@
               </div>
               
               <div class="col-10 pl-0">
-                <span style="font-size:14px">{{ question.body|markdown }}</span>
+                <span style="font-size:15px">{{ question.body|markdown }}</span>
               </div>
             </div>
             
@@ -188,6 +209,7 @@
                </div>
             </div>
          </div>
+         
 
          <div class="col-12 pl-2">
           <div class="row">
@@ -200,7 +222,7 @@
                   <small>
                     <a class="text-secondary" href="{% url 'update_question' question.pk question.slug %}">edit</a>
                     <span class= "mr-3"></span>
-                    <a class="text-secondary" href="#">delete</a>
+                    <a class="text-secondary" href="javascript:void(0)"  onclick="alert('are you sure you want to?')">delete</a>
                   </small>
                   {% endif %}
                   </div>
@@ -208,18 +230,16 @@
                      <div class="col-3 ml-5 bg-light pb-1 mr-1">
                         <div class="row">
                           <div class="col-12">
-                              <span class="text-secondary"><small>asked {{ question.posted_on|naturaltime}}</small></span>
+                              <span class="text-secondary"><small>{{ question.posted_on|naturaltime}}</small></span>
                           </div>
                           <div class="col-12">
                             <div class="row">
                               <div class="col-3">
-                               <img src="{{ question.asked_by|gravatar:28 }}"  class="rounded" width="28" height="28"/>
-                               {% comment %} {% if question.asked_by.display_photo.url %}
+                               {% if question.asked_by.display_photo %}
                                   <img src="{{ question.asked_by.display_photo.url }}"  class="rounded" width="28" height="28"/>
                                 {% else %}
                                   <img src="{{ question.asked_by|gravatar:28 }}"  class="rounded" width="28" height="28"/>
-                                {% endif %} {% endcomment %}
-                              
+                                {% endif %}
                               </div>
                               <div class="col-9 p-0 pl-1">
                               
@@ -239,17 +259,49 @@
                        </div>
                        
                      </div>
+
                    </div>
-            
                </div>
             </div>
          </div>
+
+          {% if question.question_comments.count > 0 %}
+         <div class="col-12 pl-2">
+          <div class="row pt-2">
+             <div class="col-2">
+             </div>
+             <div class="col-10 pl-0">
+                {% for comment in question.question_comments.all %}
+                 <div class= "font-italic border-top {% if forloop.last %}border-bottom{% endif %}" style="font-size:14px">
+                  {{ comment.text }} -<a href="#" class="badge">{{ comment.posted_by }}</a> <span class="text-secondary">{{ comment.posted_on }}</span>
+                  {% if comment.posted_by == user %}
+                  <span class="text-danger newt"> Edit  Delete</span>
+                  {% endif %}   
+                </div>
+               {% endfor %}
+             </div>
+          </div>
+         </div>      
+         {% endif %}
+
+         <div class="col-12 pl-2 now_question_add_comment-{{ question.pk }}"></div>
+
+         <div class="col-12 pl-2">
+          <div class="row">
+             <div class="col-2">
+             </div>
+              <div class="col-10 pl-0">
+               <small><a href="javascript:void(0)" class="add2" id="question_add_comment-{{ question.pk }}">add a comment</a></small>
+             </div>
+          </div>
+         </div>
+
       </div> 
    </div>
 
    <div  class="container border-left-0 border-right-0  mb-2 mobile" style="border:1px solid lightgray;">
        <div class="row">
-        <div class="col-12 p-1 bg-light">
+        <div class="col-12 p-1">
         <span><small>{{ answers.count|intcomma }} Answers</small></span>
        </div>
        </div>
@@ -368,7 +420,34 @@
       </div>
       <div class="col-3 mt-5 laptop">
        <div class="row">
-         
+         <div class="col-12 mb-3 mt-4">
+           <div class="card shadow-sm">
+             <div class="card-header"> hello World</div>
+             <div class="card-body">
+               <p class="card-text">
+                  <ul>
+                    <li>Active item</li>
+                    <li>Item</li>
+                    <li>Disabled item</li>
+                 </ul>
+               </p>
+             </div>
+           </div>
+         </div>
+         <div class="col-12">
+           <div class="card shadow-sm">
+             <div class="card-header"> hello World</div>
+             <div class="card-body">
+               <p class="card-text">
+                  <ul>
+                    <li>Active item</li>
+                    <li>Item</li>
+                    <li>Disabled item</li>
+                 </ul>
+               </p>
+             </div>
+           </div>
+         </div>
        </div>
     </div>
   </div>

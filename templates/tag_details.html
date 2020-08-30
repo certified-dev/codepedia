@@ -58,7 +58,7 @@
                     <a href="{% url 'question_detail' question.pk question.slug %}">{{ question.title }}</a>
                  </div>
                  <div class="col-12 pl-0">
-                   <span style="font-size: 13px;font-family: Lucida Console">{{ question.body|truncatewords:25 }}</span>
+                   <span style="font-size: 13px">{{ question.body|truncatewords:25 }}</span>
                  </div>
                  <div class="col-12">
                    <div class="row">
@@ -76,13 +76,12 @@
                           <div class="col-12">
                             <div class="row">
                               <div class="col-3">
-                               <img src="{{ question.asked_by|gravatar:28 }}" class="rounded" width="28" height="28"/>
-                               {% comment %} {% if question.asked_by.display_photo.url %}
+                               
+                                {% if question.asked_by.display_photo %}
                                   <img src="{{ question.asked_by.display_photo.url }}"  class="rounded" width="28" height="28"/>
                                 {% else %}
                                   <img src="{{ question.asked_by|gravatar:28 }}" class="rounded" width="28" height="28"/>
-                                {% else %}
-                                {% endif %} {% endcomment %}
+                                {% endif %} 
                               
                               </div>
                               <div class="col-9 p-0 pl-1">
@@ -114,7 +113,34 @@
     </div>
     <div class="col-3 mt-5 laptop">
        <div class="row">
-         
+         <div class="col-12 mb-3 mt-2">
+           <div class="card shadow-sm">
+             <div class="card-header"> hello World</div>
+             <div class="card-body">
+               <p class="card-text">
+                  <ul>
+                    <li>Active item</li>
+                    <li>Item</li>
+                    <li>Disabled item</li>
+                 </ul>
+               </p>
+             </div>
+           </div>
+         </div>
+         <div class="col-12">
+           <div class="card shadow-sm">
+             <div class="card-header"> hello World</div>
+             <div class="card-body">
+               <p class="card-text">
+                  <ul>
+                    <li>Active item</li>
+                    <li>Item</li>
+                    <li>Disabled item</li>
+                 </ul>
+               </p>
+             </div>
+           </div>
+         </div>
        </div>
     </div>
   </div>
@@ -131,13 +157,13 @@
 
        <div class="row border-left-0 border-bottom-0 border-right-0 mobile" style="border:1px solid lightgray;">
           <div class="col-12 p-1 bg-light  border-left-0 border-top-0 border-right-0" style="border:1px solid lightgray;">
-            <span><small>Tagged Questions</small></span>
+            <span>Tagged Questions</span>
           </div>
           <div class="col-12 pl-2">
             <span><a href="{% url 'tag_question' tag.pk %}" class="badge mb-1 mt-0">{{ tag }}</a></span>
           </div>
           <div class="col-12">
-            <small>{{ tag.description }}</small>
+            <span style="font-size:15px">{{ tag.description }}</span>
           </div>
         </div>
          
