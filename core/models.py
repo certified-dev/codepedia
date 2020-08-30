@@ -237,5 +237,5 @@ class AnswerSerializer(serializers.ModelSerializer):
         else:
             email_hash = md5(
                 str(obj.answered_by.email.strip().lower()).encode()).hexdigest()
-            avatar_url = "http://www.gravatar.com/avatar/%s" % email_hash + "?s=28&d=identicon&r=PG"
+            avatar_url = "https://www.gravatar.com/avatar/%s" % email_hash + "?s=28&d=identicon&r=PG"
             return avatar_url

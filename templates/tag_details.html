@@ -46,7 +46,7 @@
                    </div>
                  </div>
                  <div class="col-12 text-center pb-3">
-                    <button type="button" class="btn btn-sm {% if question.answers.count <= 0 %}text-secondary{% endif %} {% if question.answers.count >= 1 and not question.any_answer_accepted %}btn-outline-success{% endif %} {% if question.answers.count >= 1 and question.any_answer_accepted %}btn-success{% endif %} text-center">{{ question.answers.count }}<br><small>answer{{ question.answers.count|pluralize }}</small></button>
+                    <button type="button" class="btn btn-sm {% if question.answers.count <= 0 %}text-secondary{% endif %} {% if question.answers.count >= 1 and not question.any_answer_accepted %}btn-outline-success{% endif %} {% if question.answers.count >= 1 and question.any_answer_accepted %}btn-success{% endif %} text-center disabled">{{ question.answers.count }}<br><small>answer{{ question.answers.count|pluralize }}</small></button>
                  </div>
                  <div class="col-12 text-center pb-2">
                       <span class="text-secondary"><small>{{ question.views }} view{{ question.views|pluralize }}</small></span>
