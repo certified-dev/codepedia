@@ -30,12 +30,12 @@ urlpatterns = [
          views.QuestionUpdateView.as_view(), name="update_question"),
 
     # add comment to an question
-    path('question/<int:pk>/reply/',
+    path('question/<int:pk>/reply/comment/',
          views.comment_question, name="comment_question"),
 
 
     # add answer to a question
-    path('question/<int:pk>/<slug:slug>/add-answer/',
+    path('question/<int:pk>/<slug:slug>/reply/answer/',
          views.reply_question, name="reply_question"),
 
     # add comment to an answer
