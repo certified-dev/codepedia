@@ -22,17 +22,27 @@ urlpatterns = [
     path('question/<int:pk>/<slug:slug>/',
          views.AnswerListView.as_view(), name="question_detail"),
 
+    # add question
     path('question/ask/', views.QuestionCreateView.as_view(), name="ask_question"),
 
+    # update question
     path('question/<int:pk>/<slug:slug>/update/',
          views.QuestionUpdateView.as_view(), name="update_question"),
 
-    path('question/<int:pk>/<slug:slug>/reply/',
+    # add comment to an question
+    path('question/<int:pk>//',
+         views.comment_question, name="comment_question"),
+
+
+    # add answer to a question
+    path('question/<int:pk>/<slug:slug>/add-answer/',
          views.reply_question, name="reply_question"),
 
-    path('question/answer/<int:pk>/reply/',
+    # add comment to an answer
+    path('answer/<int:pk>/reply/',
          views.reply_answer, name="reply_answer"),
 
+    # update answer
     path('question/<int:pk>/answer/<int:answer_pk>/update/',
          views.AnswerUpdateView.as_view(), name="update_answer"),
 
@@ -48,7 +58,7 @@ urlpatterns = [
     path('users/',
          views.UsersListView.as_view(), name="users"),
 
-    path('user/<int:pk>/',
+    path('user/<int:pk>/profile/',
          views.UserDetailView.as_view(), name="user"),
 
     path('user/<int:pk>/update/',

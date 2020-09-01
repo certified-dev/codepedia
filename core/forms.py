@@ -2,7 +2,7 @@ from django import forms
 from django.db import transaction
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
-from .models import Answer, Question, Tag, Comment, Question
+from .models import Answer, Question, Tag, Comment, Question, Question_Comment
 from django_select2 import forms as s2forms
 from pagedown.widgets import PagedownWidget
 
@@ -104,4 +104,10 @@ class AnswerForm(forms.ModelForm):
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
+        fields = ('text',)
+
+
+class QuestionCommentForm(forms.ModelForm):
+    class Meta:
+        model = Question_Comment
         fields = ('text',)

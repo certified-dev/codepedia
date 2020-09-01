@@ -55,7 +55,7 @@
                       {% for tag in question.tags.all %}
                         <a href="{% url 'tag_question' tag.pk %}" class="badge">{{ tag }}</a>
                       {% endfor %}
-                      <span class="float-right text-secondary"><small>{{ question.posted_on|naturaltime}} <a href="javascript:void(0)">{{ question.asked_by }}</a> <b>{{ question.asked_by.points }}</b></small></span>
+                      <span class="float-right text-secondary"><small>{{ question.posted_on|naturaltime}} <a href="{% url 'user' question.asked_by.pk %}">{{ question.asked_by }}</a> <b>{{ question.asked_by.points }}</b></small></span>
                   </div>
                   </div>
               </div>
@@ -137,7 +137,7 @@
                    {% endfor %}
                 </div>
                 <div class="col-12 pl-1 pr-1">
-                   <small><span class="text-secondary">{{ question.posted_on|naturaltime}}</span> <a href="javascript:void(0)">{{ question.asked_by }}</a></small>
+                   <small><span class="text-secondary">{{ question.posted_on|naturaltime}}</span> <a href="{% url 'user' question.asked_by.pk %}">{{ question.asked_by }}</a></small>
                 </div>
               </div> 
 

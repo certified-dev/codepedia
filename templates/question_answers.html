@@ -35,17 +35,17 @@
               <div class="row">
                 <div class="col-2 bg-light">
                     <div class="row">
-                     <div class="col-12 p-0 pl-2 text-center">
+                     <div class="col-12 p-0 text-center">
                         <a href="javascript:void(0)" v-on:click="vote('upvote', upvoted, '{% url 'vote_question' question.pk question.slug %}')" :class="[[upvoted ? 'done' : '']]" class="text-secondary">
                          <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-caret-up-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
   <path d="M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
 </svg>
                          </a>
                      </div>
-                     <div class="col-12 p-0 pl-2 text-center">
+                     <div class="col-12 p-0 text-center">
                         <h3 class="mb-0 text-secondary">[[ score ]]</h3>
                      </div>
-                     <div class="col-12 p-0 pl-2 text-center">
+                     <div class="col-12 p-0 text-center">
                         <a href="javascript:void(0)" v-on:click="vote('downvote', downvoted, '{% url 'vote_question' question.pk question.slug %}')" :class="[[downvoted ? 'done' : '']]" class="text-secondary"> 
                         <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-caret-down-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
   <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
@@ -72,38 +72,30 @@
          </div>
 
          <div class="col-12 pl-2">
-         {% if question.asked_by == user %}
+  
                <small>
-               {% if user.is_authenticated %}
+               
                <span class="text-secondary"> 
                <i class="fas fa-user-circle text-secondary"></i> 
-               <a href="{% url 'user' user.pk %}">{{ question.asked_by }}</a> 
-               <span class= "text-secondary mr-1"> | </span> 
+               <a href="{% url 'user' question.asked_by.pk %}">{{ question.asked_by }}</a> 
+               {% if user.is_authenticated %}
+               <span class= "text-secondary mr-1">| </span> 
                <a class="text-secondary mr-2" href="{% url 'update_question' question.pk question.slug %}">edit</a>
                
                <a class="text-secondary ml-1" href="javascript:void(0)"  onclick="alert('are you sure you want to?')">delete</a>
+               {% endif %}
                <span class= "text-secondary ml-1"> | </span>
                {{ question.posted_on|naturaltime }}</span> 
+               </span> 
                
-               </span> 
-               {% endif %}
                </small>
-            {% else %}
-            <small>
-               <span class="text-secondary"> 
-                  <i class="fas fa-user-circle"></i> 
-                  <a href="javascript:void(0)">{{ question.asked_by }}</a>
-                  <span class="float-right"><i class="fas fa-clock"></i> {{ question.posted_on|naturaltime }}</span>
-               </span> 
-              </small>
-            {% endif %}
          </div>
 
          {% if question.question_comments.count > 0 %}
          <div class="col-12 pl-0 pr-0">
             {% for comment in question.question_comments.all %}      
-               <div class= "text-secondary font-italic border-bottom border-top bg-light"  style="font-size:13px">
-                  {{ comment.text }} - <a href="#">{{ comment.posted_by }}</a> <span class="primary"> {{ comment.posted_on }}</span>
+               <div class= "text-secondary font-italic border-bottom {% if forloop.first %}border-top{% endif %} bg-light pl-1"  style="font-size:13px">
+                  {{ comment.text }} - <a href="{% url 'user' comment.posted_by.pk %}">{{ comment.posted_by }}</a> <span class="primary"> {{ comment.posted_on }}</span>
                   {% if comment.posted_by == user %}
                    <span class="text-danger">Edit Delete</span>
                  {% endif %} 
@@ -113,12 +105,31 @@
            </div>      
          {% endif %}
 
-         <div class="col-12 pl-2 now_question_add_comment-{{ question.pk }}">
-         
+         <div class="col-12 pl-2 now_question_add_comment-{{ question.pk }}" style="display:none">
+
+           <form class="row pt-2" method="post" action="{% url 'comment_question' question.pk %}" novalidate>
+            {% csrf_token %}
+             <div class="col-12 pl-2 pr-0">
+              <div class="form-group">
+               <textarea class="form-control form-control-sm" id="id_text" name="text" rows="2" placeholder="Use comments to ask for more information"></textarea>
+              </div>
+            </div>
+           <div class="col-12 pl-2">
+             <div class="row mb-2">
+             <div class="col-5">
+              <button type="submit" class="btn btn-primary btn-sm">Add Comment</button>
+             </div>
+             <div class="col-7 pl-0">
+              <small id="helpId" class="form-text text-muted">enter at least 15 characters.</small>
+             </div>
+            </div>
+            </div>
+         </form>
+
          </div>
 
-          <div class="col-12 pl-2 bg-light text-center">
-               <small><a href="javascript:void(0)" class="add2" id="question_add_comment-{{ question.pk }}">add a comment</a></small>
+          <div class="col-12 pl-2 text-center pb-1 add_comment_question">
+            <small><a href="javascript:void(0)" class="add2" id="question_add_comment-{{ question.pk }}">add a comment</a></small>
          </div>
          
       </div> 
@@ -127,7 +138,7 @@
 
    <div class="laptop pb-4">
    </div>
-  <div  class="container mb-2 pt-1 pb-3 pl-md-3 laptop mt-5" style="border:1px solid lightgray;">
+  <div  class="container mb-2 pt-1 pb-3 pl-md-3 laptop mt-5 border" >
 
       <div class="row">
 
@@ -171,7 +182,7 @@
                   <div class="row">
                      <div class="col-12 p-0 pl-2 text-center">
                         <a href="javascript:void(0)" v-on:click="vote('upvote', upvoted, '{% url 'vote_question' question.pk question.slug %}')" :class="[[upvoted ? 'done' : '']]" class="text-secondary">
-                         <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-caret-up-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                         <svg width="1.5em" height="1.8em" viewBox="0 0 16 16" class="bi bi-caret-up-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
   <path d="M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
 </svg>
                          </a>
@@ -181,7 +192,7 @@
                      </div>
                      <div class="col-12 p-0 pl-2 text-center">
                         <a href="javascript:void(0)" v-on:click="vote('downvote', downvoted, '{% url 'vote_question' question.pk question.slug %}')" :class="[[downvoted ? 'done' : '']]" class="text-secondary"> 
-                        <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-caret-down-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <svg width="1.5em" height="1.8em" viewBox="0 0 16 16" class="bi bi-caret-down-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
   <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
 </svg>
                         </i></a>
@@ -201,11 +212,11 @@
                <div class="col-2">
                </div>
                <div class="col-10 pl-0">
-                  <div>
+                  
                   {% for tag in question.tags.all %}
                      <a href="{% url 'tag_question' tag.pk %}" class="badge mb-1 mt-0">{{ tag }}</a>
                   {% endfor %}
-                  </div>
+                 
                </div>
             </div>
          </div>
@@ -227,7 +238,7 @@
                   {% endif %}
                   </div>
 
-                     <div class="col-3 ml-5 bg-light pb-1 mr-1">
+                     <div class="col-3 bg-light pb-1">
                         <div class="row">
                           <div class="col-12">
                               <span class="text-secondary"><small>{{ question.posted_on|naturaltime}}</small></span>
@@ -245,25 +256,21 @@
                               
                               <small>
                               <span>
-                              <a href="javascript:void(0)">{{ question.asked_by }}</a>
+                              <a href="{% url 'user' question.asked_by.pk %}">{{ question.asked_by }}</a>
                                </span>
                                <span>
                              <b class="text-secondary">{{ question.asked_by.points|intcomma }}</b>
                               </span>
-                             </small>
-                             
+                             </small>     
                               </div>
-                             </div>
-                                        
+                             </div>           
                           </div>
                        </div>
-                       
                      </div>
-
-                   </div>
+                  </div>
                </div>
             </div>
-         </div>
+          </div>
 
           {% if question.question_comments.count > 0 %}
          <div class="col-12 pl-2">
@@ -273,7 +280,7 @@
              <div class="col-10 pl-0">
                 {% for comment in question.question_comments.all %}
                  <div class= "font-italic border-top {% if forloop.last %}border-bottom{% endif %}" style="font-size:14px">
-                  {{ comment.text }} -<a href="#" class="badge">{{ comment.posted_by }}</a> <span class="text-secondary">{{ comment.posted_on }}</span>
+                  {{ comment.text }} -<a href="{% url 'user' comment.posted_by.pk %}" class="badge">{{ comment.posted_by }}</a> <span class="text-secondary">{{ comment.posted_on }}</span>
                   {% if comment.posted_by == user %}
                   <span class="text-danger newt"> Edit  Delete</span>
                   {% endif %}   
@@ -284,9 +291,28 @@
          </div>      
          {% endif %}
 
-         <div class="col-12 pl-2 now_question_add_comment-{{ question.pk }}"></div>
+         <div class="col-12 pl-2 now_question_add_comment-{{ question.pk }}" style="display:none">
+         <form method="post" action="{% url 'comment_question' question.pk %}" class="row pt-2 laptop" novalidate>
+           {% csrf_token %}
+             <div class="col-2"> 
+             </div>
+             <div class="col-10 pl-0">
+              <div class="row">
+                <div class="col-10 pr-2">
+                  <div class="form-group"> 
+                    <textarea class="form-control form-control-sm"  rows="2"  id="id_text" name="text" rows="2" placeholder="Use comments to ask for more information"></textarea>
+                    <small id="helpId" class="form-text text-muted">enter at least 15  characters.</small>
+                  </div>
+                 </div>
+                <div class="col-2 p-0 pr-2">
+              <button type="submit" class="btn btn-primary btn-sm">Add Comment</button>
+             </div>
+           </div>
+          </div>
+         </form>
+         </div>
 
-         <div class="col-12 pl-2">
+         <div class="col-12 pl-2 add_comment_question">
           <div class="row">
              <div class="col-2">
              </div>
@@ -299,10 +325,10 @@
       </div> 
    </div>
 
-   <div  class="container border-left-0 border-right-0  mb-2 mobile" style="border:1px solid lightgray;">
+   <div  class="container border mb-2 mobile">
        <div class="row">
-        <div class="col-12 p-1">
-        <span><small>{{ answers.count|intcomma }} Answers</small></span>
+        <div class="col-12 pt-0 pl-2 pb-1">
+        <span>{{ answers.count|intcomma }} Answers</span>
        </div>
        </div>
      </div>
@@ -355,7 +381,7 @@
                            {% for field in form.visible_fields %}
                               <div class="form-group">
                               <div class="row mobile">
-                               <div class="col-12 bg-light border-left-0 border-right-0" style="border:1px solid lightgray;">
+                               <div class="col-12 bg-light border-top border-bottom" >
                               <label for="{{ field.id_for_label }}">Your Answer</label>
                             </div>
                            </div>
@@ -380,7 +406,7 @@
                         {% for field in form.visible_fields %}
                            <div class="form-group">
                              <div class="row mobile">
-                               <div class="col-12 bg-light mt-1 border-left-0 border-right-0" style="border:1px solid lightgray;">
+                               <div class="col-12 bg-light mt-1 border-top boder-bottom" >
                               <label for="{{ field.id_for_label }}" class="mb-0">Your Answer</label>
                             </div>
                            </div>

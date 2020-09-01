@@ -195,14 +195,18 @@ class UserField(serializers.Field):
 
 class CommentSerializer(serializers.ModelSerializer):
     posted_on = serializers.SerializerMethodField()
+    posted_by_id = serializers.SerializerMethodField()
     posted_by = UserField()
 
     class Meta:
         model = Comment
-        fields = ('text', 'posted_by', 'posted_on')
+        fields = ('text', 'posted_by', 'posted_by_id', 'posted_on')
 
     def get_posted_on(self, obj):
         return naturaltime(obj.posted_on)
+
+    def get_posted_by_id(self, obj):
+        return obj.posted_by.id
 
 
 class AnswerSerializer(serializers.ModelSerializer):
@@ -212,11 +216,12 @@ class AnswerSerializer(serializers.ModelSerializer):
     posted_on = serializers.SerializerMethodField()
     updated_on = serializers.SerializerMethodField()
     answered_by_points = serializers.SerializerMethodField()
+    answered_by_id = serializers.SerializerMethodField()
     answered_by_image = serializers.SerializerMethodField()
 
     class Meta:
         model = Answer
-        fields = ('text_html', 'score', 'answered_by', 'pk', 'answered_by_points',
+        fields = ('text_html', 'score', 'answered_by', 'pk', 'answered_by_points', 'answered_by_id',
                   'posted_on', 'accepted', 'updated_on', 'comments', 'answered_by_image')
 
     def get_text_html(self, obj):
@@ -230,6 +235,9 @@ class AnswerSerializer(serializers.ModelSerializer):
 
     def get_answered_by_points(self, obj):
         return obj.answered_by.points
+
+    def get_answered_by_id(self, obj):
+        return obj.answered_by.id
 
     def get_answered_by_image(self, obj):
         if obj.answered_by.display_photo:

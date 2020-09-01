@@ -17,7 +17,9 @@
   font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
     "Lucida Sans", Arial, sans-serif;
 } */
-
+a:hover {
+  text-decoration: none;
+}
 footer {
   /* background: #16222a;
   background: -webkit-linear-gradient(59deg, #3a6073, #16222a);
@@ -29,10 +31,6 @@ footer {
 
 footer a {
   color: #fa944b;
-}
-
-footer a:hover {
-  text-decoration: none;
 }
 
 footer ul a {

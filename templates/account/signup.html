@@ -46,26 +46,6 @@
 
  {% block body %}
 
-<!-- {% block messages %} 
-  
- {% if messages %}
-<div>
-    <ul>
-        {% for message in messages %}
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong>{{message}}</strong>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-        </div>
-        {% endfor %}
-    </ul>
-</div>
-{% endif %}
-{% endblock %}
-
- -->
-
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-sm-8 col-md-6 col-lg-4">
@@ -87,7 +67,9 @@
                 {% endfor %}
                 </p>
 
-                <hr/>
+                <div class="text-center text-secondary">
+                 <p>- OR -</p>
+                </div>
 
                 {% if form.non_field_errors %}
                 <div class="alert alert-danger" role="alert">
@@ -98,31 +80,10 @@
                 {% endif %}
 
                     <form method="post" action="{% url 'account_signup' %}" novalidate>
-                        {% csrf_token %} {% if redirect_field_value %}<input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" /> {% endif %}
-                       <div class="form-row">
-                        
-                            {% comment %} <div class="col-sm form-group">
-                                <div class="input-group mb-4">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text"> <i class="fa fa-user"></i> </span>
-                                    </div>
-                                    <input name="first_name" class="form-control" placeholder="First Name" type="text" id="id_first_name">
-                                </div>
-                            </div>
-                            <!-- form-group end.// -->
-
-                            <div class="col form-group">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text"> <i class="fa fa-user"></i> </span>
-                                    </div>
-                                    <input name="last_name" class="form-control" placeholder="Last Name" type="text" id="id_last_name">
-                                </div>
-                            </div>
-                            <!-- form-group end.// --> {% endcomment %}
-
-                        </div>
-                        <!-- form-row end.// --> 
+                        {% csrf_token %} 
+                        {% if redirect_field_value %}
+                        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" /> 
+                        {% endif %}
 
                         <div class="form-group mb-3">
                             <div class="input-group">
@@ -145,7 +106,6 @@
                             </div>
                         </div> 
                         <!-- form-group end.// -->
-
                         
                         <!-- form-row.// -->
                         <div class="form-group">

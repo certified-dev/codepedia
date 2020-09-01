@@ -12,7 +12,7 @@ from django.utils.text import slugify
 from django.views.generic import ListView, CreateView, UpdateView, DetailView
 
 from .models import Question, Answer, Tag, User, AnswerSerializer
-from .forms import AnswerForm, CommentForm, QuestionForm, UserUpdateForm
+from .forms import AnswerForm, CommentForm, QuestionForm, UserUpdateForm, QuestionCommentForm
 
 
 @csrf_exempt
@@ -196,6 +196,21 @@ def delete_answer(request, pk):
 
 
 @login_required
+def comment_question(request, pk):
+    question = get_object_or_404(Question, pk=pk)
+    if request.method == 'POST':
+        form = QuestionCommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.question = question
+            comment.posted_by = request.user
+            comment.save()
+            return redirect(question)
+        else:
+            return redirect(question)
+
+
+@login_required
 def reply_answer(request, pk):
     answer = get_object_or_404(Answer, pk=pk)
     if request.method == 'POST':
@@ -205,6 +220,8 @@ def reply_answer(request, pk):
             comment.answer = answer
             comment.posted_by = request.user
             comment.save()
+            return redirect(answer.question)
+        else:
             return redirect(answer.question)
 
 
