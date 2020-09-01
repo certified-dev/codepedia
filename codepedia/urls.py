@@ -30,7 +30,7 @@ urlpatterns = [
          views.QuestionUpdateView.as_view(), name="update_question"),
 
     # add comment to an question
-    path('question/<int:pk>//',
+    path('question/<int:pk>/reply/',
          views.comment_question, name="comment_question"),
 
 
