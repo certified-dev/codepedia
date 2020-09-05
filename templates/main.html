@@ -191,7 +191,7 @@
 <!--<script src="{% static 'vue.js' %}"></script>-->
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 <script src="{% static 'axios.min.js' %}"></script>  
-{% comment %} <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>  {% endcomment %}
+<!--<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>  -->
 <script>
 function vote(voteType, voted, voteURL) {
   var bodyFormData = new FormData();
@@ -481,8 +481,8 @@ Vue.component('answer', {
                      <small id="helpId" class="form-text text-muted">enter at least 15  characters.</small>
                    </div>
                   </div>
-                <div class="col-2 p-0 text-right">
-                 <button type="submit" class="btn btn-primary btn-sm" disabled>Add Comment</button>
+                <div class="col-2 p-0 text-center">
+                 <button type="submit" class="btn btn-primary btn-sm" disabled> Comment </button>
                 </div>
               </div>
             </div>
@@ -501,7 +501,7 @@ Vue.component('answer', {
            <div class="col-12 pl-2">
             <div class="row mb-2">
              <div class="col-5">
-               <button type="submit" class="btn btn-primary btn-sm" disabled>Add Comment</button>
+               <button type="submit" class="btn btn-primary btn-sm" disabled> Comment </button>
              </div>
             <div class="col-7 pl-0">
               <small id="helpId" class="form-text text-muted">enter at least 15 characters.</small>
