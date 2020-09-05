@@ -22,17 +22,29 @@
       </div>      
         
      <div class="col-sm-9">
-
-     {{ form.media }}
+         <div class="card mb-2">
+             <div class="card-header">
+                 <i class="fas fa-plus mr-3" id="click"></i>
+                 <a class="card-link" data-toggle="collapse"  id="question-toggle" href="#collapseQuestion">
+                    <span id="inner">Show</span> Question
+                 </a>
+             </div>
+             <div id="collapseQuestion" class="collapse hide">
+                 <div class="card-body">
+                     <p><b>{{ answer.question.title }}</b></p>
+                     <span class="laptop" style="font-size:14px">{{ answer.question.body|markdown }}</span>
+                 </div>
+             </div>
+         </div>
 
       <div class="card mb-3">
          <div class="card-body">
          <small class="mobile"><b>{{ answer.question.title }}</b></small>
-         <div class="laptop mb-3"><b>{{ answer.question.title }}</b></div>
-         <span class="laptop" style="font-size:14px">{{ answer.question.body|markdown }}</span>
-
+<!--         <div class="laptop mb-3"><b>{{ answer.question.title }}</b></div>-->
+<!--         <span class="laptop" style="font-size:14px">{{ answer.question.body|markdown }}</span>-->
          <h5 class="laptop">Answer</h5>
          <form method="post" novalidate>
+             {{ form.media }}
             {% csrf_token %}
             <small>
             {{ form|crispy }}
@@ -41,7 +53,7 @@
       </div>
     
       <div class="form-group mb-3 laptop">
-         <button type="submit" class="btn btn-primary btn-sm">
+         <button type="submit" class="btn btn-primary btn-sm" disabled>
          {% if 'update' in request.path %}
          Save Edits
          {% else %}
@@ -53,7 +65,7 @@
       </div>
 
       <div class="form-group mb-3 mobile text-center">
-         <button type="submit" class="btn btn-primary btn-sm">
+         <button type="submit" class="btn btn-primary btn-sm" disabled>
          {% if 'update' in request.path %}
          Save Edits
          {% else %}

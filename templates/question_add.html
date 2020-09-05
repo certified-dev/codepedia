@@ -26,7 +26,7 @@
       </div>
     
       <div class="form-group mb-5 laptop">
-         <button type="submit" class="btn btn-primary btn-sm">
+         <button type="submit" class="btn btn-primary btn-sm" disabled>
          {% if 'update' in request.path %}
          Save Edits
          {% else %}
@@ -38,7 +38,7 @@
       </div>
 
       <div class="form-group mb-5 mobile text-center">
-         <button type="submit" class="btn btn-primary btn-sm">
+         <button type="submit" class="btn btn-primary btn-sm" disabled>
          {% if 'update' in request.path %}
          Save Edits
          {% else %}
