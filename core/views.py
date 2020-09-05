@@ -1,4 +1,3 @@
-
 from itertools import chain
 import git
 from django.shortcuts import render, redirect, get_object_or_404
@@ -12,7 +11,7 @@ from django.utils.text import slugify
 from django.views.generic import ListView, CreateView, UpdateView, DetailView
 
 from .models import Question, Answer, Tag, User, AnswerSerializer
-from .forms import AnswerForm, CommentForm, QuestionForm, UserUpdateForm, QuestionCommentForm
+from .forms import AnswerForm, CommentForm, QuestionForm, UserUpdateForm, QuestionCommentForm, UploadPhotoForm
 
 
 @csrf_exempt
@@ -47,9 +46,8 @@ class HomeQuestionView(ListView):
 
     # filter according to user tag watch
     def get_queryset(self):
-        queryset = super(HomeQuestionView, self).get_queryset()
-        queryset = Question.objects.filter(hidden=False).order_by('-pk')[:20]
-        return queryset
+        queryset = super().get_queryset()
+        return queryset.filter(hidden=False).order_by('-pk')[:20]
 
 
 class QuestionListView(ListView):
@@ -59,9 +57,8 @@ class QuestionListView(ListView):
     paginate_by = 15
 
     def get_queryset(self):
-        queryset = super(QuestionListView, self).get_queryset()
-        queryset = Question.objects.filter(hidden=False).order_by('-posted_on')
-        return queryset
+        queryset = super().get_queryset()
+        return queryset.filter(hidden=False).order_by('-posted_on')
 
 
 @method_decorator([login_required], name="dispatch")
@@ -75,7 +72,7 @@ class QuestionCreateView(CreateView):
         self.question.asked_by = self.request.user
         self.question.slug = slugify(form.cleaned_data['title'])
         self.question.save()
-        return super(QuestionCreateView, self).form_valid(form)
+        return super().form_valid(form)
 
 
 @method_decorator([login_required], name="dispatch")
@@ -90,13 +87,17 @@ class QuestionUpdateView(UpdateView):
         self.question.updated_on = timezone.now()
         self.question.slug = slugify(form.cleaned_data['title'])
         self.question.save()
-        return super(QuestionUpdateView, self).form_valid(form)
+        return super().form_valid(form)
 
 
 class AnswerListView(ListView):
     model = Answer
     template_name = "question_answers.html"
     context_object_name = "answers"
+
+    def get_queryset(self):
+        self.question = get_object_or_404(Question, pk=self.kwargs.get('pk'))
+        return self.question.answers.order_by('posted_on')
 
     def get_context_data(self, session_key=None, **kwargs):
         session_key = 'viewed_question_{}'.format(self.question.pk)
@@ -145,12 +146,7 @@ class AnswerListView(ListView):
             'answers_serialized': answers_serialized
         }
         kwargs.update(extra_context)
-        return super(AnswerListView, self).get_context_data(**kwargs)
-
-    def get_queryset(self):
-        self.question = get_object_or_404(Question, pk=self.kwargs.get('pk'))
-        queryset = self.question.answers.order_by('posted_on')
-        return queryset
+        return super().get_context_data(**kwargs)
 
 
 @login_required
@@ -230,7 +226,7 @@ class TagListView(ListView):
     template_name = "tag_list.html"
     context_object_name = 'tags'
     paginate_by = 16
-    ordering = ('id')
+    ordering = 'id'
 
 
 class TagQuestionView(DetailView):
@@ -244,7 +240,7 @@ class UsersListView(ListView):
     template_name = "users.html"
     context_object_name = 'users'
     paginate_by = 20
-    ordering = ('-points')
+    ordering = '-points'
 
 
 class UserDetailView(DetailView):
@@ -270,17 +266,17 @@ class UserDetailView(DetailView):
         upvoted_answers = user.upvoted_answers.count()
         downvoted_answers = user.downvoted_answers.count()
         upvoted_questions = user.upvoted_questions.count()
-        downvoted_questions = user.downvoted_questions .count()
+        downvoted_questions = user.downvoted_questions.count()
 
         extra_context = {
             'user_questions': user_questions,
             'user_answers': user_answers,
-            'all_posts':  all_posts,
-            'all_posts_count':  user_answers.count() + user_questions.count(),
+            'all_posts': all_posts,
+            'all_posts_count': user_answers.count() + user_questions.count(),
             'votes': upvoted_answers + downvoted_answers + upvoted_questions + downvoted_questions
         }
         kwargs.update(extra_context)
-        return super(UserDetailView, self).get_context_data(**kwargs)
+        return super().get_context_data(**kwargs)
 
 
 @method_decorator([login_required], name="dispatch")
@@ -290,10 +286,21 @@ class UserUpdateView(UpdateView):
     template_name = "profile_edit.html"
 
     def form_valid(self, form):
-        return super(UserUpdateView, self).form_valid(form)
+        return super().form_valid(form)
 
     def form_invalid(self, form):
-        return super(UserUpdateView, self).form_invalid(form)
+        return super().form_invalid(form)
+
+
+def upload_photo(request):
+    if request.method == 'POST':
+        form = UploadPhotoForm(request.POST, request.FILES)
+        if form.is_valid():
+            request.user.display_photo = request.FILES['display_photo']
+            request.user.save()
+            return redirect('user', pk=request.user.pk)
+        else:
+            return redirect('user', pk=request.user.pk)
 
 
 def vote_question(request, pk, slug):
@@ -325,7 +332,6 @@ def update_vote(user, target, vote_type, question_or_answer):
 
 
 def vote(request, pk, question_or_answer):
-
     if not request.user.is_authenticated:
         return HttpResponse('Not logged in', status=401)
 
@@ -336,7 +342,7 @@ def vote(request, pk, question_or_answer):
     else:
         target = Answer.objects.get(pk=pk)
         if request.user.id == target.answered_by_id:
-            return HttpResponseBadRequest('Same user',  status=400)
+            return HttpResponseBadRequest('Same user', status=400)
 
     if request.method == 'POST':
         vote_type = request.POST.get('vote_type')
@@ -393,7 +399,7 @@ def vote(request, pk, question_or_answer):
         return JsonResponse({'vote_type': vote_type, 'score': score})
 
     else:
-        return HttpResponseBadRequest('The request is not POST',  status=400)
+        return HttpResponseBadRequest('The request is not POST', status=400)
 
 
 def accept(request, pk):
@@ -418,4 +424,4 @@ def accept(request, pk):
             answer.answered_by.accepted_answer_cancel()
             return JsonResponse({'accept_type': accept_type})
     else:
-        return HttpResponseBadRequest('The request is not POST',  status=400)
+        return HttpResponseBadRequest('The request is not POST', status=400)

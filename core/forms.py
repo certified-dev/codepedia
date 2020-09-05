@@ -1,10 +1,10 @@
 from django import forms
-from django.db import transaction
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
-from .models import Answer, Question, Tag, Comment, Question, Question_Comment
+from django.contrib.auth.forms import UserCreationForm
 from django_select2 import forms as s2forms
 from pagedown.widgets import PagedownWidget
+
+from .models import Answer, Comment, Question, QuestionComment
 
 User = get_user_model()
 
@@ -30,7 +30,7 @@ class RegistrationForm(UserCreationForm):
         model = User
         fields = ('username', 'email', 'password1', 'password2')
 
-    def save(seld, commit=True):
+    def save(self, commit=True):
         user = super().save(commit=False)
         user.email = self.cleaned_data['email']
         if commit:
@@ -69,14 +69,16 @@ class UserUpdateForm(forms.ModelForm):
 
 
 class QuestionForm(forms.ModelForm):
-
     class Meta:
         model = Question
         fields = ('title', 'body', 'tags')
         widgets = {
-            'title': forms.TextInput(attrs={'placeholder': 'Be specific and imagine you’re asking a question to another person'}),
-            'body': NewPageDownWidget(attrs={'rows': 8, 'placeholder': 'include all the information someone would need to answer your question'}),
-            "tags": TagsWidget(attrs={'data-width': '100%', 'data-placeholder': 'Add up to 5 tags to describe what your question is about'})
+            'title': forms.TextInput(
+                attrs={'placeholder': 'Be specific and imagine you’re asking a question to another person'}),
+            'body': NewPageDownWidget(attrs={'rows': 8,
+                                             'placeholder': 'include all the information someone would need to answer your question'}),
+            "tags": TagsWidget(attrs={'data-width': '100%',
+                                      'data-placeholder': 'Add up to 5 tags to describe what your question is about'})
         }
 
     def __init__(self, *args, **kwargs):
@@ -92,7 +94,8 @@ class AnswerForm(forms.ModelForm):
         model = Answer
         fields = ('body',)
         widgets = {
-            'body': NewPageDownWidget(attrs={'rows': 8, 'placeholder': 'make your answer as clear as possible,easy to understand'}),
+            'body': NewPageDownWidget(
+                attrs={'rows': 8, 'placeholder': 'make your answer as clear as possible,easy to understand'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -109,5 +112,11 @@ class CommentForm(forms.ModelForm):
 
 class QuestionCommentForm(forms.ModelForm):
     class Meta:
-        model = Question_Comment
+        model = QuestionComment
         fields = ('text',)
+
+
+class UploadPhotoForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('display_photo',)

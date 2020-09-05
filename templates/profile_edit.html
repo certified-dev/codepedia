@@ -34,20 +34,22 @@
         <div class="modal-body">
 
         {% if user.display_photo %}
-          <img src="{{ user.display_photo.url }}" class="rounded mb-1 img-fluid d-block mx-auto"/>
+            <img src="{{ user.display_photo.url }}" class="rounded mb-1 img-fluid d-block mx-auto" width="150" height="150"/>
         {% else %}
-         <img src="{{ user|gravatar:120 }}" class="mb-1 img-fluid d-block mx-auto" width="100" height="100">
+         <img src="{{ user|gravatar:120 }}" class="mb-1 img-fluid d-block mx-auto" width="150" height="150">
         {% endif %}         
 
-          <form enctype="multipart/form-data" method="post" novalidate>
-              <input type="file" class="form-control form-control-sm" accept="image/*" name="photo" id="id_display_photo">
+          <form enctype="multipart/form-data" method="post" action="{% url 'upload_photo' %}" novalidate>
+              {% csrf_token %}
+              <input type="file" class="form-control form-control-sm" accept="image/*" name="display_photo" id="id_display_photo">
+              <div class="text-center mt-2">
+                  <button type="submit" class="btn btn-primary">Upload</button>
+              </div>
+          </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Upload</button>
         </div>
-        </form>
-
       </div>
     </div>
   </div>
@@ -130,7 +132,7 @@
            <div class="row">
              <div class="col-3">
                 {% if user.display_photo %}
-                  <img src="{{ user.display_photo }}" class=" img-fluid d-block mx-auto pic"/>
+                  <img src="{{ user.display_photo.url }}" class=" img-fluid d-block mx-auto pic"/>
                 {% else %}
                    <img src="{{ user|gravatar:184 }}"class=" img-fluid d-block mx-auto pic"/> 
                 {% endif %}  

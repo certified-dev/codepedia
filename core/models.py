@@ -1,14 +1,11 @@
-from django.db import models
-from django.urls import reverse
+from hashlib import md5
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
-from django.utils.html import mark_safe, urlize, escape
-from functools import reduce
-from django.db.models import Q
-from rest_framework import serializers
 from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.db import models
+from django.urls import reverse
 from markdown2 import Markdown
-from hashlib import md5
+from rest_framework import serializers
 
 markdowner = Markdown(html4tags=True)
 
@@ -97,7 +94,7 @@ class Comment(models.Model):
         return self.text
 
 
-class Question_Comment(models.Model):
+class QuestionComment(models.Model):
     text = models.CharField(max_length=5000)
     posted_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

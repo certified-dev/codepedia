@@ -54,6 +54,17 @@
         $(".add_comment_question").hide();
       });
 
+       $("textarea").keyup(function() {
+         
+
+         if ( $(this).val().length > 14 ){  
+             $("button").prop("disabled",false);
+         }  else {
+                $("button").prop("disabled",true);
+         }   
+      });
+
+
       });
     </script>
     <script src="{% static 'popper.min.js' %}"></script>

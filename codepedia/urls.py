@@ -3,7 +3,6 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
-
 from core import views
 
 urlpatterns = [
@@ -63,6 +62,9 @@ urlpatterns = [
 
     path('user/<int:pk>/update/',
          views.UserUpdateView.as_view(), name="user_update"),
+
+    path('user/photo/upload/',
+         views.upload_photo, name="upload_photo"),
 
     path('tags/', views.TagListView.as_view(), name="tags"),
 
