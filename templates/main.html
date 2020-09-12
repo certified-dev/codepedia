@@ -450,8 +450,8 @@ Vue.component('answer', {
                 </div>
               </div>
 
-              <div class="col-10 pl-0 pr-2 laptop">
-                <div v-for="comment in answer.comments" class= "font-italic border-top border-bottom shaw" style="font-size:14px" hover="show()">
+              <div class="col-10 pl-0 pr-2 laptop border-bottom">
+                <div v-for="comment in answer.comments" class= "font-italic border-top shaw" style="font-size:14px" hover="show()">
                   [[ comment.text ]] - <a :href="'/user/' + comment.posted_by_id + '/profile/'" class="badge">[[ comment.posted_by ]]</a> <span class="text-secondary">[[ comment.posted_on ]]</span>
                    <span v-if="comment.posted_by == '{{ request.user.username }}'"> <span class="text-danger newt" style="display:none"> Edit  Delete</span></span>
                 </div>            
