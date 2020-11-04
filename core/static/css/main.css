@@ -9,29 +9,28 @@
   #layoutError_footer,
   #mobile-ask,
   .mobile {
-    display: none;
+    display: none; 
   }
+  /* body {
+    font-family: sans-serif;
+  } */
+  
 }
 
-/* body {
+body {
   font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
     "Lucida Sans", Arial, sans-serif;
-} */
+}
+
 a:hover {
   text-decoration: none;
 }
 footer {
-  /* background: #16222a;
-  background: -webkit-linear-gradient(59deg, #3a6073, #16222a);
-  background: linear-gradient(59deg, #3a6073, #16222a); */
   background: #343a40;
   color: white;
   margin-top: 100px;
 }
 
-footer a {
-  color: #fa944b;
-}
 
 footer ul a {
   color: #fff;
@@ -52,7 +51,7 @@ footer ul a:hover {
   color: white;
 }
 
-/*SOCİAL İCONS*/
+/*Social Icons*/
 
 /* footer social icons */
 
@@ -78,8 +77,13 @@ ul.social-network li {
   background-color: #24292e;
 }
 
+.social-network a.icoTwitter:hover {
+  background-color: #00a6da;
+}
+
 .social-network a.icoFacebook:hover i,
-.social-network a.icoGithub:hover i {
+.social-network a.icoGithub:hover i,
+.social-network a.icoTwitter:hover i {
   color: #fff;
 }
 
@@ -164,7 +168,6 @@ pre {
   margin: 15px 0;
   padding: 10px;
   color: #333;
-
   margin: 0 0 15px 0;
   padding-left: 1em;
   background-color: #eee;
@@ -173,7 +176,6 @@ pre {
 pre code {
   background-color: transparent;
   border: 0;
-
   margin: 0;
   padding: 0;
   background: transparent;
