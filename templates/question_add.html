@@ -2,18 +2,17 @@
 
 {% load static widget_tweaks crispy_forms_tags %}
 
-{% block title %}Ask a Question - Code{% endblock title %}
-
+{% block title %}{% if 'ask' in request.path %}Ask a Question{% else %} Edit{% endif %} - Code{% endblock title %}
 
 {% block content %}
 <div class="row  justify-content-center pt-3">
     <div class="col-12 mt-5 laptop">
-         <h3>Ask a Question</h3>
+         <h3>{% if 'ask' in request.path %}Ask a{% else %} Edit{% endif %} Question</h3>
       </div>      
         
      <div class="col-sm-9">
 
-     {{ form.media.css }}
+     {{ form.media }}
 
       <div class="card mb-3">
          <div class="card-body">
@@ -34,7 +33,12 @@
          {% endif %}
          </button>
          
-         <a href="{% url 'home' %}" class="btn btn-sm btn-outline-danger">Cancel</a>
+        {% if 'update' in request.path %}
+         <a href="{% url 'question_detail' question.pk question.slug %}" class="btn btn-sm btn-outline-danger">Cancel</a>
+        {% else %}
+        <a href="{% url 'question' %}" class="btn btn-sm btn-outline-danger">Cancel</a>
+        {% endif %}
+
       </div>
 
       <div class="form-group mb-5 mobile text-center">
@@ -46,7 +50,12 @@
          {% endif %}
          </button>
          
-         <a href="{% url 'home' %}" class="btn btn-sm btn-outline-danger">Cancel</a>
+         {% if 'update' in request.path %}
+           <a href="{% url 'question_detail' question.pk question.slug %}" class="btn btn-sm btn-outline-danger">Cancel</a>
+         {% else %}
+          <a href="{% url 'question' %}" class="btn btn-sm btn-outline-danger">Cancel</a>
+         {% endif %}
+         
       </div>
 
     </form>
@@ -54,33 +63,34 @@
     {{ form.media.js }}
     
     </div>
-    <div class="col-3 mt-5 laptop">
+    <div class="col-3 laptop">
        <div class="row">
-          <div class="col-12 mb-3 mt-2">
-           <div class="card shadow-sm">
-             <div class="card-header"> hello World</div>
-             <div class="card-body">
-               <p class="card-text">
-                  <ul>
-                    <li>Active item</li>
-                    <li>Item</li>
-                    <li>Disabled item</li>
-                 </ul>
-               </p>
-             </div>
-           </div>
-         </div>
-         <div class="col-12">
-           <div class="card shadow-sm">
-             <div class="card-header"> hello World</div>
-             <div class="card-body">
-               <p class="card-text">
-                  <ul>
-                    <li>Active item</li>
-                    <li>Item</li>
-                    <li>Disabled item</li>
-                 </ul>
-               </p>
+          <div class="col-12 mb-3 pr-0">
+           <div class="card shadow-sm" style="background-color:#fdf7e3">
+             <div class="card-header">How to Format</div>
+             <div class="card-body small pl-2 pr-2">
+               <p><i class="fas fa-caret-right" aria-hidden="true"></i> create code fences with backticks ` or tildes ~ </p>        
+               <pre><code> ```
+ like so
+ ``` </code></pre>
+               <p><i class="fas fa-caret-right" aria-hidden="true"></i> add language identifier to highlight code </p>
+               <pre><code> ```python
+def function(foo):
+    print(foo)
+```  </code></pre>
+               <p><i class="fas fa-caret-right" aria-hidden="true"></i> put returns between paragraphs </p>
+               <p><i class="fas fa-caret-right" aria-hidden="true"></i> <em>_italic_</em> or <b>**bold**</b> </p>
+               <p><i class="fas fa-caret-right" aria-hidden="true"></i> indent code by 4 spaces </p>
+               <p><i class="fas fa-caret-right" aria-hidden="true"></i> backtick escapes <code>`like _so_`</code></p>
+               <p><i class="fas fa-caret-right" aria-hidden="true"></i> quote by placing > at start of line</p>
+               <p class="mb-2">
+               <i class="fas fa-caret-right" aria-hidden="true"></i> to make links (use https whenever possible)
+                <br>
+                [example](https://example.com)
+             </p>
+             <span class="float-right"><a  href="#">formatting help >>></a>
+             <br>
+             <a href="#">answering help >>></a></span>
              </div>
            </div>
          </div>

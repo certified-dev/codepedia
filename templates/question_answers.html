@@ -58,7 +58,7 @@
                    <h6>{{ question.title|urlize }}</h6>
                    <br>
                    {% for tag in question.tags.all %}
-                    <small><a href="{% url 'tag_question' tag.pk %}" class="badge mb-1 mt-0">{{ tag }}</a></small>
+                    <small><a href="{% url 'tag_question' tag.pk tag.name %}" class="badge mb-1 mt-0">{{ tag }}</a></small>
                  {% endfor %}
                 </div>
               </div>
@@ -67,28 +67,31 @@
             </div>
          </div>
          
-         <div class="col-12 pr-2 pl-2 pt-1">
+         <div class="col-12 pr-2 pl-2 pt-2">
             <span style="font-size:14px">{{ question.body|markdown }}</span>
          </div>
 
          <div class="col-12 pl-2">
-  
-               <small>
-               
-               <span class="text-secondary"> 
-               <i class="fas fa-user-circle text-secondary"></i> 
-               <a href="{% url 'user' question.asked_by.pk %}">{{ question.asked_by }}</a> 
-               {% if user.is_authenticated %}
-               <span class= "text-secondary mr-1">| </span> 
-               <a class="text-secondary mr-2" href="{% url 'update_question' question.pk question.slug %}">edit</a>
-               
-               <a class="text-secondary ml-1" href="javascript:void(0)"  onclick="alert('are you sure you want to?')">delete</a>
+           <small>
+               <span class="text-secondary">
+
+               {% if question.asked_by.display_photo %}
+                <img src="{{ question.asked_by.display_photo.url }}" class="rounded mb-1 img-fluid" height="20" width="20"/>
+               {% else %}
+                <img src="{{ question.asked_by|gravatar:20 }}" class="rounded mb-1 img-fluid" />
                {% endif %}
-               <span class= "text-secondary ml-1"> | </span>
-               {{ question.posted_on|naturaltime }}</span> 
-               </span> 
-               
-               </small>
+
+               <a href="{% url 'user' question.asked_by.pk %}">{{ question.asked_by }}</a>
+               {% if user.is_authenticated %}
+               <span class= "text-secondary ">| </span>
+               <a class="text-secondary mr-1 ml-1" href="{% url 'update_question' question.pk question.slug %}">edit</a>
+                   <span class= "text-secondary"> | </span>
+               <a class="text-secondary mr-1 ml-1" href="javascript:void(0)"  onclick="alert('are you sure you want to delete this question?')">delete</a>
+               {% endif %}
+               <span class= "text-secondary"> | </span>
+               {{ question.posted_on|naturaltime }}</span>
+               </span>
+           </small>
          </div>
 
          {% if question.question_comments.count > 0 %}
@@ -117,7 +120,7 @@
            <div class="col-12 pl-2">
              <div class="row mb-2">
              <div class="col-5">
-              <button type="submit" class="btn btn-primary btn-sm" disabled> Comment </button>
+              <button type="submit" class="btn btn-primary btn-sm" disabled>Add Comment</button>
              </div>
              <div class="col-7 pl-0">
               <small id="helpId" class="form-text text-muted">enter at least 15 characters.</small>
@@ -151,7 +154,7 @@
 
                    </div>
                    <div class="col-10 pl-0">
-                     <h5 class='mt-1'>{{ question.title|urlize }}</h5>
+                     <h5 class="mt-2">{{ question.title|urlize }}</h5>
                    </div>
                 </div>
 
@@ -214,7 +217,7 @@
                <div class="col-10 pl-0">
 
                   {% for tag in question.tags.all %}
-                     <a href="{% url 'tag_question' tag.pk %}" class="badge mb-1 mt-0">{{ tag }}</a>
+                     <a href="{% url 'tag_question' tag.pk tag.name %}" class="badge mb-1 mt-0">{{ tag }}</a>
                   {% endfor %}
 
                </div>
@@ -233,7 +236,7 @@
                   <small>
                     <a class="text-secondary" href="{% url 'update_question' question.pk question.slug %}">edit</a>
                     <span class= "mr-3"></span>
-                    <a class="text-secondary" href="javascript:void(0)"  onclick="alert('are you sure you want to?')">delete</a>
+                    <a class="text-secondary" href="javascript:void(0)"  onclick="alert('are you sure you want to delete this question?')">delete</a>
                   </small>
                   {% endif %}
                   </div>
@@ -327,8 +330,8 @@
 
    <div  class="container border mb-2 mobile">
        <div class="row">
-        <div class="col-12 pt-0 pl-2 pb-1">
-        <span>{{ answers.count|intcomma }} Answers</span>
+        <div class="col-12 pt-1 pl-2 pb-1">
+        <span>{{ answers.count|intcomma }} Answer{{ answers.count|pluralize }}</span>
        </div>
        </div>
      </div>
@@ -337,12 +340,12 @@
       <div class="row">
          <div class="col pl-0 pr-0 pt-2">
 
-            <span class="pt-3">{{ answers.count|intcomma }} Answers</span>
+            <span class="pt-3">{{ answers.count|intcomma }} Answer{{ answers.count|pluralize }}</span>
 
          <small>
             <div class="btn-group float-right">
                <button type="button" class="btn btn-sm btn-outline-secondary">active</button>
-               <button type="button" class="btn btn-sm btn-outline-secondary">oldest</button>
+               <button type="button" class="btn btn-sm btn-outline-secondary active">oldest</button>
                <button type="button" class="btn btn-sm btn-outline-secondary">votes</button>
             </div>
          </small>
@@ -362,12 +365,13 @@
          {% if user.is_authenticated %}
             {% if user_answers.count > 0 %}
                <div class="col-12 mt-3">
-               <div id="answer_div">
 
-                     <a class="btn btn-sm btn-primary btn-block" id="remove" data-toggle="collapse" href="#contentId" aria-expanded="false" aria-controls="contentId">
+                 <div id="answer_div">
+                   <a class="btn btn-sm btn-primary btn-block" id="remove" data-toggle="collapse" href="#contentId" aria-expanded="false" aria-controls="contentId">
                               Add another answer
-                     </a>
-                  </div>
+                   </a>
+                 </div>
+
                </div>
                 <div class="col-12 p-0">
                      <div class="collapse" id="contentId">
@@ -376,13 +380,13 @@
                            {{ form.media }}
                            {% for field in form.visible_fields %}
                               <div class="form-group">
-                              <div class="row mobile">
-                               <div class="col-12 bg-light border-top border-bottom" >
-                              <label for="{{ field.id_for_label }}">Your Answer</label>
-                            </div>
-                           </div>
-                           <label for="{{ field.id_for_label }}" class="laptop">Your Answer</label>
-                              {{ field|add_class:'form-control' }}
+                                <div class="row mobile">
+                                  <div class="col-12 bg-light border-top border-bottom" >
+                                   <label for="{{ field.id_for_label }}" class="mobile">Your Answer</label>
+                                  </div>
+                               </div>
+                                  <label for="{{ field.id_for_label }}" class="laptop">Your Answer</label>
+                                  {{ field|add_class:'form-control' }}
                               </div>
                            {% endfor %}
 
@@ -402,23 +406,19 @@
                         {% for field in form.visible_fields %}
                            <div class="form-group">
                              <div class="row mobile">
-                               <div class="col-12 bg-light mt-1 border-top boder-bottom" >
-                              <label for="{{ field.id_for_label }}" class="mb-0">Your Answer</label>
+                               <div class="col-12 bg-light border-top border-bottom" >
+                              <label for="{{ field.id_for_label }}" class="mb-0 mobile">Your Answer</label>
                             </div>
                            </div>
                            <label for="{{ field.id_for_label }}" class="laptop">Your Answer</label>
                            {{ field|add_class:'form-control' }}
                            </div>
                         {% endfor %}
-
                         <hr class="mobile">
-
-                     <button type="submit" class="btn btn-sm btn-primary" disabled>Post Your Answer</button>
-                    
+                     <button type="submit" class="btn btn-sm btn-primary" disabled>Post Your Answer</button>     
                   </form>
                </div >
             {% endif %} 
-               
 
         {% else %}
          <div class="col-12 laptop">
@@ -432,44 +432,96 @@
      <div  class="container mb-3 laptop" >
        Not the answer you're looking for? Browse other questions tagged 
        {% for tag in question.tags.all %}
-         <a href="{% url 'tag_question' tag.pk %}" class="badge">{{ tag }}</a>
+         <a href="{% url 'tag_question' tag.pk tag.name %}" class="badge">{{ tag }}</a>
        {% endfor %}
        or  <a href="{% url 'ask_question' %}">ask your own question.</a>
      </div>
 
-
-         
       </div>
       <div class="col-3 mt-5 laptop">
        <div class="row">
-         <div class="col-12 mb-3 mt-4">
-           <div class="card shadow-sm">
-             <div class="card-header"> hello World</div>
-             <div class="card-body">
-               <p class="card-text">
-                  <ul>
-                    <li>Active item</li>
-                    <li>Item</li>
-                    <li>Disabled item</li>
-                 </ul>
-               </p>
+         <div class="col-12 mb-4 mt-4 text-right">
+          <a class="btn btn-primary" href="{% url 'ask_question' %}" role="button">Ask Question</a>
+         </div>
+           <div class="col-12 mt-2 mb-4">
+            <div class="card shadow-sm">
+              <div class="card-header">{{ users.count }} New Users</div>
+              <div class="card-body">
+                <p class="card-text">
+
+                  <div class="row">
+                     <div class="col-12 pl-2 pr-2">
+                     {% for user in users %}
+                         <a href="{% url 'user' user.pk %}">
+                         {% if user.display_photo %}
+                           <img src="{{ user.display_photo.url }}" class=" rounded mb-1 img-fluid" width="30" height="30"/>
+                           {% else %}
+                          <img src="{{ user|gravatar:30 }}" class="fluid rounded mb-1"  width="30" height="30"/>
+                         {% endif %}
+                        </a>
+
+                     {% endfor %}
+                  </div>
+                  </div>
+
+                </p>
+              </div>
+            </div>
+          </div>
+
+         <div class="col-12 mt-2 mb-4">
+             <div class="card shadow-sm" style="background-color:#fdf7e3">
+             <div class="card-header">How to Format</div>
+             <div class="card-body small pl-2 pr-2">
+               <p><i class="fas fa-caret-right" aria-hidden="true"></i> create code fences with backticks ` or tildes ~ </p>
+               <pre><code> ```
+ like so
+ ``` </code></pre>
+               <p><i class="fas fa-caret-right" aria-hidden="true"></i> add language identifier to highlight code </p>
+               <pre><code> ```python
+def function(foo):
+    print(foo)
+```  </code></pre>
+               <p><i class="fas fa-caret-right" aria-hidden="true"></i> put returns between paragraphs </p>
+               <p><i class="fas fa-caret-right" aria-hidden="true"></i> <em>_italic_</em> or <b>**bold**</b> </p>
+               <p><i class="fas fa-caret-right" aria-hidden="true"></i> indent code by 4 spaces </p>
+               <p><i class="fas fa-caret-right" aria-hidden="true"></i> backtick escapes <code>`like _so_`</code></p>
+               <p><i class="fas fa-caret-right" aria-hidden="true"></i> quote by placing > at start of line</p>
+               <p class="mb-2">
+               <i class="fas fa-caret-right" aria-hidden="true"></i> to make links (use https whenever possible)
+                <br>
+                [example](https://example.com)
+             </p>
+             <span class="float-right"><a  href="#">formatting help >>></a>
+             <br>
+             <a href="#">answering help >>></a></span>
              </div>
            </div>
          </div>
+
          <div class="col-12">
-           <div class="card shadow-sm">
-             <div class="card-header"> hello World</div>
-             <div class="card-body">
-               <p class="card-text">
-                  <ul>
-                    <li>Active item</li>
-                    <li>Item</li>
-                    <li>Disabled item</li>
-                 </ul>
-               </p>
-             </div>
+             {% if related_questions %}
+          <h4>Related</h4>
+           <div class="row">
+            {% for question in related_questions %}
+              <div class="col-12">
+                 <small>
+                 <div class="row mb-2">
+                    <div class="col-2 pt-1 pl-2">
+                       <button href="#" class="btn btn-sm btn-success disabled">{{ question.id }}</button>
+                    </div>
+                    <div class="col-9 pl-0 pr-0">
+                      <a href="{% url 'question_detail' question.pk question.slug %}">{{ question.title }}?</a>
+                    </div>
+                  </div>
+               </small>
+              </div>
+              {% endfor %} 
            </div>
+
          </div>
+         {% endif %}
+
        </div>
     </div>
   </div>

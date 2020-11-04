@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
- {% load i18n widget_tweaks static %}
+ {% load i18n widget_tweaks static crispy_forms_tags %}
  
 {% block css %}
 <style>
@@ -105,6 +105,11 @@
                             <span style="background: #fff;">OR</span>
                         </p>
 
+
+              
+                
+
+
                         {% if form.non_field_errors %}
                         <div class="alert alert-danger" role="alert">
                             {% for error in form.non_field_errors %}
@@ -116,6 +121,17 @@
                         <form id="signup_form" method="POST" action="{% url 'account_login' %}" novalidate>
                             {% csrf_token %}
 
+
+                            <!-- <div class="form-group">
+                                {{ form.login|as_crispy_field }}
+                            </div>
+                        
+                            <div class="form-group">
+                                <a class="float-right" href="{% url 'account_reset_password' %}">forgot?</a>
+                                {{ form.password|as_crispy_field }}
+                            </div> -->
+          
+
                             <div class=" form-group">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
@@ -123,10 +139,9 @@
                                     </div>
                                     <input name="login" class="form-control" placeholder="Email or Username" id="id_login" type="text" required>
                                 </div>
-                                <!-- input-group.// -->
+                                
                             </div>
-
-                            <!-- form-group// -->
+                            
                             <div class="form-group">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
@@ -134,7 +149,7 @@
                                     </div>
                                     <input name="password" class="form-control" placeholder="Password" id="id_password" type="password" required>
                                 </div>
-                                <!-- input-group.// -->
+                                
                             </div>
 
                             {% if redirect_field_value %}<input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" /> {% endif %}

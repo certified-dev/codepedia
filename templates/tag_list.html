@@ -44,7 +44,7 @@
                 <div class="container {% if forloop.last %} mb-2 {% else %} mb-1 {% endif %}  p-2 pl-2" style="border:1px solid lightgray; border-radius:4px;">
                   <div class="row pl-1 pr-2">
                       <div class="col-12 mb-2">
-                        <a href="{% url 'tag_question' tag.pk %}" class="badge">{{ tag }}</a>
+                        <a href="{% url 'tag_question' tag.pk tag.name %}" class="badge">{{ tag }}</a>
                       </div>
 
                       <div class="col-12 ml-1" >
@@ -52,7 +52,7 @@
                       </div>
 
                       <div class="col-12">
-                        <small><b><a href="{% url 'tag_question' tag.pk %}" class="text-secondary">{{ tag.question_tags.count }} questions</a></b></small>
+                        <small><b><a href="{% url 'tag_question' tag.pk tag.name %}" class="text-secondary">{{ tag.question_tags.count }} questions</a></b></small>
                       </div>
                     </div>
                 </div>
@@ -86,7 +86,7 @@
                 <div class="container {% if forloop.last %} mb-2 {% else %} mb-1 {% endif %}  p-2 pl-2" style="border:1px solid lightgray; border-radius:4px;">
                   <div class="row pl-1 pr-2">
                       <div class="col-12 mb-2 pl-2 pr-2">
-                        <a href="{% url 'tag_question' tag.pk %}" class="badge">{{ tag }}</a>
+                        <a href="{% url 'tag_question' tag.pk tag.name %}" class="badge">{{ tag }}</a>
                       </div>
 
                       <div class="col-12 ml-1 pl-2 pr-2" >
@@ -94,7 +94,7 @@
                       </div>
                      
                       <div class="col-12 pl-2 pr-2">
-                        <small><a href="{% url 'tag_question' tag.pk %}" class="text-secondary">{{ tag.question_tags.count }} questions</a></small>
+                        <small><a href="{% url 'tag_question' tag.pk tag.name %}" class="text-secondary">{{ tag.question_tags.count }} questions</a></small>
                       </div>
                     </div>
                 </div>

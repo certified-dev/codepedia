@@ -61,7 +61,7 @@
          {% endif %}
          </button>
          
-         <a href="{% url 'home' %}" class="btn btn-sm btn-outline-danger">Cancel</a>
+         <a href="{% url 'question_detail' answer.question.pk answer.question.slug %}" class="btn btn-sm btn-outline-danger">Cancel</a>
       </div>
 
       <div class="form-group mb-3 mobile text-center">
@@ -73,7 +73,7 @@
          {% endif %}
          </button>
          
-         <a href="{% url 'home' %}" class="btn btn-sm btn-outline-danger">Cancel</a>
+         <a href="{% url 'question_detail' answer.question.pk answer.question.slug %}" class="btn btn-sm btn-outline-danger">Cancel</a>
       </div>
 
     </form>
@@ -81,34 +81,36 @@
     </div>
     <div class="col-3 laptop">
        <div class="row">
-          <div class="col-12 mb-3 mt-2">
-           <div class="card shadow-sm">
-             <div class="card-header"> hello World</div>
-             <div class="card-body">
-               <p class="card-text">
-                  <ul>
-                    <li>Active item</li>
-                    <li>Item</li>
-                    <li>Disabled item</li>
-                 </ul>
-               </p>
+          <div class="col-12 mb-3 pr-0">
+           <div class="card shadow-sm" style="background-color:#fdf7e3">
+            <div class="card-header">How to Format</div>
+             <div class="card-body small pl-2 pr-2">
+               <p><i class="fas fa-caret-right" aria-hidden="true"></i> create code fences with backticks ` or tildes ~ </p>        
+               <pre><code> ```
+ like soo
+ ``` </code></pre>
+               <p><i class="fas fa-caret-right" aria-hidden="true"></i> add language identifier to highlight code </p>
+               <pre><code> ```python
+def function(foo):
+    print(foo)
+```  </code></pre>
+               <p><i class="fas fa-caret-right" aria-hidden="true"></i> put returns between paragraphs </p>
+               <p><i class="fas fa-caret-right" aria-hidden="true"></i> <em>_italic_</em> or <b>**bold**</b> </p>
+               <p><i class="fas fa-caret-right" aria-hidden="true"></i> indent code by 4 spaces </p>
+               <p><i class="fas fa-caret-right" aria-hidden="true"></i> backtick escapes <code>`like _so_`</code></p>
+               <p><i class="fas fa-caret-right" aria-hidden="true"></i> quote by placing > at start of line</p>
+               <p class="mb-2">
+               <i class="fas fa-caret-right" aria-hidden="true"></i> to make links (use https whenever possible)
+                <br>
+                [example](https://example.com)
+             </p>
+             <span class="float-right"><a  href="#">formatting help >>></a>
+             <br>
+             <a href="#">answering help >>></a></span>
              </div>
            </div>
          </div>
-         <div class="col-12">
-           <div class="card shadow-sm">
-             <div class="card-header"> hello World</div>
-             <div class="card-body">
-               <p class="card-text">
-                  <ul>
-                    <li>Active item</li>
-                    <li>Item</li>
-                    <li>Disabled item</li>
-                 </ul>
-               </p>
-             </div>
-           </div>
-         </div>
+         
        </div>
     </div>
   </div>

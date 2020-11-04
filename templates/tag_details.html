@@ -10,10 +10,7 @@
    
      <div class="col-12 mt-2">
       <h3>Questions tagged [{{ tag }}]
-
-      {% if tag.question_tags.count >= 1 %}
-      <a class="btn btn-sm btn-primary float-right" href="{% url 'ask_question' %}" role="button">Ask Question</a>
-      {% endif %}
+       <a class="btn btn-sm btn-primary float-right" href="{% url 'ask_question' %}" role="button">Ask Question</a>
       </h3>
      </div>
 
@@ -22,7 +19,7 @@
      </div>
 
       <div class="col-12 mt-1 mb-2">
-       <small class="font-weight-bold">{{ tag.question_tags.count|intcomma }} questions</small>
+       <small class="font-weight-bold">{{ tag.question_tags.count|intcomma }} question{{ tag.question_tags.count|pluralize }}</small>
      </div>
 
    </div>
@@ -49,7 +46,7 @@
                     <button type="button" class="btn btn-sm {% if question.answers.count <= 0 %}text-secondary{% endif %} {% if question.answers.count >= 1 and not question.any_answer_accepted %}btn-outline-success{% endif %} {% if question.answers.count >= 1 and question.any_answer_accepted %}btn-success{% endif %} text-center disabled">{{ question.answers.count }}<br><small>answer{{ question.answers.count|pluralize }}</small></button>
                  </div>
                  <div class="col-12 text-center pb-2">
-                      <span class="text-secondary"><small>{{ question.views }} view{{ question.views|pluralize }}</small></span>
+                    <span class="text-secondary"><small>{{ question.views }} view{{ question.views|pluralize }}</small></span>
                  </div>
              </div>
             </div>
@@ -58,13 +55,13 @@
                     <a href="{% url 'question_detail' question.pk question.slug %}">{{ question.title }}</a>
                  </div>
                  <div class="col-12 pl-0">
-                   <span style="font-size: 13px">{{ question.body|truncatewords:25 }}</span>
+                   <span style="font-size: 13px">{{ question.body|truncatechars:250 }}</span>
                  </div>
                  <div class="col-12">
                    <div class="row">
                      <div class="col-9 pl-0">
                       {% for tag in question.tags.all %}
-                       <a href="{% url 'tag_question' tag.pk %}" class="badge">{{ tag }}</a>
+                       <a href="{% url 'tag_question' tag.pk tag.name %}" class="badge">{{ tag }}</a>
                       {% endfor %}
                      </div>
                    
@@ -160,7 +157,7 @@
             <span>Tagged Questions</span>
           </div>
           <div class="col-12 pl-2">
-            <span><a href="{% url 'tag_question' tag.pk %}" class="badge mb-1 mt-0">{{ tag }}</a></span>
+            <span><a href="{% url 'tag_question' tag.pk tag.name %}" class="badge mb-1 mt-0">{{ tag }}</a></span>
           </div>
           <div class="col-12">
             <span style="font-size:15px">{{ tag.description }}</span>
@@ -191,7 +188,7 @@
                 </div>
                 <div class="col-12 pl-1 pr-1">
                    {% for tag in question.tags.all %}
-                    <small><a href="{% url 'tag_question' tag.pk %}" class="badge">{{ tag }}</a></small>
+                    <small><a href="{% url 'tag_question' tag.pk tag.name %}" class="badge">{{ tag }}</a></small>
                    {% endfor %}
                 </div>
                 <div class="col-12 pl-1 pr-1">

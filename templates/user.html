@@ -2,10 +2,11 @@
 
 {% load static humanize core_tags %}
 
-{% block title %}User - {{ user }} - Code{% endblock title %}
+{% block title %}User - {{ user_detail }} - Code{% endblock title %}
 
 
 {% block content %}
+ <!-- mobile view  -->
 <div class="text-center mobile">
   <div class="btn-group btn-group-sm mb-3">
     <a class="btn btn-sm text-secondary" href="{% url 'question' %}" role="button">Questions</a>
@@ -47,7 +48,7 @@
    </div>
 
 {% if user_detail.description %}
-   <div class="col-12 border-bottom">
+   <div class="col-12 border-bottom pt-2">
      <p>{{ user_detail.description }}</p>
    </div>
  {% endif %}
@@ -73,18 +74,12 @@
    </div>
 
  {% if user_detail.location %}
-    <div class="col-12 pb-1 border-bottom">
+    <div class="col-12 pb-1 pt-1 border-bottom">
      <i class="fas fa-search-location"></i> {{ user_detail.location }}
    </div>
  {% endif %}
 
- {% if user.username == user_detail.username %}
-   <div class="col-12 pb-2 pt-2 border-bottom">
-      <a class="btn btn-outline-info btn-block" href="{% url 'user_update' user.pk %}" role="button"><i class="fa fa-edit" aria-hidden="true"></i> Update profile</a>  
-   </div>
-  {% endif %}
-
- <div class="col-12 pb-1 border-bottom bg-light">
+ <div class="col-12 pb-1 pt-1 border-bottom bg-light">
  <span class="text-dark mb-2">Newest post{{ all_posts_count|pluralize }}({{ all_posts_count }})</span>
  </div>
  
@@ -101,15 +96,18 @@
             {% endif %}
        </div>
        {% endfor %}
-       </div>
-     
+    </div>   
+  </div>
+  {% if user.username == user_detail.username %}
+   <div class="col-12 pb-2 pt-2 border-bottom">
+      <a class="btn btn-outline-info btn-block" href="{% url 'user_update' user.pk %}" role="button"><i class="fa fa-edit" aria-hidden="true"></i> Update profile</a>  
    </div>
-  
- 
+  {% endif %}
 </div>
+ <!-- mobile view end -->
 
 
-
+ <!-- laptop view  -->
 <div class="row laptop pt-3">
     <div class="col-12 pl-5  mt-5">
         <a class="btn btn-sm btn-primary rounded-pill" href="#" role="button">Profile</a>
@@ -149,7 +147,7 @@
                 <div class="row">
                 <div class="col-12">
                    <div class="row">
-
+                   
                     <div class="col-4">
                       <div class="row">
                         <div class="col-12">
@@ -171,18 +169,16 @@
                         </div>
                       </div>
                     </div>
-
                     <div class="col-4">
                       <div class="row">
                         <div class="col-12">
                           <h5 class="mb-0"><b>{{ votes }}</b></h5>
                          </div>
                          <div class="col-12 text-secondary">
-                         votes{{ votes.count|pluralize }}
+                         vote{{ votes|pluralize }}
                         </div>
                       </div>
                     </div>
-
                 </div>
                 
                 </div>
@@ -209,29 +205,23 @@
             </div>
         </div>
         
-
-     
         <div class="row pt-3">
-            <div class="col-3 pl-5 pr-5">
-           
+            <div class="col-3 pl-5 pr-5">     
             </div>
             <div class="col-6">
                <b>Newest post{{ all_posts_count|pluralize }}</b> <span class="text-secondary">({{ all_posts_count }})</span>
                <div class="row">
                 {% for post in all_posts %}
-                    <div class="col-12 border-bottom-0 mt-1 border-bottom border-top pt-2">
-                        
-                         {% if post.is_question %}
-                         <i class="fas fa-question-circle text-secondary"></i>
-                         <a href="{% url 'question_detail' post.pk post.slug %}">{{ post }}</a> <span class="text-secondary float-right">{{ post.posted_on|naturaltime }}</span>
-                         {% else %}
-                         <i class="fas fa-reply text-secondary"></i>
-                           <a href="{% url 'question_detail' post.question.pk post.question.slug %}">{{ post.question }}</a> <span class="text-secondary float-right">{{ post.posted_on|naturaltime }}</span>
-                         {% endif %}
-                        
+                    <div class="col-12 border-bottom-0 mt-1 border-bottom border-top pt-2">   
+                      {% if post.is_question %}
+                      <i class="fas fa-question-circle text-secondary"></i>
+                      <a href="{% url 'question_detail' post.pk post.slug %}">{{ post }}</a> <span class="text-secondary float-right">{{ post.posted_on|naturaltime }}</span>
+                      {% else %}
+                      <i class="fas fa-reply text-secondary"></i>
+                        <a href="{% url 'question_detail' post.question.pk post.question.slug %}">{{ post.question }}</a> <span class="text-secondary float-right">{{ post.posted_on|naturaltime }}</span>
+                      {% endif %}                      
                     </div>
-                {% endfor %}
-                    
+                {% endfor %}              
                 </div>
             </div>
         </div>
@@ -239,6 +229,7 @@
      </div>
      </div>
    </div>
+<!-- laptop view end  -->
 
  
 {% endblock %}
