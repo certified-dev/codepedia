@@ -38,16 +38,32 @@ class RegistrationForm(UserCreationForm):
         return user
 
 
+class AddWatchedForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('watched',)
+        widgets = {
+            "watched": TagsWidget(attrs={'data-width': '100%',
+                                         'data-placeholder': 'enter at least one technology/terminology to watch for.'})
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['watched'].widget.attrs.update({'class': 'form-control-sm'})
+
+
 class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'username',
                   'title', 'location', 'description', 'email')
         widgets = {
+            'first_name': forms.TextInput(attrs={'placeholder': 'John'}),
+            'last_name': forms.TextInput(attrs={'placeholder': 'Doe'}),
             'title': forms.TextInput(attrs={'placeholder': 'No title has been set'}),
             'email': forms.TextInput(attrs={'placeholder': 'No email has been added'}),
             'location': forms.TextInput(attrs={'placeholder': 'Enter a location'}),
-            'description': NewPageDownWidget(attrs={'rows': 8, 'placeholder': ''})
+            'description': NewPageDownWidget(attrs={'rows': 8, 'placeholder': 'Say something about yourself...'})
         }
 
     def __init__(self, *args, **kwargs):
@@ -76,7 +92,8 @@ class QuestionForm(forms.ModelForm):
             'title': forms.TextInput(
                 attrs={'placeholder': 'Be specific and imagine you’re asking a question to another person'}),
             'body': NewPageDownWidget(attrs={'rows': 8,
-                                             'placeholder': 'include all the information someone would need to answer your question'}),
+                                             'placeholder': 'include all the information someone would need to answer '
+                                                            'your question'}),
             "tags": TagsWidget(attrs={'data-width': '100%',
                                       'data-placeholder': 'Add up to 5 tags to describe what your question is about'})
         }

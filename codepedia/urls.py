@@ -6,7 +6,15 @@ from django.urls import path, include
 from core import views
 
 urlpatterns = [
-    path("update_server/", views.update, name="update"),
+     path("update_server/", views.update, name="update"),
+
+    path('', include('pagedown.urls')),
+
+    path('admin/', admin.site.urls),
+
+    path('accounts/', include('allauth.urls')),
+
+    path("register/add/watched-tags/", views.add_watched, name="continue"),
 
     path("select2/", include("django_select2.urls")),
 
@@ -44,7 +52,8 @@ urlpatterns = [
     # update answer
     path('question/<int:pk>/answer/<int:answer_pk>/update/',
          views.AnswerUpdateView.as_view(), name="update_answer"),
-
+     
+     # delete answer
     path('question/answer/<int:pk>/delete/',
          views.delete_answer, name="delete_answer"),
 
@@ -68,13 +77,7 @@ urlpatterns = [
 
     path('tags/', views.TagListView.as_view(), name="tags"),
 
-    path('tagged/<int:pk>/questions/',
-         views.TagQuestionView.as_view(), name="tag_question"),
-
-    path('accounts/', include('allauth.urls')),
-
-    path('', include('pagedown.urls')),
-
-    path('admin/', admin.site.urls)
+    path('tagged/<int:pk>/<str:tag>/questions/',
+         views.TagQuestionView.as_view(), name="tag_question")
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

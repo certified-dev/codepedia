@@ -38,7 +38,6 @@ class Question(models.Model):
     views = models.PositiveIntegerField(default=0)
     posted_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(null=True, blank=True)
-    hidden = models.BooleanField(default=False)
     slug = models.SlugField(max_length=1000, null=True)
 
     def show_points(self):
@@ -121,6 +120,7 @@ class User(AbstractUser):
     title = models.CharField(max_length=100, blank="True")
     display_photo = models.ImageField(upload_to='users', blank=True)
     description = models.TextField(max_length=1000, blank=True)
+    watched = models.ManyToManyField(Tag, related_name="watched_tags")
 
     def __str__(self):
         return self.username
@@ -129,60 +129,89 @@ class User(AbstractUser):
         return reverse("user", kwargs={"pk": self.pk})
 
     def question_once_upvote_now_downvote(self):
-        self.points -= 12
-        self.save()
+        if self.points > 1:
+            self.points -= 12
+            self.save()
+        else:
+            pass
 
     def question_once_downvote_now_upvote(self):
-        self.points += 12
-        self.save()
+        if self.points < 2:
+            self.points += 10
+            self.save()
+        else:
+            self.points += 12
+            self.save()
 
     def question_vote_up(self):
         self.points += 10
         self.save()
 
     def question_vote_down(self):
-        self.points -= 2
-        self.save()
+        if self.points > 1:
+            self.points -= 2
+            self.save()
+        else:
+            pass
 
     def question_cancel_upvote(self):
-        self.points -= 10
-        self.save()
+        if self.points > 1:
+            self.points -= 10
+            self.save()
+        else:
+            pass
 
     def question_cancel_downvote(self):
         self.points += 2
         self.save()
 
     def answer_vote_down(self):
-        self.points -= 2
-        self.save()
+        if self.points > 1:
+            self.points -= 2
+            self.save()
+        else:
+            pass
 
     def answer_vote_up(self):
         self.points += 10
         self.save()
 
     def answer_cancel_upvote(self):
-        self.points -= 10
-        self.save()
+        if self.points > 1:
+            self.points -= 10
+            self.save()
+        else:
+            pass
 
     def answer_cancel_downvote(self):
         self.points += 2
         self.save()
 
     def answer_once_upvote_now_downvote(self):
-        self.points -= 12
-        self.save()
+        if self.points > 1:
+            self.points -= 12
+            self.save()
+        else:
+            pass
 
     def answer_once_downvote_now_upvote(self):
-        self.points += 12
-        self.save()
+        if self.points < 2:
+            self.points += 10
+            self.save()
+        else:
+            self.points += 12
+            self.save()
 
     def accepted_answer(self):
         self.points += 15
         self.save()
 
     def accepted_answer_cancel(self):
-        self.points -= 15
-        self.save()
+        if self.points > 1:
+            self.points -= 15
+            self.save()
+        else:
+            pass
 
 
 class UserField(serializers.Field):

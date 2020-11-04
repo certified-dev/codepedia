@@ -6,8 +6,6 @@ from .models import User, Question, Answer, Tag, Comment, QuestionComment
 
 
 admin.site.register(User)
-
-admin.site.register(Answer)
 admin.site.register(Tag)
 admin.site.register(Comment)
 admin.site.register(QuestionComment)
@@ -17,6 +15,12 @@ admin.site.unregister(Group)
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        models.TextField: {'widget': AdminPagedownWidget},
+    }
+
+@admin.register(Answer)
+class AnswerAdmin(admin.ModelAdmin):
     formfield_overrides = {
         models.TextField: {'widget': AdminPagedownWidget},
     }
