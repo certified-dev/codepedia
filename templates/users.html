@@ -4,11 +4,10 @@
 
 {% block title %}Users - Code{% endblock title %}
 
-
 {% block content %}
 
  <!-- laptop view  -->
-<div  class="container mb-1 laptop mt-5">
+<div  class="container mb-1 laptop mt-5 mb-5">
   <div class="row pt-3">
     <div class="col-12">
        <h3>Users</h3>
@@ -66,9 +65,12 @@
          {% endfor %}
        </div>
     </div>
+
+      {% if is_paginated %}
     <div class="col">
        {% include 'includes/pagination.html' %}
     </div>
+      {% endif %}
   </div>
 </div>
 <!-- laptop view end  -->
@@ -116,7 +118,8 @@
          {% endfor %}
        </div>
     </div>
-    
+
+    {% if page.obj.paginator.num_pages > 1 %}
     <div class="row">
      <div class="col mt-2 mb-3">
         <div class="pagination float-right" style="margin-bottom: 3; margin-top: 10">
@@ -136,6 +139,7 @@
         </div>
       </div>
     </div>
+    {% endif %}
 
   </div>
 </div>

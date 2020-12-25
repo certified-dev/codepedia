@@ -1,28 +1,15 @@
 {% extends "base.html" %}
 
-{% load static humanize %}
+{% load static %}
 
 {% block title %}Code - Question and Answers{% endblock title %}
 
 {% block css %}
-<style>
-  @media only screen and (max-width: 1092px) {
-  .laptop {
-    display: none;
-  }
-}
-
-@media only screen and (min-width: 1092px) {
-  .mobile {
-    display: none;
-  }
-}
-</style>
+<link type="text/css" rel="stylesheet" href="{% static 'css/main.css' %}">
 {% endblock %}
 
 {% block body %}
-<link type="text/css" rel="stylesheet" href="{% static 'css/main.css' %}">
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark pt-1 pb-1 pr-0">
   <a class="navbar-brand" href="{% url 'home' %}">
     <img src="{% static 'img/web-programming.svg' %}" alt="" class="d-inline-block align-top"  width="30" height="30">
     <b>Code</b>
@@ -38,14 +25,14 @@
 </nav>
 
 
-<div class="jumbotron mb-0">
+<div class="jumbotron mb-0 pb-4">
   <h1 class="display-3"><i class="fas fa-code"></i>Code</h1>
   <p class="lead">Mini StackOverflow Clone</p>
   <hr class="my-2">
   <h5>
-  <p>Hi, Tester<br>Welcome to my latest project, a clone of our favourite question and answer forum <b>STACKOVERFLOW</b>;</p>
+  <p>Hi, Tester <i class="fas fa-bullhorn"></i><br>Welcome to my latest project, a clone of our favourite questions and answers forum <b>STACKOVERFLOW</b>;</p>
   <p><i class="fas fa-plus"></i> Create An Account by sign up either the normal or using social signup which include github,facebook and google<br>
-  or if you already have an account, login and ask or answer away <i class="fas fa-running"></i>
+  or if you already have an account, login and ask/answer away <i class="fas fa-running"></i>
   </p>
   <p>Fell free to check it out and lemme know what you think <i class="fas fa-reply"></i></p>
   </h5>
@@ -64,14 +51,14 @@
             <div class="d-flex align-items-center justify-content-between small">
                 <div class="text-muted">Copyright &copy; Code 2020</div>
                 <div class="text-muted">
-                  <i class="fab fa-python"></i> <i class="fab fa-linux"></i> <i class="fab fa-ubuntu"></i>
+                  <i class="fab fa-python"></i> <i class="fab fa-css3"></i> <i class="fab fa-html5"></i></i>
               </div>
             </div>
         </div>
     </footer>
   </div>
 
-  <footer class="mainfooter mt-0" role="contentinfo">
+  <footer class="mainfooter laptop" role="contentinfo">
   <div class="footer-middle">
   <div class="container">
     <div class="row">
@@ -115,8 +102,8 @@
 		</div>
     </div>
 	<div class="row">
-		<div class="col-md-12 copy">
-      <p class="text-center">&copy; Copyright 2020 - Code  All rights reserved. <i class="fab fa-python"></i> <i class="fab fa-linux"></i> <i class="fab fa-ubuntu"></i></p></p>
+		<div class="col-md-12 copyright">
+      <p class="text-center">&copy; Copyright 2020 - Code  All rights reserved. <i class="fab fa-python"></i> <i class="fab fa-css3"></i> <i class="fab fa-html5"></i></i></p>
       
 		</div>
 	</div>

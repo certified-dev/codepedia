@@ -2,7 +2,7 @@
 
 {% load static humanize core_tags %}
 
-{% block title %}Newest Questions - Code {% endblock title %}
+{% block title %} {% if 'unanswered' in request.path %} Unanswered {% else %} Newest {% endif %} Questions - Code {% endblock title %}
 
 {% block content %}
 <div class="row laptop">
@@ -10,25 +10,32 @@
        <div class="container mb-2 mt-3">
     <div class="row">
       <div class="col-12 mb-3">
-        <h3>All Questions
-        <a class="btn btn-primary float-right" href="{% url 'ask_question' %}" role="button">Ask Question</a></h3> 
+        <h3>{% if 'unanswered' in request.path %} Unanswered {% else %}All{% endif %} Questions
+        <a class="btn btn-primary float-right" href="{% url 'ask_question' %}" role="button">Ask Question</a></h3>
      </div>
      <div class="col-12 mb-2">
-       {{ questions.count|intcomma }} question{{ questions.count|pluralize }}
+         <span class="pt-3">{{ questions.count|intcomma }} question{{ questions.count|pluralize }}</span>
+          <small>
+            <div class="btn-group float-right">
+                <button type="button" class="btn btn-sm btn-outline-secondary active">Newest</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary ">Active</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary"> {% if 'unanswered' in request.path %} Oldest {% else %} Unanswered {% endif %}</button>
+            </div>
+        </small>
       </div>
     </div>
   </div>
 
-  
+
     {% for question in questions %}
-  
-     <div class="container p-2 {% if not forloop.last %}border-bottom-0{% endif %}" style="border:1px solid lightgray;">
+
+     <div class="container pl-0 pb-2 pt-3 pr-2 {% if not forloop.last %}border-bottom-0{% endif %}  border-top border-left border-bottom ">
         <div class="row">
-            <div class="col-2">
+            <div class="col-2 pr-0">
                <div class="row">
                  <div class="col-12">
                     <div class="row">
-                    <div class="col-12 text-center">
+                    <div class="col-12 text-center pt-2" style="line-height: .5">
                       <span class="text-secondary">{{ question.score }}</span>
                      </div>
                       <div class="col-12 pb-1 text-center">
@@ -36,8 +43,8 @@
                      </div>
                    </div>
                  </div>
-                 <div class="col-12 text-center pb-3">
-                    <button type="button" class="btn btn-sm {% if question.answers.count <= 0 %}text-secondary{% endif %} {% if question.answers.count >= 1 and not question.any_answer_accepted %}btn-outline-success{% endif %} {% if question.answers.count >= 1 and question.any_answer_accepted %}btn-success{% endif %} text-center" disabled>{{ question.answers.count }}<br><small>answer{{ question.answers.count|pluralize }}</small></button>
+                 <div class="col-12 text-center pb-1">
+                    <button type="button" class="btn btn-sm {% if question.answers.count <= 0 %}text-secondary{% endif %} {% if question.answers.count >= 1 and not question.any_answer_accepted %}btn-outline-success{% endif %} {% if question.answers.count >= 1 and question.any_answer_accepted %}btn-success{% endif %} text-center" disabled style="font-size:1rem"><div class="row pt-2 pl-3 pr-3 justify-content-center" style="line-height: .9">{{ question.answers.count }}</div><div class="row pb-1 pl-3 pr-3"><small>answer{{ question.answers.count|pluralize }}</small></div></button>
                  </div>
                  <div class="col-12 text-center pb-2">
                       <span class="text-secondary"><small>{{ question.views }} view{{ question.views|pluralize }}</small></span>
@@ -45,10 +52,10 @@
              </div>
             </div>
             <div class="col-10 pl-0">
-               <div class="col-12 pl-0">
+               <div class="col-12 pl-0 pr-0">
                     <a href="{% url 'question_detail' question.pk question.slug %}">{{ question.title }}</a>
                  </div>
-                 <div class="col-12 pl-0">
+                 <div class="col-12 pl-0 pr-0">
                    <span style="font-size: 13px">{{ question.body|truncatechars:250 }}</span>
                  </div>
                  <div class="col-12">
@@ -58,8 +65,8 @@
                        <a href="{% url 'tag_question' tag.pk tag.name %}" class="badge">{{ tag }}</a>
                       {% endfor %}
                      </div>
-                   
-                     <div class="col-3 bg-light pb-2">
+
+                     <div class="col-3 bg-light pb-2 pl-0">
                         <div class="row">
                           <div class="col-12">
                               <span class="text-secondary"><small>{{ question.posted_on|naturaltime}}</small></span>
@@ -68,68 +75,90 @@
                             <div class="row">
                               <div class="col-3">
                                {% if question.asked_by.display_photo %}
-                                  <img src="{{ question.asked_by.display_photo.url }}"  class="rounded" width="28" height="28"/>
+                                  <img src="{{ question.asked_by.display_photo.url }}"  class="rounded" width="30" height="30"/>
                                 {% else %}
-                                  <img src="{{ question.asked_by|gravatar:28 }}" class="rounded" width="28" height="28"/>
-                                {% endif %} 
+                                  <img src="{{ question.asked_by|gravatar:30 }}" class="rounded" width="30" height="30"/>
+                                {% endif %}
                               </div>
                               <div class="col-9 p-0 pl-1">
                               <small><a href="{% url 'user' question.asked_by.pk %}">{{ question.asked_by }}</a>
-                              
+
                              <b class="text-secondary">{{ question.asked_by.points|intcomma }}</b></small>
                               </div>
                              </div>
-                                        
+
                           </div>
                        </div>
-                       
+
                      </div>
                    </div>
-                   
+
                  </div>
             </div>
         </div>
       </div>
-    
-    {% endfor %}
+         {% endfor %}
 
-    <div class="row">
-     <div class="col mt-3">
-       {% include "includes/pagination.html" %}
-     </div>
-   </div>
-
+         {% if is_paginated %}
+            <div class="row pl-3">
+               <div class="col pt-4 pb-4">
+                 {% include "includes/pagination.html" %}
+               </div>
+           </div>
+         {% endif %}
     </div>
+
+
     <div class="col-3 mt-5">
        <div class="row">
-        <div class="col-12 mb-3 mt-3">
-           <div class="card shadow-sm">
-               <div class="card-header"><i class="fas fa-greetings"></i> Welcome, <b>{{ user }}</b></div>
-             <div class="card-body">
-               <p class="card-text">
-                what would you like to do today?
-                 <p><i class="fas fa-bullhorn"></i> <a href="{% url 'ask_question' %}">Ask a question</a></p>
-                 <p><i class="fas fa-comment"></i> <a href="#">Answer questions</a></p>
-                 <p><i class="fas fa-eye"></i> <a href="{% url 'user' user.pk %}">View profile</a></p>
-               </p>
+
+           {% if user.is_authenticated %}
+            <div class="col-12 mb-3 mt-3 pr-0">
+               <div class="card shadow-sm">
+                   <div class="card-header"><i class="fas fa-greetings"></i> Welcome, <b>{{ user|upper }}</b></div>
+                 <div class="card-body">
+                   <p class="card-text">
+                    what would you like to do today?
+                     <p><i class="fas fa-bullhorn"></i> <a href="{% url 'ask_question' %}">Ask a question</a></p>
+                     <p><i class="fas fa-comment"></i> <a href="#">Answer questions</a></p>
+                     <p><i class="fas fa-eye"></i> <a href="{% url 'user' user.pk %}">View profile</a></p>
+                   </p>
+                 </div>
+               </div>
              </div>
-           </div>
-         </div>
-         <div class="col-12">
-           <ul class="list-group shadow-sm">
-               <em>
-                 <li class="list-group-item"><i class="fab fa-microsoft"></i> Microsoft</li>
-                 <li class="list-group-item"><i class="fab fa-apple"></i> Mac</li>
-                 <li class="list-group-item"><i class="fab fa-linux"></i> Linux</li>
-                 <li class="list-group-item"><i class="fab fa-java"></i> Java</li>
-                 <li class="list-group-item"><i class="fab fa-google"></i> Google</li>
-                 <li class="list-group-item"><i class="fab fa-ubuntu"></i> Ubuntu</li>
-               </em>
-           </ul>
-         </div>
-         
+
+             <div class="col-12 mb-3 pr-0">
+               <div class="card shadow-sm">
+                 <div class="card-header"><i class="fas fa-eye"></i> Watched Tags <div class="float-right"><a class="text-muted" href="{% url 'tag_edit' user.pk %}">edit</a></div></div>
+                 <div class="card-body">
+                     <p class="card-text text-center">
+                     {% for tag in user.watched.all %}
+                      <a href="{% url 'tag_question' tag.pk tag.name %}" class="badge">{{ tag }}</a>
+                      {% empty %}
+                         <em><small>No tag is being watched.</small></em>
+                     {% endfor %}
+                     </p>
+                 </div>
+               </div>
+             </div>
+
+            <div class="col-12 mb-5">
+                {% if related_tags %}
+                <h5>Related Tags</h5>
+                <div class="row">
+                    {% for tag in related_tags %}
+                    <div class="col-12 p-1 ml-2">
+                        <a href="{% url 'tag_question' tag.pk tag.name %}" class="badge">{{ tag }}</a>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+           {% endif %}
+
        </div>
     </div>
+
   </div>
 
   <div class="mobile">
@@ -139,12 +168,12 @@
        <a class="btn btn-sm text-secondary" href="{% url 'tags' %}" role="button">Tags</a>
        <a class="btn btn-sm text-secondary" href="{% url 'users' %}" role="button">Users</a>
        <a class="btn btn-sm text-secondary" href="{% url 'ask_question' %}" role="button">Ask</a>
-     </div> 
-   </div> 
+     </div>
+   </div>
 
        <div class="row mobile border-left-0 border-right-0 border-bottom-0" style="border:1px solid lightgray;">
         <div class="col-12 p-1 bg-light">
-        <span>All questions</span>
+        <span>{% if 'unanswered' in request.path %} Unanswered {% else %}All{% endif %} questions</span>
        </div>
        </div>
 
@@ -162,7 +191,7 @@
                 <div class="col-12 col-12 p-0 text-center">
                    <small class="{% if question.any_answer_accepted %}text-success{% else %}text-secondary{% endif %}">{{ question.answers.count }} <i class="fas fa-comment-dots"></i></small>
                 </div>
-              </div> 
+              </div>
            </div>
            <div class="col-10">
               <div class="row">
@@ -171,42 +200,45 @@
                 </div>
                 <div class="col-12 pl-1 pr-1">
                    {% for tag in question.tags.all %}
-                    <small><a href="{% url 'tag_question' tag.pk tag.name %}" class="badge">{{ tag }}</a></small>
+                    <small><a href="{% url 'tag_question' tag.pk tag.name %}" class="badge-mobile">{{ tag }}</a></small>
                    {% endfor %}
                 </div>
                 <div class="col-12 pl-1 pr-1">
                    <small><span class="text-secondary">{{ question.posted_on|naturaltime}}</span> <a href="{% url 'user' question.asked_by.pk %}">{{ question.asked_by }}</a></small>
                 </div>
-              </div> 
+              </div>
 
             </div>
-        </div> 
+        </div>
 
     {% endfor %}
- 
-  <div class="row">
-     <div class="col mt-2 mb-3">
-        <div class="pagination float-right" style="margin-bottom: 3; margin-top: 10">
-          <span class="step-links">
-              {% if page_obj.has_previous %}
-                  <a href="?page={{ page_obj.previous_page_number }}">&laquo; previous</a>
-              {% endif %}
 
-              <span class="current text-secondary">
-                  page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+      {% if page.obj.paginator.num_pages > 1 %}
+      <div class="row">
+         <div class="col mt-2 mb-3">
+            <div class="pagination float-right" style="margin-bottom: 3; margin-top: 10">
+              <span class="step-links">
+                  {% if page_obj.has_previous %}
+                      <a href="?page={{ page_obj.previous_page_number }}">&laquo; previous</a>
+                  {% endif %}
+
+                  <span class="current text-secondary">
+                      page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                  </span>
+
+                  {% if page_obj.has_next %}
+                      <a href="?page={{ page_obj.next_page_number }}">next &raquo;</a>
+                  {% endif %}
               </span>
-
-              {% if page_obj.has_next %}
-                  <a href="?page={{ page_obj.next_page_number }}">next &raquo;</a>
-              {% endif %}
-          </span>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      {% endif %}
 
-   </div>
+    </div>
  </div>
 {% endblock %}
+
 
 
 

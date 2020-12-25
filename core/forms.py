@@ -1,10 +1,12 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
+from django.forms import widgets
+from django.forms.fields import CharField
 from django_select2 import forms as s2forms
 from pagedown.widgets import PagedownWidget
 
-from .models import Answer, Comment, Question, QuestionComment
+from .models import Answer, Comment, Question, Tag
 
 User = get_user_model()
 
@@ -52,6 +54,13 @@ class AddWatchedForm(forms.ModelForm):
         self.fields['watched'].widget.attrs.update({'class': 'form-control-sm'})
 
 
+class AddWatched(forms.ModelForm):
+    watched = forms.ModelMultipleChoiceField(queryset=Tag.objects.all())
+    class Meta:
+        model = User
+        fields = ('watched',)
+        
+
 class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
@@ -90,12 +99,12 @@ class QuestionForm(forms.ModelForm):
         fields = ('title', 'body', 'tags')
         widgets = {
             'title': forms.TextInput(
-                attrs={'placeholder': 'Be specific and imagine you’re asking a question to another person'}),
+                attrs={'placeholder': 'Be specific and imagine you’re asking a question to another person.'}),
             'body': NewPageDownWidget(attrs={'rows': 8,
                                              'placeholder': 'include all the information someone would need to answer '
-                                                            'your question'}),
+                                                            'your question.'}),
             "tags": TagsWidget(attrs={'data-width': '100%',
-                                      'data-placeholder': 'Add up to 5 tags to describe what your question is about'})
+                                      'data-placeholder': 'Add up to 5 tags to describe what your question is about.'})
         }
 
     def __init__(self, *args, **kwargs):
@@ -112,25 +121,13 @@ class AnswerForm(forms.ModelForm):
         fields = ('body',)
         widgets = {
             'body': NewPageDownWidget(
-                attrs={'rows': 8, 'placeholder': 'make your answer as clear as possible,easy to understand'}),
+                attrs={'rows': 8, 'placeholder': 'make your answer as clear as possible,easy to understand.'}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['body'].widget.attrs.update(
             {'class': 'wmd-input pagedownwidget form-control form-control-sm'})
-
-
-class CommentForm(forms.ModelForm):
-    class Meta:
-        model = Comment
-        fields = ('text',)
-
-
-class QuestionCommentForm(forms.ModelForm):
-    class Meta:
-        model = QuestionComment
-        fields = ('text',)
 
 
 class UploadPhotoForm(forms.ModelForm):

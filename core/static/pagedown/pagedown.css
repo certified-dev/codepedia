@@ -91,17 +91,21 @@ blockquote {
 .wmd-panel {
     width: 100%;
     margin: 0;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
 }
 
 .wmd-button-bar {
     background: none;
-    width:100%;
+    margin-bottom: 10px; 
 }
+
 
 .wmd-preview{
     width: 100%;
     max-height: 400px;
     overflow-y: auto;
+    overflow-x: auto;
     box-sizing: border-box;
     padding: 12px 14px;
     margin: 20px 0 0 0;

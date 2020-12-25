@@ -2,13 +2,12 @@ from pagedown.widgets import AdminPagedownWidget
 from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.db import models
-from .models import User, Question, Answer, Tag, Comment, QuestionComment
+from .models import User, Question, Answer, Tag, Comment
 
 
 admin.site.register(User)
 admin.site.register(Tag)
 admin.site.register(Comment)
-admin.site.register(QuestionComment)
 
 admin.site.unregister(Group)
 

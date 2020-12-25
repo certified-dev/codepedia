@@ -4,15 +4,21 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest
 from django.urls import reverse
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.utils.text import slugify
 from django.views.generic import ListView, CreateView, UpdateView, DetailView
+from django.core.paginator import Paginator
+from django.core import serializers
+from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.utils.html import urlize
 
-from .models import Question, Answer, Tag, User, AnswerSerializer
-from .forms import AnswerForm, CommentForm, QuestionForm, UserUpdateForm, QuestionCommentForm, UploadPhotoForm, \
-    AddWatchedForm
+from notify.signals import notify
+
+from .models import Question, Answer, Tag, User, AnswerSerializer, Comment
+from .forms import AnswerForm, QuestionForm, UserUpdateForm, UploadPhotoForm, \
+    AddWatchedForm, AddWatched
 
 
 @csrf_exempt
@@ -40,33 +46,15 @@ def home(request):
         return redirect('home_question')
 
 
-def add_watched(request):
-    if request.method == 'POST':
-        form = AddWatchedForm(request.POST)
-        if form.is_valid():
-            user = request.user
-            user.watched.add(*form.cleaned_data.get('watched'))
-            user.save()
-            return redirect('home_question')
-
-    return redirect('home_question')
-
-
+@method_decorator([login_required], name="dispatch")
 class HomeQuestionView(ListView):
     model = Question
     context_object_name = "questions"
     template_name = "home_question.html"
 
-    def get_context_data(self, *args, **kwargs):
-        extra_context = {
-            'form': AddWatchedForm
-        }
-        kwargs.update(extra_context)
-        return super().get_context_data(**kwargs)
-
     # filter according to user tag watch
     def get_queryset(self):
-        if self.request.user.watched.count() > 1:
+        if self.request.user.watched.count() > 0:
             queryset = super().get_queryset().order_by('-posted_on')
             user_tags = self.request.user.watched.all()
 
@@ -91,6 +79,39 @@ class QuestionListView(ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.order_by('-posted_on')
+
+    def get_context_data(self, **kwargs):
+        related_tags = Tag.objects.all()[:10]
+        extra_context = {
+            'related_tags': related_tags
+        }
+        kwargs.update(extra_context)
+        return super().get_context_data(**kwargs)
+
+
+class UnansweredQuestion(ListView):
+    model = Question
+    context_object_name = "questions"
+    template_name = "question.html"
+    paginate_by = 15
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        excluded = []
+
+        for item in queryset:
+            if item.answers.count() > 0:
+                excluded.append(item.id)
+        
+        return queryset.exclude(id__in=excluded).order_by('-posted_on')
+
+    def get_context_data(self, **kwargs):
+        related_tags = Tag.objects.all()[:10]
+        extra_context = {
+            'related_tags': related_tags
+        }
+        kwargs.update(extra_context)
+        return super().get_context_data(**kwargs)
 
 
 @method_decorator([login_required], name="dispatch")
@@ -122,14 +143,6 @@ class QuestionUpdateView(UpdateView):
         return super().form_valid(form)
 
 
-@login_required
-def delete_question(request, pk):
-    question = get_object_or_404(Question, pk=pk)
-    if request.method == 'POST':
-        question.delete()
-        return redirect(question)
-
-
 class AnswerListView(ListView):
     model = Answer
     template_name = "question_answers.html"
@@ -137,15 +150,16 @@ class AnswerListView(ListView):
 
     def get_queryset(self):
         self.question = get_object_or_404(Question, pk=self.kwargs.get('pk'))
-        return self.question.answers.order_by('posted_on')
+        return self.question.answers.order_by('-posted_on')
 
-    def get_context_data(self, session_key=None, **kwargs):
+    def get_context_data(self, **kwargs):
         session_key = 'viewed_question_{}'.format(self.question.pk)
         if not self.request.session.get(session_key, False):
             self.question.views += 1
             self.question.save()
             self.request.session[session_key] = True
 
+        user_answers = None
         if self.request.user.is_authenticated:
             user_answers = self.question.answers.filter(
                 answered_by=self.request.user)
@@ -187,7 +201,7 @@ class AnswerListView(ListView):
             'upvoted': upvoted,
             'downvoted': downvoted,
             'answers_serialized': answers_serialized,
-            'related_questions': related_questions
+            'related_questions': related_questions[:15]
         }
         kwargs.update(extra_context)
         return super().get_context_data(**kwargs)
@@ -203,6 +217,10 @@ def reply_question(request, pk, slug):
             answer.question = question
             answer.answered_by = request.user
             answer.save()
+            if question.asked_by != request.user:
+                notify.send(request.user, recipient=question.asked_by, actor=request.user,
+                            verb='replied to your question', obj=question, nf_type='question_replied_on')
+
             return redirect(question)
 
         return redirect(question)
@@ -228,41 +246,50 @@ class AnswerUpdateView(UpdateView):
 
 
 @login_required
-def delete_answer(request, pk):
-    answer = get_object_or_404(Answer, pk=pk)
-    if request.method == 'POST':
-        answer.delete()
-        return redirect(answer.question)
-
-
-@login_required
-def comment_question(request, pk):
+def comment_question_ajax(request, pk):
     question = get_object_or_404(Question, pk=pk)
+    response_data = {}
+
     if request.method == 'POST':
-        form = QuestionCommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.question = question
-            comment.posted_by = request.user
-            comment.save()
-            return redirect(question)
-        else:
-            return redirect(question)
+        comment_text = request.POST.get('text')
+        comment = Comment(content_object=question,text=comment_text, posted_by=request.user)
+        comment.save()
+
+        if question.asked_by != request.user:
+                notify.send(request.user, recipient=question.asked_by, actor=request.user,
+                            verb='commented on your question', obj=question, nf_type='question_commented_on')
+
+        response_data['id'] = comment.pk
+        response_data['text_html'] = urlize(comment.text)
+        response_data['posted_by'] = comment.posted_by.username
+        response_data['posted_by_id'] = comment.posted_by.id
+        response_data['posted_on'] = naturaltime(comment.posted_on)
+
+        return JsonResponse(response_data)
 
 
 @login_required
-def reply_answer(request, pk):
+def reply_answer_ajax(request, pk):
     answer = get_object_or_404(Answer, pk=pk)
+    response_data = {}
+
     if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.answer = answer
-            comment.posted_by = request.user
-            comment.save()
-            return redirect(answer.question)
-        else:
-            return redirect(answer.question)
+        comment_text = request.POST.get('text')
+        comment = Comment(content_object=answer, text=comment_text, posted_by=request.user)    
+        comment.save()
+
+        if answer.answered_by != request.user:
+                notify.send(request.user, recipient=answer.answered_by, actor=request.user,
+                            verb='commented on your answer', obj=answer, target=answer.question,
+                            nf_type='answer_commented_on')
+
+        response_data['id'] = comment.pk
+        response_data['text_html'] = urlize(comment.text)
+        response_data['posted_by'] = comment.posted_by.username
+        response_data['posted_by_id'] = comment.posted_by.id
+        response_data['posted_on'] = naturaltime(comment.posted_on)
+
+        return JsonResponse(response_data)
 
 
 class TagListView(ListView):
@@ -277,6 +304,52 @@ class TagQuestionView(DetailView):
     model = Tag
     template_name = "tag_details.html"
     context_object_name = 'tag'
+
+    def get_context_data(self, *args, **kwargs):
+        tag = Tag.objects.get(id=self.kwargs.get('pk'))
+        questions = Question.objects.filter(tags=tag).order_by('-posted_on')
+        related_tags = super().get_queryset()[:10]
+
+        paginator = Paginator(questions, 15)
+        page_number = self.request.GET.get('page')
+        tagged_question = paginator.get_page(page_number)
+        extra_context = {
+            'questions': questions,
+            'tagged_question': tagged_question,
+            'related_tags': related_tags
+        }
+
+        kwargs.update(extra_context)
+        return super().get_context_data(**kwargs)
+
+
+@method_decorator([login_required], name="dispatch")
+class TagUpdateView(UpdateView):
+    model = User
+    form_class = AddWatchedForm
+    template_name = "tag_edit.html"
+
+    def get_context_data(self, **kwargs):
+        user_tags = self.request.user.watched.all()
+        tag_form = AddWatched
+        extra_context = {
+            'tag_form': tag_form,
+            'user_tags': user_tags
+        }
+        kwargs.update(extra_context)
+        return super().get_context_data(**kwargs)
+
+    def get_object(self):
+        return self.request.user
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        return super().form_invalid(form)
+
+    def get_success_url(self):
+        return redirect('tag_edit', pk=self.request.user.pk)
 
 
 class UsersListView(ListView):
@@ -316,7 +389,7 @@ class UserDetailView(DetailView):
             'user_questions': user_questions,
             'user_answers': user_answers,
             'all_posts': all_posts[:10],
-            'all_posts_count': user_answers.count() + user_questions.count(),
+            'all_posts_count': len(all_posts[:10]),
             'votes': upvoted_answers + downvoted_answers + upvoted_questions + downvoted_questions
         }
         kwargs.update(extra_context)
@@ -336,6 +409,7 @@ class UserUpdateView(UpdateView):
         return super().form_invalid(form)
 
 
+@login_required
 def upload_photo(request):
     if request.method == 'POST':
         form = UploadPhotoForm(request.POST, request.FILES)
@@ -368,8 +442,23 @@ def update_vote(user, target, vote_type, question_or_answer):
 
     if vote_type == 'upvote':
         upvoted_targets.add(target)
+
+        if question_or_answer == 'question':
+            notify.send(user, recipient=target.asked_by, actor=user,
+                        verb='upvoted your question', obj=target, nf_type='question_upvoted')
+        else:
+            notify.send(user, recipient=target.answered_by, actor=user,
+                        verb='upvoted your answer', obj=target, target=target.question, nf_type='answer_upvoted')
+
     elif vote_type == 'downvote':
         downvoted_targets.add(target)
+
+        if question_or_answer == 'question':
+            notify.send(user, recipient=target.asked_by, actor=user,
+                        verb='downvoted your question', obj=target, nf_type='question_downvoted')
+        else:
+            notify.send(user, recipient=target.answered_by, actor=user,
+                        verb='downvoted your answer', obj=target, target=target.question, nf_type='answer_downvoted')
 
     target.update_points()
     return target.score
@@ -392,52 +481,50 @@ def vote(request, pk, question_or_answer):
         vote_type = request.POST.get('vote_type')
 
         state = None
-        if request.user.upvoted_questions.filter(pk=target.pk).exists():
-            state = 'once_upvoted_question'
-        elif request.user.downvoted_questions.filter(pk=target.pk).exists():
-            state = 'once_downvoted_question'
-        elif request.user.upvoted_answers.filter(pk=target.pk).exists():
-            state = 'once_upvoted_answer'
-        elif request.user.downvoted_answers.filter(pk=target.pk).exists():
-            state = 'once_downvoted_answer'
+        if question_or_answer == 'question':
+            if request.user.upvoted_questions.filter(pk=target.pk).exists():
+               state = 'once_upvoted_question'
+            elif request.user.downvoted_questions.filter(pk=target.pk).exists():
+               state = 'once_downvoted_question'
+       
+        if question_or_answer == 'answer':
+            if request.user.upvoted_answers.filter(pk=target.pk).exists():
+                state = 'once_upvoted_answer'
+            elif request.user.downvoted_answers.filter(pk=target.pk).exists():
+                state = 'once_downvoted_answer'
 
         score = update_vote(request.user, target,
                             vote_type, question_or_answer)
+            
 
-        if state == 'once_upvoted_question' and vote_type == 'downvote':
+        if state == None and question_or_answer == 'question' and vote_type == 'upvote':
+            target.asked_by.question_vote_up()
+        elif state == None and question_or_answer == 'question' and vote_type == 'downvote':
+            target.asked_by.question_vote_down()
+        elif state == None and question_or_answer == 'answer' and vote_type == 'upvote':
+            target.answered_by.answer_vote_up()
+        elif state == None and question_or_answer == 'answer' and vote_type == 'downvote':
+            target.answered_by.answer_vote_down()
+        elif state == 'once_upvoted_question' and vote_type == 'downvote':
             target.asked_by.question_once_upvote_now_downvote()
+        elif state == 'once_upvoted_question' and vote_type == 'cancel_vote':
+            target.asked_by.question_cancel_upvote()
         elif state == 'once_downvoted_question' and vote_type == 'upvote':
             target.asked_by.question_once_downvote_now_upvote()
-
-        elif question_or_answer == 'question' and vote_type == 'upvote':
-            target.asked_by.question_vote_up()
-        elif question_or_answer == 'question' and vote_type == 'downvote':
-            target.asked_by.question_vote_down()
-
-        elif vote_type == 'cancel_vote' and state == 'once_upvoted_question':
-            target.asked_by.question_cancel_upvote()
-        elif vote_type == 'cancel_vote' and state == 'once_downvoted_question':
+        elif state == 'once_downvoted_question' and vote_type == 'cancel_vote':
             target.asked_by.question_cancel_downvote()
 
         elif state == 'once_upvoted_answer' and vote_type == 'downvote':
             request.user.points -= 1
             request.user.save()
             target.answered_by.answer_once_upvote_now_downvote()
+        elif state == 'once_upvoted_answer' and vote_type == 'cancel_vote':
+            target.answered_by.answer_cancel_upvote()
         elif state == 'once_downvoted_answer' and vote_type == 'upvote':
             request.user.points += 1
             request.user.save()
             target.answered_by.answer_once_downvote_now_upvote()
-
-        elif question_or_answer == 'answer' and vote_type == 'upvote':
-            target.answered_by.answer_vote_up()
-        elif question_or_answer == 'answer' and vote_type == 'downvote':
-            request.user.points -= 1
-            request.user.save()
-            target.answered_by.answer_vote_down()
-
-        elif vote_type == 'cancel_vote' and state == 'once_upvoted_answer':
-            target.answered_by.answer_cancel_upvote()
-        elif vote_type == 'cancel_vote' and state == 'once_downvoted_answer':
+        elif state == 'once_downvoted_answer' and vote_type == 'cancel_vote':
             target.answered_by.answer_cancel_downvote()
 
         return JsonResponse({'vote_type': vote_type, 'score': score})
@@ -461,6 +548,8 @@ def accept(request, pk):
             answer.accepted = True
             answer.save()
             answer.answered_by.accepted_answer()
+            notify.send(request.user, recipient=answer.answered_by, actor=request.user,
+                        verb='accepted your answer', obj=answer, target=answer.question, nf_type='answer_accepted')
             return JsonResponse({'accept_type': accept_type})
         elif accept_type == 'cancel_accept' and answer.accepted:
             answer.accepted = False

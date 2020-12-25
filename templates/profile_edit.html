@@ -6,23 +6,9 @@
 
 
 {% block content %}
-<style>
-.btn-dark {
-   border-radius: 0 0 5px 5px;
- }
-
- .pic {
-   border-radius: 5px 5px 0 0;
- }
-
- .btn-dark:hover {
-   background-color: #4a5056;
-   border: 1px solid #4a5056;
- }
-</style>
 
  <!-- Modal -->
-  <div class="modal fade" id="modelId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+  <div class="modal fade" id="Photo_modal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -47,16 +33,13 @@
               </div>
           </form>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
       </div>
     </div>
   </div>
 
 
   <div class="row mobile">
-    <div class="col-12">
+    <div class="col-12 pt-2">
       <h5>Edit profile</h5>
       <div class="card mb-2">
         <div class="card-body">
@@ -86,18 +69,14 @@
             <label for="">Email</label>
             {{ form.email }}
             </div>
-          {% comment %} <div class="form-group">
-            <label for="">About me</label>
-            {{ form.description }}
-          </div> {% endcomment %}
           <button type="submit" class="btn btn-sm btn-primary">Save changes</button>  
           <a href="{% url 'user' user.pk %}" class="btn btn-sm btn-outline-danger">Cancel</a>
           </form>       
         </div>
       </div> 
     </div>
-    <div class="col-12">
-      <button type="button" class="btn btn-outline-secondary btn-lg btn-block"  data-toggle="modal" data-target="#modelId">change picture</button>
+    <div class="col-12 pb-2">
+        <button type="button" class="btn btn-outline-secondary btn-lg btn-block"  data-toggle="modal" data-target="#Photo_modal"><i class="fas fa-image"></i> change picture</button>
     </div>
   </div>
 
@@ -111,13 +90,16 @@
       <div class="row">
         <div class="col-3">
           <div class="col-12 pt-1">
-           <small>PERSONNAL INFORMATION</small>   
+             <small class="text-primary">PERSONNAL INFORMATION</small>
           </div>
-          <div class="col-12 pt-1">
-           <small class="font-weight-bold">Edit profile</small>   
+          <div class="col-12 pt-1 mb-3">
+              <small class="font-weight-bold"><a class="text-dark" href="{% url 'user_update' user.pk %}">Edit profile</a></small>
           </div>
-          <div class="col-12 pt-1">
-           <small class="text-secondary">Others</small>   
+            <div class="col-12 pt-1">
+               <small class="text-primary">SITE SETTING</small>
+            </div>
+            <div class="col-12 pt-1">
+                <small><a href="{% url 'tag_edit' user.pk %}" class="text-dark">Tag watching</a></small>
           </div>
         </div>
         <div class="col-9">
@@ -134,9 +116,9 @@
                 {% if user.display_photo %}
                   <img src="{{ user.display_photo.url }}" class=" img-fluid d-block mx-auto pic"/>
                 {% else %}
-                   <img src="{{ user|gravatar:184 }}"class=" img-fluid d-block mx-auto pic"/> 
+                   <img src="{{ user|gravatar:190 }}"class=" img-fluid d-block mx-auto pic"/>
                 {% endif %}  
-                <button type="button" class="btn btn-dark btn-block" data-toggle="modal" data-target="#modelId">change picture</button> 
+                <button type="button" class="btn btn-dark btn-block" data-toggle="modal" data-target="#Photo_modal">change picture</button> 
              </div>
               <div class="col-6">
 
@@ -180,11 +162,13 @@
               <label for=""><b>Email</b></label>
               {{ form.email }}
             </div>
+             <script src="{% static 'jquery.min.js' %}"></script>
+             {{ form.media.js }}
           </div> 
           <div class="col-12">
             <hr/>   
           </div>
-           <div class="col-6 mt-3">
+           <div class="col-6 mt-3 mb-5">
             <button type="submit" class="btn btn-primary">Save changes</button>  
              <a href="{% url 'user' user.pk %}" class="btn btn-outline-danger">Cancel</a>  
           </div>
@@ -192,8 +176,7 @@
            </div>
         </div>
       </div>
-      <script src="{% static 'jquery.min.js' %}"></script>
-        {{ form.media.js }}
+     
      </div>
      </div>
   </div> 

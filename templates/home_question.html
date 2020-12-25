@@ -7,48 +7,17 @@
 {% block content %}
 
 {% if user.watched.count < 1 %}
-<style>
-  label {
-    display:none;
-  }
-</style>
-
-<div class="modal fade" id="modelId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+<div class="modal fade laptop" id="modelId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
-
-        <form method="post" action="{% url 'continue' %}" novalidate>
-          <div class="modal-body">
-            <h2 class="text-center font-weight-bold">ADD A TAG</h2>
-            <p class="text-center mt-3">
-              <i class="fab fa-ubuntu"></i> <i class="fab fa-linux"></i> <i class="fab fa-google"></i> <i class="fab fa-java"></i> <i class="fas fa-terminal"></i> <i class="fab fa-microsoft"></i> <i class="fab fa-facebook"></i> <i class="fab fa-github"></i> <i class="fab fa-python"></i> <i class="fas fa-code"></i> <i class="fab fa-php"></i> <i class="fab fa-apple"></i> 
-            </p>
-            <p class="text-center mt-2">
+        <div class="modal-content p-3">
+            <h3 class="text-center">Add Watch Tags</h3>
+             <p class="text-center mt-2">
              Please add at least one technology or terminology you are more interested in order to help us select relavent questions for you.
-             <br>
-             eg metasploit,ubuntu,linux,C#,ruby,flask,asp.net etc.
             </p>
-
-              {{ form.media }}
-              {% csrf_token %}
-              {{ form|crispy }}
-              
-              <script src="{% static 'jquery.min.js' %}"></script>
-              {{ form.media.js }}
-              <script>
-                $(document).ready(function() {
-                   $("#modelId").modal('show');
-                  });
-              </script>
-              
-              <div class="text-center">
-                <button type="submit" id="btn_watch" class="btn rounded-pill btn-outline-success mr-2"><i class="fas fa-check"></i></button>
-                <button type="button" class="btn rounded-pill btn-outline-danger" data-dismiss="modal" ><i class="fas fa-times"></i></button>   
+            <div class="text-center">
+                <a href="{% url 'tag_edit' user.pk %}" class="btn rounded-pill btn-outline-success mr-2"><i class="fas fa-check"></i></a>
+                <button type="button" class="btn rounded-pill btn-outline-danger" data-dismiss="modal" ><i class="fas fa-times"></i></button>
               </div>
-
-            </div>
-            </form>
-
         </div>
     </div>
 </div>
@@ -59,19 +28,31 @@
      <div class="col-9 mt-5">
       <div class="container mb-2 mt-2">
         <div class="row">
-        <div class="col-12 mb-3">
-          <h3>Top Questions 
-            <a class="btn btn-sm btn-primary float-right" href="{% url 'ask_question' %}" role="button">Ask Question</a></h3>
+        <div class="col-12 mb-3 pr-0">
+          <h3>Top Questions
+            <a class="btn btn-primary float-right mt-1" href="{% url 'ask_question' %}" role="button">Ask Question</a></h3>
         </div>
         </div>
       </div>
+
+      <div class="row">
+        <div class="col-12 mb-2">
+          <small>
+              <div class="btn-group float-right">
+                  <button type="button" class="btn btn-sm btn-outline-secondary active">Newest</button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary">Active</button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary">Votes</button>
+              </div>
+          </small>
+        </div>
+      </div>
         
-      {% for question in questions %}
-        <div  class="container p-2 {% if not forloop.last %}border-bottom-0{% endif %}" style="border:1px solid lightgray;">
+       {% for question in questions %}
+        <div  class="container p-3 pl-2 {% if not forloop.last %}border-bottom-0{% endif %} border border-right-0">
           <div class="row">
               <div class="col-3">
                 <div class="row">
-                    <div class="col-4">
+                    <div class="col-4 pt-1">
                       <div class="row">
                         <div class="col-12 text-center">
                           <span class="text-secondary">{{ question.score }}</span>
@@ -82,9 +63,9 @@
                       </div>
                     </div>
                     <div class="col-4 pl-1">
-                      <button type="button" class="btn btn-sm {% if question.answers.count <= 0 %}text-secondary{% endif %} {% if question.answers.count >= 1 and not question.any_answer_accepted %}btn-outline-success{% endif %} {% if question.answers.count >= 1 and question.any_answer_accepted %}btn-success{% endif %} text-center" disabled>{{ question.answers.count }}<br><small>answer{{ question.answers.count|pluralize }}</small></button>
+                      <button type="button" class="btn btn-sm {% if question.answers.count <= 0 %}text-secondary{% endif %} {% if question.answers.count >= 1 and not question.any_answer_accepted %}btn-outline-success{% endif %} {% if question.answers.count >= 1 and question.any_answer_accepted %}btn-success{% endif %} text-center" disabled style="font-size:1rem">{{ question.answers.count }}<br><small>answer{{ question.answers.count|pluralize }}</small></button>
                   </div>
-                  <div class="col-4"> 
+                  <div class="col-4 pt-1"> 
                       <div class="row">
                         <div class="col-12 text-center">
                           <span class="text-secondary">{{ question.views }}</span>
@@ -99,11 +80,11 @@
               <div class="col-9">
                   <div class="row">
                     <div class="col-12 pl-0">
-                      <small><b><a href="{% url 'question_detail' question.pk question.slug %}">{{ question.title }}</a></b></small>
+                      <h3 class="summary"><a href="{% url 'question_detail' question.pk question.slug %}">{{ question.title }}</h3>
                     </div>
                     <div class="col-12 pr-3 pl-0">
                       {% for tag in question.tags.all %}
-                        <a href="{% url 'tag_question' tag.pk tag.name %}" class="badge">{{ tag }}</a>
+                        <a href="{% url 'tag_question' tag.pk tag.name %}" class="badge p-1">{{ tag }}</a>
                       {% endfor %}
                       <span class="float-right text-secondary"><small>{{ question.posted_on|naturaltime}} <a href="{% url 'user' question.asked_by.pk %}">{{ question.asked_by }}</a> <b>{{ question.asked_by.points }}</b></small></span>
                   </div>
@@ -111,14 +92,21 @@
               </div>
           </div>
         </div>
-
         {% endfor %}
+       <div  class="container border-left">
+          <div class="row">
+              <div class="col-12">
+              <p class="pt-5 pb-5 pl-2">Looking for more? Browse the <a href="{% url 'question' %}">complete list of questions</a>, or <a href="{% url 'tags' %}">popular tags</a>. Help us answer <a href="{% url 'unanswered' %}">unanswered questions.</a></p>
+              </div>
+          </div>
+      </div>  
+      
     </div>
     <div class="col-3 mt-5">
        <div class="row">
-           <div class="col-12 mb-3 mt-3">
+           <div class="col-12 mb-3 mt-3 pr-0">
            <div class="card shadow-sm">
-               <div class="card-header"><i class="fas fa-greetings"></i> Welcome, <b>{{ user }}</b></div>
+               <div class="card-header"><i class="fas fa-greetings"></i> Welcome, <b>{{ user|upper }}</b></div>
              <div class="card-body">
                <p class="card-text">
                 what would you like to do today?
@@ -130,31 +118,19 @@
            </div>
          </div>
 
-         <div class="col-12 mb-3">
+         <div class="col-12 mb-3 pr-0">
            <div class="card shadow-sm">
-             <div class="card-header"><i class="fas fa-eye"></i> Watched Tags</div>
+             <div class="card-header"><i class="fas fa-eye"></i> Watched Tags <div class="float-right"><a class="text-muted" href="{% url 'tag_edit' user.pk %}">edit</a></div></div>
              <div class="card-body">
                  <p class="card-text text-center">
                  {% for tag in user.watched.all %}
-                  <a href="{% url 'tag_question' tag.pk tag.name %}" class="badge">{{ tag }}</a>
+                  <a href="{% url 'tag_question' tag.pk tag.name %}" class="badge p-1">{{ tag }}</a>
                   {% empty %}
                      <em><small>No tag is being watched.</small></em>
                  {% endfor %}
                  </p>
              </div>
            </div>
-         </div>
-         <div class="col-12">
-           <ul class="list-group shadow-sm">
-               <em>
-                 <li class="list-group-item"><i class="fab fa-microsoft"></i> Microsoft</li>
-                 <li class="list-group-item"><i class="fab fa-apple"></i> Mac</li>
-                 <li class="list-group-item"><i class="fab fa-linux"></i> Linux</li>
-                 <li class="list-group-item"><i class="fab fa-java"></i> Java</li>
-                 <li class="list-group-item"><i class="fab fa-google"></i> Google</li>
-                 <li class="list-group-item"><i class="fab fa-ubuntu"></i> Ubuntu</li>
-               </em>
-           </ul>
          </div>
        </div>
     </div>
@@ -173,8 +149,8 @@
    </div> 
 
     <div class="row border-left-0 border-right-0 border-bottom-0 " style="border:1px solid lightgray;">
-      <div class="col-12 p-1 bg-light">
-      <span>All questions</span>
+      <div class="col-12 p-1 pl-2 bg-light">
+      <span>Top questions</span>
       </div>
     </div>
          
@@ -203,7 +179,7 @@
                 </div>
                 <div class="col-12 pl-1 pr-1">
                    {% for tag in question.tags.all %}
-                    <small><a href="{% url 'tag_question' tag.pk tag.name %}" class="badge">{{ tag }}</a></small>
+                    <small><a href="{% url 'tag_question' tag.pk tag.name %}" class="badge-mobile">{{ tag }}</a></small>
                    {% endfor %}
                 </div>
                 <div class="col-12 pl-1 pr-1">

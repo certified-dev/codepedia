@@ -1,0 +1,247 @@
+{% extends "main.html" %}
+
+{% load static humanize core_tags %}
+
+{% block title %}Unanswered Questions - Code {% endblock title %}
+
+{% block content %}
+<div class="row laptop">
+     <div class="col-9 mt-5">
+       <div class="container mb-2 mt-3">
+    <div class="row">
+      <div class="col-12 mb-3">
+        <h3>All Questions
+        <a class="btn btn-primary float-right" href="{% url 'ask_question' %}" role="button">Ask Question</a></h3>
+     </div>
+     <div class="col-12 mb-2">
+         <span class="pt-3">{{ questions.count|intcomma }} question{{ questions.count|pluralize }}</span>
+          <small>
+            <div class="btn-group float-right">
+                <button type="button" class="btn btn-sm btn-outline-secondary active">Newest</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary ">Active</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary">Unanswered</button>
+            </div>
+        </small>
+      </div>
+    </div>
+  </div>
+
+
+    {% for question in questions %}
+
+     <div class="container pl-0 pb-3 pt-3 pr-2 {% if not forloop.last %}border-bottom-0{% endif %}  border-top border-left border-bottom ">
+        <div class="row">
+            <div class="col-2 pr-0">
+               <div class="row">
+                 <div class="col-12">
+                    <div class="row">
+                    <div class="col-12 text-center pt-2" style="line-height: .5">
+                      <span class="text-secondary">{{ question.score }}</span>
+                     </div>
+                      <div class="col-12 pb-1 text-center">
+                        <span class="text-secondary"><small>vote{{ question.score|pluralize }}</small></span>
+                     </div>
+                   </div>
+                 </div>
+                 <div class="col-12 text-center pb-1">
+                    <button type="button" class="btn btn-sm {% if question.answers.count <= 0 %}text-secondary{% endif %} {% if question.answers.count >= 1 and not question.any_answer_accepted %}btn-outline-success{% endif %} {% if question.answers.count >= 1 and question.any_answer_accepted %}btn-success{% endif %} text-center" disabled style="font-size:1rem"><div class="row pt-2 pl-3 pr-3 justify-content-center" style="line-height: .9">{{ question.answers.count }}</div><div class="row pb-1 pl-3 pr-3"><small>answer{{ question.answers.count|pluralize }}</small></div></button>
+                 </div>
+                 <div class="col-12 text-center pb-2">
+                      <span class="text-secondary"><small>{{ question.views }} view{{ question.views|pluralize }}</small></span>
+                 </div>
+             </div>
+            </div>
+            <div class="col-10 pl-0">
+               <div class="col-12 pl-0">
+                    <a href="{% url 'question_detail' question.pk question.slug %}">{{ question.title }}</a>
+                 </div>
+                 <div class="col-12 pl-0">
+                   <span style="font-size: 13px">{{ question.body|truncatechars:250 }}</span>
+                 </div>
+                 <div class="col-12">
+                   <div class="row">
+                     <div class="col-9 pl-0">
+                      {% for tag in question.tags.all %}
+                       <a href="{% url 'tag_question' tag.pk tag.name %}" class="badge">{{ tag }}</a>
+                      {% endfor %}
+                     </div>
+
+                     <div class="col-3 bg-light pb-2">
+                        <div class="row">
+                          <div class="col-12">
+                              <span class="text-secondary"><small>{{ question.posted_on|naturaltime}}</small></span>
+                          </div>
+                          <div class="col-12">
+                            <div class="row">
+                              <div class="col-3">
+                               {% if question.asked_by.display_photo %}
+                                  <img src="{{ question.asked_by.display_photo.url }}"  class="rounded" width="28" height="28"/>
+                                {% else %}
+                                  <img src="{{ question.asked_by|gravatar:28 }}" class="rounded" width="28" height="28"/>
+                                {% endif %}
+                              </div>
+                              <div class="col-9 p-0 pl-1">
+                              <small><a href="{% url 'user' question.asked_by.pk %}">{{ question.asked_by }}</a>
+
+                             <b class="text-secondary">{{ question.asked_by.points|intcomma }}</b></small>
+                              </div>
+                             </div>
+
+                          </div>
+                       </div>
+
+                     </div>
+                   </div>
+
+                 </div>
+            </div>
+        </div>
+      </div>
+         {% endfor %}
+
+         {% if is_paginated %}
+            <div class="row pl-3">
+               <div class="col pt-4 pb-4">
+                 {% include "includes/pagination.html" %}
+               </div>
+           </div>
+         {% endif %}
+    </div>
+
+
+    <div class="col-3 mt-5">
+       <div class="row">
+
+           {% if user.is_authenticated %}
+            <div class="col-12 mb-3 mt-3 pr-0">
+               <div class="card shadow-sm">
+                   <div class="card-header"><i class="fas fa-greetings"></i> Welcome, <b>{{ user|upper }}</b></div>
+                 <div class="card-body">
+                   <p class="card-text">
+                    what would you like to do today?
+                     <p><i class="fas fa-bullhorn"></i> <a href="{% url 'ask_question' %}">Ask a question</a></p>
+                     <p><i class="fas fa-comment"></i> <a href="#">Answer questions</a></p>
+                     <p><i class="fas fa-eye"></i> <a href="{% url 'user' user.pk %}">View profile</a></p>
+                   </p>
+                 </div>
+               </div>
+             </div>
+
+             <div class="col-12 mb-3 pr-0">
+               <div class="card shadow-sm">
+                 <div class="card-header"><i class="fas fa-eye"></i> Watched Tags <div class="float-right"><a class="text-muted" href="{% url 'tag_edit' user.pk %}">edit</a></div></div>
+                 <div class="card-body">
+                     <p class="card-text text-center">
+                     {% for tag in user.watched.all %}
+                      <a href="{% url 'tag_question' tag.pk tag.name %}" class="badge">{{ tag }}</a>
+                      {% empty %}
+                         <em><small>No tag is being watched.</small></em>
+                     {% endfor %}
+                     </p>
+                 </div>
+               </div>
+             </div>
+
+            <div class="col-12 mb-5">
+                {% if related_tags %}
+                <h5>Related Tags</h5>
+                <div class="row">
+                    {% for tag in related_tags %}
+                    <div class="col-12 p-1 ml-2">
+                        <a href="{% url 'tag_question' tag.pk tag.name %}" class="badge">{{ tag }}</a>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+           {% endif %}
+
+       </div>
+    </div>
+
+  </div>
+
+  <div class="mobile">
+   <div class="text-center mobile">
+     <div class="btn-group btn-group-sm mb-3">
+       <a class="btn btn-sm {% if 'question' in request.path %}btn-primary active{% endif %}" href="{% url 'question' %}" role="button">Questions</a>
+       <a class="btn btn-sm text-secondary" href="{% url 'tags' %}" role="button">Tags</a>
+       <a class="btn btn-sm text-secondary" href="{% url 'users' %}" role="button">Users</a>
+       <a class="btn btn-sm text-secondary" href="{% url 'ask_question' %}" role="button">Ask</a>
+     </div>
+   </div>
+
+       <div class="row mobile border-left-0 border-right-0 border-bottom-0" style="border:1px solid lightgray;">
+        <div class="col-12 p-1 bg-light">
+        <span>All questions</span>
+       </div>
+       </div>
+
+   {% for question in questions %}
+
+         <div class="row {% if not forloop.last %}border-bottom-0{% endif %} pl-0 mobile" style="border:1px solid lightgray;">
+           <div class="col-2" style="{% if question.any_answer_accepted %} background-color: #ddf1e1; {% else %} background-color: #f8f9fa; {% endif %}">
+              <div class="row">
+                <div class="col-12 p-0 text-center">
+                  <small class="text-secondary">
+                  {{ question.score }}<svg width="1.3em" height="1.3em" viewBox="0 0 16 16" class="bi bi-caret-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path fill-rule="evenodd" d="M3.204 11L8 5.519 12.796 11H3.204zm-.753-.659l4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z"/>
+</svg></small>
+                </div>
+                <div class="col-12 col-12 p-0 text-center">
+                   <small class="{% if question.any_answer_accepted %}text-success{% else %}text-secondary{% endif %}">{{ question.answers.count }} <i class="fas fa-comment-dots"></i></small>
+                </div>
+              </div>
+           </div>
+           <div class="col-10">
+              <div class="row">
+                <div class="col-12 pl-1 pr-1">
+                   <small><b><a href="{% url 'question_detail' question.pk question.slug %}">{{ question.title }}</a></b></small>
+                </div>
+                <div class="col-12 pl-1 pr-1">
+                   {% for tag in question.tags.all %}
+                    <small><a href="{% url 'tag_question' tag.pk tag.name %}" class="badge-mobile">{{ tag }}</a></small>
+                   {% endfor %}
+                </div>
+                <div class="col-12 pl-1 pr-1">
+                   <small><span class="text-secondary">{{ question.posted_on|naturaltime}}</span> <a href="{% url 'user' question.asked_by.pk %}">{{ question.asked_by }}</a></small>
+                </div>
+              </div>
+
+            </div>
+        </div>
+
+    {% endfor %}
+
+      {% if page.obj.paginator.num_pages > 1 %}
+      <div class="row">
+         <div class="col mt-2 mb-3">
+            <div class="pagination float-right" style="margin-bottom: 3; margin-top: 10">
+              <span class="step-links">
+                  {% if page_obj.has_previous %}
+                      <a href="?page={{ page_obj.previous_page_number }}">&laquo; previous</a>
+                  {% endif %}
+
+                  <span class="current text-secondary">
+                      page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                  </span>
+
+                  {% if page_obj.has_next %}
+                      <a href="?page={{ page_obj.next_page_number }}">next &raquo;</a>
+                  {% endif %}
+              </span>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+    </div>
+ </div>
+{% endblock %}
+
+
+
+
+
+    
+

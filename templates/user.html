@@ -2,7 +2,7 @@
 
 {% load static humanize core_tags %}
 
-{% block title %}User - {{ user_detail }} - Code{% endblock title %}
+{% block title %}User {{ user_detail }} - Code{% endblock title %}
 
 
 {% block content %}
@@ -117,28 +117,27 @@
     </div>
     <div class="col-12 pt-3">
         <div class="row">
-            <div class="col-3 pl-5 pr-5">
+            <div class="col-3 pl-4 pr-4">
             <div class="card">
-                <img class="card-img-top bg-light" src="" alt="">
-                <div class="card-body pb-2 text-center">
+                <div class="card-body pb-2 pl-2 pr-2 text-center">
                  {% if user_detail.display_photo %}
-                    <img src="{{ user_detail.display_photo.url }}" class="rounded mb-1 img-fluid"/>
+                    <img src="{{ user_detail.display_photo.url }}" class="rounded mb-1 img-fluid" height="170" width="170"/>
                   {% else %}
-                   <img src="{{ user_detail|gravatar:150 }}" class="rounded mb-1 img-fluid" />
+                   <img src="{{ user_detail|gravatar:170 }}" class="rounded mb-1 img-fluid" />
                   {% endif %}             
-                     <h4 class="mb-0">{{ user_detail.points|intcomma }}</h4>
+                     <h4 class="mb-0 mt-2">{{ user_detail.points|intcomma }}</h4>
                 </div>
             </div>
             </div>
             <div class="col-6">
                <div class="row">
-                <div class="col-12">
+                <div class="col-12 pl-0">
                    <h2 class="mb-0"><b>{{ user_detail.username }}</b></h2>
                 </div>
-                 <div class="col-12 text-secondary">
+                 <div class="col-12 text-secondary pl-0">
                    <h4>{{ user_detail.title }}</h4>
                 </div>
-                <div class="col-12">
+                <div class="col-12 pl-0">
                    {{ user_detail.description }}
                 </div>
             </div>
@@ -208,21 +207,39 @@
         <div class="row pt-3">
             <div class="col-3 pl-5 pr-5">     
             </div>
-            <div class="col-6">
-               <b>Newest post{{ all_posts_count|pluralize }}</b> <span class="text-secondary">({{ all_posts_count }})</span>
-               <div class="row">
+            <div class="col-9">
+              <div class="row">
+                 <div class="col-12 pl-0 pr-0 pb-1">
+                   <b>Newest post{{ all_posts_count|pluralize }}</b> <span class="text-secondary">({{ all_posts_count }})</span>
+                   <span class="small">
+                      <div class="btn-group float-right">
+                        <button type="button" class="btn btn-sm btn-outline-secondary active"><small>All</small></button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary"><small>Questions</small></button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary"><small>Answers</small></button>
+                      </div>
+                    </span>
+                 </div>
+              </div>
+               
+               <div class="row mb-5">
                 {% for post in all_posts %}
-                    <div class="col-12 border-bottom-0 mt-1 border-bottom border-top pt-2">   
+                    <div class="col-12 {% if forloop.last %}border-bottom{% endif %} border-top pt-2 pb-2 pl-0">   
                       {% if post.is_question %}
-                      <i class="fas fa-question-circle text-secondary"></i>
-                      <a href="{% url 'question_detail' post.pk post.slug %}">{{ post }}</a> <span class="text-secondary float-right">{{ post.posted_on|naturaltime }}</span>
+                      <i class="fas fa-question-circle {% if post.any_answer_accepted %} changed {% else %} unactive {% endif %}"></i>
+                      <button type="button" class="btn btn-sm {% if post.any_answer_accepted %}btn-success {% else %} btn-outline-secondary{% endif %} ml-1 mr-2" disabled style="padding: .15rem 1rem;"><small>{{ post.score }}</small></button>
+                      <a href="{% url 'question_detail' post.pk post.slug %}">{{ post|truncatechars:80 }}</a> <span class="text-secondary small float-right">{{ post.posted_on|naturaltime }}</span>
                       {% else %}
-                      <i class="fas fa-reply text-secondary"></i>
-                        <a href="{% url 'question_detail' post.question.pk post.question.slug %}">{{ post.question }}</a> <span class="text-secondary float-right">{{ post.posted_on|naturaltime }}</span>
+                      <i class="fas fa-reply {% if post.accepted %} changed {% else %} unactive {% endif %}"></i>
+                      <button type="button" class="btn btn-sm {% if post.accepted %} btn-success {% else %} btn-outline-secondary {% endif %} ml-1 mr-2" disabled style="padding: .15rem 1rem;"><small>{{ post.score }}</small></button>
+                        <a href="{% url 'question_detail' post.question.pk post.question.slug %}">{{ post.question|truncatechars:80 }}</a> <span class="text-secondary small float-right">{{ post.posted_on|naturaltime }}</span>
                       {% endif %}                      
                     </div>
-                {% endfor %}              
-                </div>
+                {% endfor %} 
+                     <div class="col-12 mt-2 pr-0">
+                      <span class="float-right small">View all <a href="#">questions</a> and <a href="#">answers</a> → </span>
+                   </div>
+                </div> 
+
             </div>
         </div>
         

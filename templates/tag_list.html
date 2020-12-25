@@ -8,19 +8,22 @@
 
 <div class="container mb-2 mt-5 laptop">
    <div class="row pt-3">
-     <div class="col-12">
-       <h3>Tag</h3>
+     <div class="col-12 pl-1 mb-2">
+       <h3>Tags</h3>
      </div>
 
-     <div class="col-12 mb-3">
-       A tag is a keyword or label that categorizes your question with other, similar questions. Using the right tags makes it easier for others to find and answer your question. 
+     <div class="col-12 mb-3 pl-1">
+       A tag is a keyword or label that categorizes your question with other, similar questions. Using the
+         <br>
+         right tags makes it easier for others to find and answer your question.
      </div>
+     
 
      <div class="col-12">
         <div class="row">
-          <div class="col-4">
+          <div class="col-4 pl-1">
               <div class="form-group">
-                <input type="text" class="form-control" placeholder="search tag">
+                <input type="text" class="form-control" placeholder="filter by tag name">
               </div>
             </div>
             <div class="col-8">
@@ -48,11 +51,11 @@
                       </div>
 
                       <div class="col-12 ml-1" >
-                        <small class="text-secondary text-break">{{ tag.description|truncatechars:100 }}</small>
+                        <small class="text-secondary text-break">{{ tag.description|truncatechars:150 }}</small>
                       </div>
 
                       <div class="col-12">
-                        <small><b><a href="{% url 'tag_question' tag.pk tag.name %}" class="text-secondary">{{ tag.question_tags.count }} questions</a></b></small>
+                        <small><a href="{% url 'tag_question' tag.pk tag.name %}" class="text-secondary">{{ tag.question_tags.count }} questions</a></small>
                       </div>
                     </div>
                 </div>
@@ -60,9 +63,12 @@
             {% endfor %}
           </div>
        </div>
+
+       {% if is_paginated %}
       <div class="col-12 mt-3">
         {% include 'includes/pagination.html' %}
      </div>
+       {% endif %}
 
    </div>
   
@@ -71,11 +77,11 @@
 
 
 <div class="row pl-2 pr-2 mb-2 mt-2 mobile">
-    <div  class="col-12 bg-light border-left-0 border-right-0" style="border:1px solid lightgray;">
+    <div  class="col-12 bg-light border p-1 pl-2">
         <span>Tags</span>
        </div>
 
-   <div class="col-12 mb-3 pt-2" style="border-bottom:1px solid lightgray;">
+   <div class="col-12 mb-3 pt-2 border-bottom" >
        <span class="">A tag is a keyword or label that categorizes your question with other, similar questions. Using the right tags makes it easier for others to find and answer your question.</span>
      </div>
           
@@ -105,7 +111,7 @@
       </div>
 
 
-   <div class="row mobile">
+   <div class="row mobile mb-3">
       <div class="col-12 pr-1 mb-2">
           <div class="pagination float-right mr-3" style="margin-bottom: 3; margin-top: 10">
          <span class="step-links">
@@ -127,6 +133,7 @@
    </div>
   
 </div>
+
 
 
 

@@ -2,20 +2,22 @@ from hashlib import md5
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.urls import reverse
+from django.utils.html import urlize
 from markdown2 import Markdown
 from rest_framework import serializers
 
 markdowner = Markdown(html4tags=True)
 
 
-def update_points_helper(obj):
+def update_score(obj):
     upvotes = obj.upvoted_users.filter(
         banned=False).distinct().count()
     downvotes = obj.downvoted_users.filter(
         banned=False).distinct().count()
-    downvotes += obj.downvoted_users.filter(is_staff=True).count()
     obj.score = upvotes - downvotes
     obj.save()
 
@@ -26,6 +28,18 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
+class Comment(models.Model):
+    content_type   = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id      = models.PositiveIntegerField()
+    content_object = GenericForeignKey()
+    text = models.CharField(max_length=5000)
+    posted_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    posted_on = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return self.text
 
 
 class Question(models.Model):
@@ -38,7 +52,8 @@ class Question(models.Model):
     views = models.PositiveIntegerField(default=0)
     posted_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(null=True, blank=True)
-    slug = models.SlugField(max_length=1000, null=True)
+    slug = models.SlugField(max_length=1000)
+    comments = GenericRelation(Comment, related_query_name="question_comments")
 
     def show_points(self):
         if self.points < 0:
@@ -47,7 +62,7 @@ class Question(models.Model):
             return self.points
 
     def update_points(self):
-        update_points_helper(self)
+        update_score(self)
 
     def any_answer_accepted(self):
         answer_accepted = False
@@ -73,54 +88,34 @@ class Answer(models.Model):
     updated_on = models.DateTimeField(null=True)
     accepted = models.BooleanField(default=False)
     hidden = models.BooleanField(default=False)
-
-    def update_points(self):
-        update_points_helper(self)
+    comments = GenericRelation(Comment, related_query_name="answer_comments")
 
     def __str__(self):
         return self.body
 
+    def update_points(self):
+        update_score(self)
 
-class Comment(models.Model):
-    text = models.CharField(max_length=5000)
-    posted_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    posted_on = models.DateTimeField(auto_now_add=True)
-    answer = models.ForeignKey(
-        Answer, on_delete=models.CASCADE, related_name="comments")
-
-    def __str__(self):
-        return self.text
-
-
-class QuestionComment(models.Model):
-    text = models.CharField(max_length=5000)
-    posted_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    posted_on = models.DateTimeField(auto_now_add=True)
-    question = models.ForeignKey(
-        Question, on_delete=models.CASCADE, related_name="question_comments")
-
-    def __str__(self):
-        return self.text
+    def get_absolute_url(self):
+        return reverse("question_detail", kwargs={"pk": self.question.pk, 'slug': self.question.slug})
 
 
 class User(AbstractUser):
     upvoted_questions = models.ManyToManyField(
-        Question, related_name="upvoted_users")
+        Question, related_name="upvoted_users", blank=True)
     downvoted_questions = models.ManyToManyField(
-        Question, related_name="downvoted_users")
+        Question, related_name="downvoted_users", blank=True)
     upvoted_answers = models.ManyToManyField(
-        Answer, related_name="upvoted_users")
+        Answer, related_name="upvoted_users", blank=True)
     downvoted_answers = models.ManyToManyField(
-        Answer, related_name="downvoted_users")
+        Answer, related_name="downvoted_users", blank=True)
     points = models.IntegerField(default=1)
     banned = models.BooleanField(default=False)
     location = models.CharField(max_length=100, blank="True")
     title = models.CharField(max_length=100, blank="True")
     display_photo = models.ImageField(upload_to='users', blank=True)
     description = models.TextField(max_length=1000, blank=True)
-    watched = models.ManyToManyField(Tag, related_name="watched_tags")
+    watched = models.ManyToManyField(Tag, related_name="watched_tags", blank=True)
 
     def __str__(self):
         return self.username
@@ -220,13 +215,17 @@ class UserField(serializers.Field):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    text_html = serializers.SerializerMethodField()
     posted_on = serializers.SerializerMethodField()
     posted_by_id = serializers.SerializerMethodField()
     posted_by = UserField()
 
     class Meta:
         model = Comment
-        fields = ('text', 'posted_by', 'posted_by_id', 'posted_on')
+        fields = ('id', 'text_html', 'posted_by', 'posted_by_id', 'posted_on')
+
+    def get_text_html(self, obj):
+        return urlize(obj.text)
 
     def get_posted_on(self, obj):
         return naturaltime(obj.posted_on)
@@ -238,6 +237,7 @@ class CommentSerializer(serializers.ModelSerializer):
 class AnswerSerializer(serializers.ModelSerializer):
     comments = CommentSerializer(many=True)
     answered_by = UserField()
+    question_owner = serializers.SerializerMethodField()
     text_html = serializers.SerializerMethodField()
     posted_on = serializers.SerializerMethodField()
     updated_on = serializers.SerializerMethodField()
@@ -247,25 +247,36 @@ class AnswerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Answer
-        fields = ('text_html', 'score', 'answered_by', 'pk', 'answered_by_points', 'answered_by_id',
+        fields = ('question_owner', 'text_html', 'score', 'answered_by', 'pk', 'answered_by_points', 'answered_by_id',
                   'posted_on', 'accepted', 'updated_on', 'comments', 'answered_by_image')
 
-    def get_text_html(self, obj):
+    @staticmethod
+    def get_question_owner(obj):
+        return obj.question.asked_by.username
+
+    @staticmethod
+    def get_text_html(obj):
         return markdowner.convert(obj.body)
 
-    def get_posted_on(self, obj):
+    @staticmethod
+    def get_posted_on(obj):
         return naturaltime(obj.posted_on)
 
-    def get_updated_on(self, obj):
+    @staticmethod
+    def get_updated_on(obj):
         return naturaltime(obj.updated_on)
 
-    def get_answered_by_points(self, obj):
+    @staticmethod
+    def get_answered_by_points(obj):
         return obj.answered_by.points
+        
 
-    def get_answered_by_id(self, obj):
+    @staticmethod
+    def get_answered_by_id(obj):
         return obj.answered_by.id
 
-    def get_answered_by_image(self, obj):
+    @staticmethod
+    def get_answered_by_image(obj):
         if obj.answered_by.display_photo:
             return obj.answered_by.display_photo.url
         else:

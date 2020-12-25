@@ -1,0 +1,138 @@
+{% extends "main.html" %}
+
+{% load static humanize core_tags crispy_forms_tags %}
+
+{% block title %}Tag watching for {{ user }} - Code{% endblock title %}
+
+{% block content %}
+<style>
+label {
+ display:none;
+}
+</style>
+
+{% comment %} <!-- Modal -->
+<div class="modal fade" id="tag-Modal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Update Watch Tags</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+      <div class="modal-body">
+
+        <form id="tag-form-mobile" method="post" novalidate>
+          {% csrf_token %}
+          {{ tag_form|crispy }}
+       </form>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-sm btn-primary" form="tag-form-mobile">Save changes</button>  
+      </div>
+    </div>
+  </div>
+</div> {% endcomment %}
+
+ 
+{% comment %} <div class="row mobile">
+  <div class="col-12">
+    <h5>Watched Tags</h5>
+    <div class="card mb-2">
+      <div class="card-body">
+            <div class="row mb-3">
+          {% for tag in user_tags %}
+              <div class="col-12 pl-3 p-1">
+                  <a href="{% url 'tag_question' tag.pk tag.name %}" class="badge p-2">{{ tag }}</a>
+              </div>
+              {% endfor %}
+            </div>
+          <button class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#tag-Modal">Update Tags</button>
+      </div>
+    </div> 
+  </div>
+</div> {% endcomment %}
+
+
+
+ <div class="row laptop pt-3">
+    <div class="col-12 pl-4 mt-5 pr-0">
+        <a class="btn btn-sm rounded-pill" href="{% url 'user' user.pk %}" role="button">Profile</a>
+         <a class="btn btn-sm btn-primary rounded-pill" href="{% url 'user_update' user.pk %}" role="button">Edit profile and settings</a>
+        <div class="float-right">
+            {{ user }}
+           {% if user.display_photo %}
+             <img src="{{ user.display_photo.url }}" class="rounded mb-1 img-fluid ml-1" width="30" height="30"/>
+           {% else %}
+             <img src="{{ user|gravatar:30 }}" class="img-fluid rounded mb-1 ml-1" width="30" height="30"/>
+            {% endif %}
+        </div>
+
+    </div>
+    <div class="col-12 pt-3">
+      <div class="row">
+        <div class="col-3">
+          <div class="col-12 pt-1">
+             <small class="text-primary">PERSONNAL INFORMATION</small>
+          </div>
+          <div class="col-12 pt-1 mb-3">
+              <small><a class="text-dark" href="{% url 'user_update' user.pk %}">Edit profile</a></small>
+          </div>
+            <div class="col-12 pt-1">
+               <small class="text-primary">SITE SETTING</small>
+            </div>
+            <div class="col-12 pt-1">
+                <small class="font-weight-bold"><a href="{% url 'tag_edit' user.pk %}" class="text-dark">Tag watching</a></small>
+          </div>
+        </div>
+        <div class="col-9">
+            <div class="row">
+                <div class="col-12 mb-2">
+                <h5>Hello, <b>{{user|capfirst}}</b></h5>
+                    <h6>You can add tags to watch out so here,You can add tags to watch out so here,You can add tags to watch out so here,You can add tags to watch out so here,You can add tags to watch out so here,You can add tags to watch out so here,You can add tags to watch out so here,You can add tags to watch out so here.</h6>
+                    <h6>You can add tags to watch out so here,add tags to watch out so here,add tags to watch out so here,add tags to watch out so here,add tags to watch out so here.add tags to watch out so here,add tags to watch out so here,add tags to watch out so here,add tags to watch out so here,add tags to watch out so here.</h6>
+                </div>
+                <div class="col-12 mb-2">
+                    <h5>Tag Watching</h5>
+                </div>
+                <div class="col-12 bg-light pt-2">
+                    <div class="row">
+                        <div class="col-10 pr-0">
+                            <form id="tag-form-laptop" method="post" novalidate>
+                                {% csrf_token %}
+                                <script src="{% static 'js/jquery.min.js' %}"></script>
+                                {{ form.media }}
+                                {{ form|crispy }}
+                            </form>
+                        </div>
+                        <div class="col-2 pr-1 pl-1">
+                             <button class="btn btn-primary btn-block" form="tag-form-laptop">Save</button>
+                        </div>
+                    </div>
+
+                  
+                    
+                </div>
+                {% for tag in user_tags %}
+                <div class="col-12 {% if not forloop.last %}border-bottom {% endif %} p-3">
+                    <a href="{% url 'tag_question' tag.pk tag.name %}" class="badge p-2">{{ tag }}</a>
+                </div>
+                {% endfor %}
+                <div class="col-12 mt-3 mb-5 pr-0 text-right">
+                    <a href="#" class="btn btn-sm btn-outline-secondary">Unsubscribe from all</a>
+                </div>
+            </div>
+        </div>
+     </div>
+     </div>
+  </div> 
+
+{% endblock %}
+
+     
+               
+            
+

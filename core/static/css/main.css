@@ -1,36 +1,329 @@
+body {
+  font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
+}
+
+/* mobile-view */
 @media only screen and (max-width: 1000px) {
   .mainfooter,
   .laptop {
     display: none;
   }
+
+  label {
+    font-weight: bold; 
+  }  
+
+  .answer-text,
+  .question-text {
+    font-size: 13px;
+  }
+
+  .answer-text pre,
+  .question-text pre {
+    font-size: 11px;
+    font-family: Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,sans-serif;
+    max-height: 200px;
+    width: auto;
+    padding: 10px;
+    background-color: #f6f6f6;
+    margin-bottom: 15px;
+    border-radius: 3px;
+    
+  } 
+
+  .mobile-answer-comment {
+    font-size: 12px;
+  }
+
+  .add-new-answer {
+    padding: .25rem .5rem;
+    font-size: .875rem;
+    line-height: 1.5;
+    border-radius: .2rem;
+
+  }
+
 }
 
+/* laptop-view */
 @media only screen and (min-width: 1000px) {
   #layoutError_footer,
   #mobile-ask,
   .mobile {
     display: none; 
   }
-  /* body {
-    font-family: sans-serif;
-  } */
+
+  label {
+    font-weight: bold; 
+    font-size: 0.9rem;
+  }
+
+  .answer-text,
+  .question-text {
+    font-size: 15px;
+  }
+
+  .answer-text pre,
+  .question-text pre {
+    font-size: 13px;
+    font-family: Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,sans-serif;
+    max-height: 500px;
+    width: auto;
+    padding: 10px;
+    background-color: #f6f6f6;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    
+  } 
+
+  .mobile-answer-comment {
+    font-size: 13px;
+  }
   
 }
 
-body {
-  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
-    "Lucida Sans", Arial, sans-serif;
+a:hover {
+   text-decoration: none;
 }
 
-a:hover {
-  text-decoration: none;
+.mr-3 .nav-link {
+    position: relative;
 }
+.nav-note {
+   position: absolute;
+    top: 45px;
+    right: 100px;
+    background-color:#fff;
+    z-index: 999;
+    overflow:auto;
+}
+
+
+.notify-red {
+    position: absolute;
+    top: 4px;
+    right: 2px;
+    padding: 0px 3px;
+    background-color: red;
+    border-radius: 3px;
+    z-index: 999;
+    display: inline-block;
+    font-size: 60%;
+    color: #fff;
+
+}
+
+.notify-green {
+    position: absolute;
+     top: 4px;
+    right: 2px;
+    padding: 0px 3px;
+    background-color: #28a745;
+    border-radius: 3px;
+    z-index: 999;
+    display: inline-block;
+    font-size: 60%;
+    color: #fff;
+}
+
+.popup-container {
+  position: relative;
+  display: none;
+}
+
+#inbox-row,
+#achievement-row,
+#menu  {
+  display: none;
+  position: absolute;
+  z-index: 999;
+  background-color:white;
+}
+
+.badge {
+  font-weight: 400;
+  background-color: #e1ecf4;
+  color: #39739d;
+  font-size: 80%;
+  padding: .4em .5em;
+}
+
+.badge-mobile {
+  font-weight: 400;
+  background-color: #e1ecf4;
+  color: #39739d;
+  font-size: 80%;
+  padding: .4em .5em;
+  border-radius: 0px;
+}
+
+.summary {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.btn-success:disabled {
+  background-color: #5eba7d;
+  border-color: #5eba7d;
+}
+
+.btn-outline-success:disabled {
+  border-color: #5eba7d;
+  color: #5eba7d;
+}
+
+.btn:disabled {
+  opacity: unset;
+}
+
+.btn-dark {
+  border-radius: 0 0 5px 5px;
+}
+
+.pic {
+  border-radius: 5px 5px 0 0;
+}
+
+.btn-dark:hover {
+  background-color: #4a5056;
+  border: 1px solid #4a5056;
+}
+
+a.done:link,
+a.done:hover,
+a.done:visited,
+a.done:active {
+  color: #f48024 !important;
+}
+
+
+a.checked:link,
+a.checked:hover,
+a.checked:visited,
+a.checked:active {
+  color: #48a868 !important;
+}
+
+a.undone {
+  color: #bbc0c4;
+}
+
+.unactive,
+.btn-outline-secondary {
+  color: #bbc0c4;
+}
+
+.btn-outline-secondary {
+  border-color: #bbc0c4;
+}
+
+.changed {
+  color: #72c585;
+}
+
+span.pt-3 {
+font-size:1.2rem;
+}
+
+.highlighted {
+  background-color: #e1ecf4;
+  padding: 1px 5px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.answer-comment,
+.activate-update {
+  font-size: 13px;
+}
+
+
+a code {
+  color: #447e9b;
+}
+
+
+.answer-text pre code,
+.question-text pre code {
+  background-color: transparent;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  overflow-x: unset;
+}
+
+.format-text pre {
+  font-size: 13px;
+  font-family: Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,sans-serif;
+  background-color: #f6f6f6;
+  border-radius: 5px;
+
+} 
+
+.small.format-text {
+  font-size: 85%;
+}
+
+.format-text pre code {
+  background-color: transparent;
+  background: transparent;
+}
+
+.related-side-bar {
+  font-size: 14px;
+}
+
+#mobile-inbox {
+    background-color: red;
+    border-radius: 3px;
+    display: inline-block;
+    padding: 1px 6px;
+    font-size: 70%;
+    color: #fff;
+    margin-bottom:5px;
+
+}
+
+#mobile-achievement {
+    background-color: #28a745;
+    border-radius: 3px;
+    display: inline-block;
+    padding: 1px 4px;
+    font-size: 70%;
+    color: #fff;
+
+}
+
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+  border-color: #80bdff !important;
+  box-shadow: 0 0 0 .2rem rgba(0,123,255,.25);
+}
+
+select2-results__option {
+  color: gray;
+}
+
+#layoutError {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+#layoutError #layoutError_content {
+  min-width: 0;
+  flex-grow: 1;
+}
+
+#layoutError #layoutError_footer {
+  min-width: 0;
+}
+
 footer {
   background: #343a40;
   color: white;
-  margin-top: 100px;
 }
-
 
 footer ul a {
   color: #fff;
@@ -40,7 +333,7 @@ footer ul a:hover {
   text-decoration: none;
 }
 
-.copy {
+.copyright {
   font-size: 12px;
   padding: 10px;
   border-top: 1px solid #ffffff;
@@ -50,10 +343,6 @@ footer ul a:hover {
   padding-top: 2em;
   color: white;
 }
-
-/*Social Icons*/
-
-/* footer social icons */
 
 ul.social-network {
   list-style: none;
@@ -66,8 +355,6 @@ ul.social-network li {
   display: inline;
   margin: 0 5px;
 }
-
-/* footer social icons */
 
 .social-network a.icoFacebook:hover {
   background-color: #3b5998;
@@ -135,62 +422,4 @@ ul.social-network li {
 
 .social-network a {
   background-color: #f9f9f9;
-}
-
-.badge {
-  background-color: #e1ecf4;
-  color: #39739d;
-}
-a.done:link,
-a.done:hover,
-a.done:visited,
-a.done:active {
-  color: forestgreen !important;
-}
-code {
-  margin: 2px;
-  padding: 0px 3px;
-  border: 1px solid #ddd;
-  background-color: #f8f8f8;
-  border-radius: 2px;
-  color: #444;
-  font-size: 95%;
-}
-a code {
-  color: #447e9b;
-}
-
-/* Block code */
-pre {
-  white-space: pre;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  margin: 15px 0;
-  padding: 10px;
-  color: #333;
-  margin: 0 0 15px 0;
-  padding-left: 1em;
-  background-color: #eee;
-}
-
-pre code {
-  background-color: transparent;
-  border: 0;
-  margin: 0;
-  padding: 0;
-  background: transparent;
-  border: none;
-}
-
-#layoutError {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-#layoutError #layoutError_content {
-  min-width: 0;
-  flex-grow: 1;
-}
-#layoutError #layoutError_footer {
-  min-width: 0;
 }
