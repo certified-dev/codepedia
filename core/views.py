@@ -248,6 +248,7 @@ class AnswerUpdateView(UpdateView):
 @login_required
 def comment_question_ajax(request, pk):
     question = get_object_or_404(Question, pk=pk)
+    last_comment = Comment.objects.filter(question_comments=question).last()
     response_data = {}
 
     if request.method == 'POST':
@@ -264,6 +265,10 @@ def comment_question_ajax(request, pk):
         response_data['posted_by'] = comment.posted_by.username
         response_data['posted_by_id'] = comment.posted_by.id
         response_data['posted_on'] = naturaltime(comment.posted_on)
+        if last_comment is None:
+            response_data['last_comment'] = "null"
+        else:
+            response_data['last_comment'] = last_comment.id
 
         return JsonResponse(response_data)
 
@@ -271,6 +276,9 @@ def comment_question_ajax(request, pk):
 @login_required
 def reply_answer_ajax(request, pk):
     answer = get_object_or_404(Answer, pk=pk)
+    last_comment = Comment.objects.filter(answer_comments=answer).last()
+
+    print()
     response_data = {}
 
     if request.method == 'POST':
@@ -288,6 +296,10 @@ def reply_answer_ajax(request, pk):
         response_data['posted_by'] = comment.posted_by.username
         response_data['posted_by_id'] = comment.posted_by.id
         response_data['posted_on'] = naturaltime(comment.posted_on)
+        if last_comment is None:
+            response_data['last_comment'] = "null"
+        else:
+            response_data['last_comment'] = last_comment.id
 
         return JsonResponse(response_data)
 
@@ -364,6 +376,8 @@ class UserDetailView(DetailView):
     model = User
     template_name = "user.html"
     context_object_name = 'user_detail'
+    slug_field = 'username'
+    slug_url_kwarg = 'username'
 
     def get_context_data(self, *args, **kwargs):
         user_questions = Question.objects.filter(

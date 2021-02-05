@@ -69,7 +69,7 @@
             <ul class="navbar-nav ml-auto">
 
                 <div class="nav-item mr-2">
-                    <a class="nav-link" href="{% url 'user' user.pk %}">
+                    <a class="nav-link" href="{% url 'user' user.pk user.username %}">
                         {% if user.display_photo %}
                          <img src="{{ user.display_photo.url }}" class="img-fluid rounded mb-1" width="27" height="27"/>
                         {% else %}
@@ -136,7 +136,7 @@
 
 <!--mobile-->
 <div id="nav-anchor" class="mobile">
-    <nav class="navbar {% if user.is_authenticated %}bg-dark navbar-dark {% else %}bg-light navbar-light {% endif %} pt-0 pb-0 pr-0">
+    <nav class="navbar {% if user.is_authenticated %}bg-dark navbar-dark {% else %}bg-light navbar-light {% endif %} pt-1 pb-1 pr-0">
         <a class="navbar-brand p-1"  href="{% url 'home' %}">
             <img src="{% static 'img/code.svg' %}" alt="" width="30" height="30">
         </a>
@@ -144,10 +144,10 @@
         {% if user.is_authenticated %}
         <div class="form-inline ml-auto">
             <div id="menu-link" class="nav-item mr-1">
-                <a class="nav-link text-secondary pr-2 pl-2" id="menu-click" href="javascript:void(0)"><i class="fas fa-bars"></i></a>
+                <a class="nav-link text-secondary pr-3 pl-3" id="menu-click" href="javascript:void(0)"><i class="fas fa-bars"></i></a>
             </div>
             <div id="inbox-link" class="nav-item mr-1">
-                <a class="nav-link text-secondary pr-2 pl-2" id="inbox" href="javascript:void(0)">
+                <a class="nav-link text-secondary pr-3 pl-3" id="inbox" href="javascript:void(0)">
 
                     {% if request.user.notifications.active.count > 0 %}
                     <span id="mobile-inbox">{{ request.user.notifications.active.count }}</span>
@@ -158,7 +158,7 @@
                 </a>
             </div>
             <div id="achievement-link" class="nav-item">
-                <a class="nav-link text-secondary mr-0 pr-2 pl-2" id="achievement" href="javascript:void(0)">
+                <a class="nav-link text-secondary mr-0 pr-3 pl-3" id="achievement" href="javascript:void(0)">
 
                     {% if user_notifications %}
                     <span id="mobile-achievement">+25</span>
@@ -187,67 +187,11 @@
 {% if user.is_authenticated %}
  <div id="popup-container" class="container mobile" style="display:none">
     <div class="row mt-5 pt-5 shadow-sm">
+        <div id="inbox-row" class="col-12 border-bottom small p-2"></div>
+        
+        <div id="achievement-row" class="col-12 border-bottom small p-2"></div>
 
-        <div id="inbox-row" class="col-12 border-bottom small p-2">
-            <!-- <div class="row">
-              <div class="col-12">
-                <div class="row">
-                  <div class="col-2 pr-2 text-center">
-                    <i class="fas fa-code"></i>
-                 </div>
-                  <div class="col-6 pr-0 pl-0">
-                    <span class="text-secondary">comment</span>
-                  </div>
-                  <div class="col-4 pl-0">
-                    <span class="text-secondary float-right">Aug 25 at 7:08</span>
-                  </div>
-                </div>
-              </div>
-              <div class="col-12">
-                <div class="row">
-                   <div class="col-2"></div>
-                   <div class="col-10 pr-0 pl-0">
-                     <a href="#">question is what we ask in order to anwers all the problems</a>
-                  </div>
-                </div>
-              </div>
-              <div class="col-12">
-                <div class="row">
-                  <div class="col-2"></div>
-                  <div class="col-10 pr-0 pl-0">
-                    yeah i guess it works well...
-                 </div>
-               </div>
-              </div> -->
-
-            </div>
-        </div>
-
-        <div id="achievement-row" class="col-12 border-bottom small p-2">
-              <div class="row">
-                  <div class="col-1">
-                      <i class="fas fa-code"></i>
-                  </div>
-                  <div class="col-1">+25</div>
-                  <div class="col-9 pr-0">
-                      <a href="#">How to run this app together with azure web services</a>
-                  </div>
-              </div>
-          </div>
-
-        <div id="menu" class="col-12 border small p-2">
-              <div class="row">
-                  <div class="col-12">
-                        {% if user.display_photo %}
-                       <img src="{{ user.display_photo.url }}"  class="rounded" width="20" height="20"/>
-                       {% else %}
-                       <img src="{{ user|gravatar:20 }}"  class="rounded" width="20" height="20"/>
-                       {% endif %}
-                       <a href="{% url 'user' user.pk %}" class="">{{ user }}</a> <span class="small font-weight-bold text-muted">{{ user.points}}</span>
-                      <div class="float-right"><a href="{% url 'account_logout' %}">logout</a></div>
-                  </div>
-              </div>
-          </div>
+        <div id="menu" class="col-12 border-bottom small p-2"></div>
 
     </div>
 </div>

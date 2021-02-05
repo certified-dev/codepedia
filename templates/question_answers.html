@@ -53,7 +53,7 @@
                                         <h6><a href="">{{ question.title|capfirst }}</a></h6>
 
                                         <div class="row">
-                                           <div class="col-12">
+                                           <div class="col-12 mb-2">
                                              {% for tag in question.tags.all %}
                                                 <small><a href="{% url 'tag_question' tag.pk tag.name %}" class="badge-mobile mb-1 mt-0">{{ tag }}</a></small>
                                              {% endfor %}
@@ -80,7 +80,7 @@
                                 <img src="{{ question.asked_by|gravatar:20 }}" class="rounded mb-1 img-fluid" />
                                 {% endif %}
 
-                                <a href="{% url 'user' question.asked_by.pk %}">{{ question.asked_by }}</a>
+                                <a href="{% url 'user' question.asked_by.pk question.asked_by.username %}">{{ question.asked_by }}</a>
                                 {% if user.is_authenticated %}
                                 {% if question.asked_by == user %}
                                 <span class= "text-secondary ">| </span>
@@ -98,7 +98,7 @@
                     <div class="col-12 pl-0 pr-0">
                         {% for comment in question.comments.all %}
                         <div id="second-comment-{{ comment.id }}" class= "border-bottom {% if forloop.first %}border-top{% endif %} pl-1 activate-update2 p-1" style="font-size:12px">
-                            {{ comment.text|urlize }} – <a href="{% url 'user' comment.posted_by.pk %}" class="{% if comment.posted_by == question.asked_by %}highlighted{% endif %}">{{ comment.posted_by }}</a> <span class="primary text-secondary"> {{ comment.posted_on|naturaltime }}</span>
+                            {{ comment.text|urlize }} – <a href="{% url 'user' comment.posted_by.pk comment.posted_by.username %}" class="{% if comment.posted_by == question.asked_by %}highlighted{% endif %}">{{ comment.posted_by }}</a> <span class="primary text-secondary"> {{ comment.posted_on|naturaltime }}</span>
                             {% if comment.posted_by == user %}
                             <span id="activate-second-comment-{{ comment.id }}" style="display:none"> <a href="#"><i class="fas fa-pen fa-sm  ml-1"></i></a>  <a class="text-danger"><i class="fas fa-trash fa-sm ml-2"></i></a></span>
                             {% endif %}
@@ -107,7 +107,7 @@
                     </div>
                     {% endif %}
 
-                    <div class="col-12 pl-2 now_question_add_comment-{{ question.pk }}" style="display:none">
+                    <div class="col-12 pl-2 now_question_add_comment-{{ question.pk }} comment-box-remove" style="display:none">
 
                         <form class="row pt-2" method="post" novalidate>
                             <div class="col-12 pl-2 pr-0">
@@ -216,15 +216,17 @@
                                             <div class="col-12">
                                                 <div class="row">
                                                     <div class="col-3">
-                                                        {% if question.asked_by.display_photo %}
-                                                        <img src="{{ question.asked_by.display_photo.url }}"  class="rounded" width="28" height="28"/>
-                                                        {% else %}
-                                                        <img src="{{ question.asked_by|gravatar:28 }}"  class="rounded" width="28" height="28"/>
-                                                        {% endif %}
+                                                       <a href="{% url 'user' question.asked_by.pk question.asked_by.username %}">
+                                                            {% if question.asked_by.display_photo %}
+                                                            <img src="{{ question.asked_by.display_photo.url }}"  class="rounded" width="28" height="28"/>
+                                                            {% else %}
+                                                            <img src="{{ question.asked_by|gravatar:28 }}"  class="rounded" width="28" height="28"/>
+                                                            {% endif %}
+                                                       </a>
                                                     </div>
                                                     <div class="col-9 p-0 pl-1">
                                                         <small>
-                                                            <span><a href="{% url 'user' question.asked_by.pk %}">{{ question.asked_by }}</a></span>
+                                                            <span><a href="{% url 'user' question.asked_by.pk question.asked_by.username %}">{{ question.asked_by }}</a></span>
                                                             <span><b class="text-secondary">{{ question.asked_by.points|intcomma }}</b></span>
                                                         </small>
                                                     </div>
@@ -243,7 +245,7 @@
                             <div class="col-11 pl-2">
                                 {% for comment in question.comments.all %}
                                 <div id="comment-{{ comment.id }}" class= "border-top {% if forloop.last %}border-bottom{% endif %} activate-update p-1">
-                                    {{ comment.text|urlize }} – <a href="{% url 'user' comment.posted_by.pk %}" class="{% if comment.posted_by == question.asked_by %}highlighted{% endif %}">{{ comment.posted_by }}</a> <span class="text-secondary">{{ comment.posted_on|naturaltime }}</span>
+                                    {{ comment.text|urlize }} – <a href="{% url 'user' comment.posted_by.pk comment.posted_by.username %}" class="{% if comment.posted_by == question.asked_by %}highlighted{% endif %}">{{ comment.posted_by }}</a> <span class="text-secondary">{{ comment.posted_on|naturaltime }}</span>
                                     {% if comment.posted_by == user %}
                                     <span id="activate-comment-{{ comment.id }}" style="display:none"> <a href="#">edit</a>  <a class="text-danger">delete</a></span>
                                     {% endif %}
@@ -253,7 +255,7 @@
                         </div>
                     </div>
                     {% endif %}
-                    <div class="col-12 pl-2 now_question_add_comment-{{ question.pk }}" style="display:none">
+                    <div class="col-12 pl-2 now_question_add_comment-{{ question.pk }} comment-box-remove" style="display:none">
                         <form method="post" class="row pt-2 laptop" novalidate>
                             <div class="col-1"></div>
                             <div class="col-11 pl-2">
@@ -322,7 +324,10 @@
                 {% if user_answers.count > 0 %}
                 <div class="col-12">
                     <div id="answer_div" class="mt-3">
-                        <a class="btn btn-primary btn-block add-new-answer" id="remove" data-toggle="collapse" href="#contentId" aria-expanded="false" aria-controls="contentId">
+                        <a class="btn btn-primary btn-block btn-sm add-new-answer mobile" id="remove" data-toggle="collapse" href="#contentId" aria-expanded="false" aria-controls="contentId">
+                              Add another answer
+                        </a>
+                         <a class="btn btn-primary btn-block add-new-answer laptop" id="remove" data-toggle="collapse" href="#contentId" aria-expanded="false" aria-controls="contentId">
                               Add another answer
                         </a>
                     </div>
@@ -413,7 +418,7 @@
                             <div class="row">
                                 <div class="col-12 pl-2 pr-2">
                                 {% for user in users %}
-                                   <a href="{% url 'user' user.pk %}">
+                                   <a href="{% url 'user' user.pk user.username %}">
                                        {% if user.display_photo %}
                                        <img src="{{ user.display_photo.url }}" class=" rounded mb-1 img-fluid" width="30" height="30"/>
                                        {% else %}
@@ -488,6 +493,7 @@ def function(foo):
 {{ downvoted|json_script:"downvoted" }}
 {{ answers_serialized|json_script:"answers_serialized" }}
 {{ user.username|json_script:"current_user" }}
+{{ question.asked_by.username|json_script:"question_owner" }}
 {{ question.id|json_script:"question_id" }}
 
 {% endblock %}

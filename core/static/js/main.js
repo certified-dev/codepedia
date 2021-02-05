@@ -1,24 +1,34 @@
  $(document).ready(function(){
 
-      $("#modelId").modal('show');
-
-      $("#wmd-input-id_body,#wmd-input-id_description").addClass('border-bottom-0 border-left-0 border-right-0');
+    if ($(window).width() < 1000 ){
       
-      $(".post-answer").click(function(e) {
+      $(".laptop").remove();
 
-        var content = $("#wmd-input-id_body").val();
+    } else {
 
-        if ( content.length < 1) {
-            e.preventDefault();
-            alert('cannot submit empty answer!');
-          } else if ( content.length < 19 ) {
-            e.preventDefault();
-            alert('enter at least 20  characters!');
-          } else {
+      $(".mobile").remove();
+    
+    }
 
-          }
+    $("#modelId").modal('show');
 
-      });
+    $("#wmd-input-id_body,#wmd-input-id_description").addClass('border-bottom-0 border-left-0 border-right-0');
+    
+    $(".post-answer").click(function(e) {
+
+      var content = $("#wmd-input-id_body").val();
+
+      if ( content.length < 1) {
+          e.preventDefault();
+          alert('cannot submit empty answer!');
+        } else if ( content.length < 19 ) {
+          e.preventDefault();
+          alert('enter at least 20  characters!');
+        } else {
+
+        }
+
+    });
 
 
       $("#question-toggle").click(function(e) {
@@ -47,14 +57,14 @@
           }
        });
 
-        $('.activate-update2').hover(function(){
+      $('.activate-update2').hover(function(){
           var comment = this.id
           if ($("#activate-" + comment).is(':visible')) {
            $('#activate-' + comment).hide();
           } else {
            $('#activate-' + comment).show();
           }
-        });
+      });
 
 
         $('.answer-comment').hover(function(){
@@ -77,17 +87,17 @@
         });
 
 
-        $(".add").click(function() {
+      $(".add").click(function() {
            var answer_id = this.id
            $("#now_" + answer_id).show();
            $(".add_comment_answer").hide();
-        });
+      });
 
-        $(".add2").click(function() {
+      $(".add2").click(function() {
            var question_id = this.id
            $(".now_" + question_id).show();
-           $(".add_comment_question").hide();
-        });
+           $(".add_comment_question").hide();        
+      });
 
 
       $('#inbox').click(function(){

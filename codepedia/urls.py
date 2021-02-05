@@ -64,7 +64,7 @@ urlpatterns = [
                   path('users/',
                        views.UsersListView.as_view(), name="users"),
 
-                  path('user/<int:pk>/profile/',
+                  path('users/<int:pk>/<str:username>/',
                        views.UserDetailView.as_view(), name="user"),
 
                   path('user/<int:pk>/update/',

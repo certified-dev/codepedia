@@ -35,7 +35,7 @@ label {
              </div>
              <div id="collapseQuestion" class="collapse hide">
                  <div class="card-body">
-                     <p><b>{{ answer.question.title }}</b></p>
+                     <h5>{{ answer.question.title|capfirst }}</h5>
                      <span class="laptop">{{ answer.question.body|markdown }}</span>
                  </div>
              </div>

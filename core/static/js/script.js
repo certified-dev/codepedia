@@ -3,7 +3,9 @@ var upvoted = JSON.parse(document.getElementById('upvoted').textContent);
 var downvoted = JSON.parse(document.getElementById('downvoted').textContent);
 var answers = JSON.parse(document.getElementById('answers_serialized').textContent);
 var current_user = JSON.parse(document.getElementById('current_user').textContent);
+var question_owner = JSON.parse(document.getElementById('question_owner').textContent);
 var question_id = JSON.parse(document.getElementById('question_id').textContent);
+var result = "null"
 
 
 Vue.component('answer', {
@@ -160,8 +162,9 @@ Vue.component('answer', {
                  <div class="col-11 pl-2 pr-3">
 
                       <small class="text-secondary mobile">
-                        <img :src="answer.answered_by_image" class="rounded img-fluid" height="18" width="18"/>
-                          <a :href="'/user/' + answer.answered_by_id + '/profile/'">[[ answer.answered_by ]]</a>
+                      <a :href="'/users/' + answer.answered_by_id + '/' + answer.answered_by + '/'">
+                        <img :src="answer.answered_by_image" class="rounded img-fluid" height="22" width="22"/>
+                          [[ answer.answered_by ]]</a>
                        <span class="float-right"><i class="fas fa-clock"></i> [[ answer.posted_on ]]</span>
                       </small>
 
@@ -178,13 +181,13 @@ Vue.component('answer', {
                                      <div class="col-12">
                                         <div class="row">
                                            <div class="col-3">
-                                              <img :src="answer.answered_by_image"  class="rounded" width="28" height="28"/>
+                                           <a :href="'/users/' + answer.answered_by_id + '/' + answer.answered_by + '/'"><img :src="answer.answered_by_image"  class="rounded" width="28" height="28"/></a>
                                            </div>
                                            <div class="col-9 p-0 pl-1">
 
                                               <small>
                                                   <span>
-                                                    <a :href="'/user/' + answer.answered_by_id + '/profile/'"> [[ answer.answered_by ]]</a>
+                                                    <a :href="'/users/' + answer.answered_by_id +  '/' + answer.answered_by + '/'"> [[ answer.answered_by ]]</a>
                                                   </span>
                                                   <span>
                                                      <b class="text-secondary">[[ answer.answered_by_points ]]</b>
@@ -212,8 +215,10 @@ Vue.component('answer', {
                <div class="col-11 pl-0 pr-1">
 
                   <small class="text-secondary mobile">
-                     <img :src="answer.answered_by_image" class="rounded img-fluid" height="18" width="18"/>
-                     <a :href="'/user/' + answer.answered_by_id + '/profile/'">[[ answer.answered_by ]]</a>
+                     <a :href="'/users/' + answer.answered_by_id + '/' + answer.answered_by + '/'">
+                        <img :src="answer.answered_by_image" class="rounded img-fluid" height="22" width="22"/>
+                        [[ answer.answered_by ]]
+                     </a>
                      <span class="text-secondary"> | </span>
                      <a :href=" '/question/' + [[ question_id ]] +'/answer/' + answer.pk + '/update/'" class="text-secondary">edit</a>
                      <span class="text-secondary"> | </span>
@@ -238,13 +243,13 @@ Vue.component('answer', {
                              <div class="col-12">
                                  <div class="row">
                                      <div class="col-3">
-                                         <img :src="answer.answered_by_image"  class="rounded" width="28" height="28"/>
+                                     <a :href="'/users/' + answer.answered_by_id + '/' + answer.answered_by + '/'"><img :src="answer.answered_by_image"  class="rounded" width="28" height="28"/></a>
                                      </div>
                                      <div class="col-9 p-0 pl-1">
 
                                         <small>
                                             <span>
-                                                <a :href="'/user/' + answer.answered_by_id + '/profile/'"> [[ answer.answered_by ]]</a>
+                                                <a :href="'/users/' + answer.answered_by_id + '/' + answer.answered_by + '/'"> [[ answer.answered_by ]]</a>
                                             </span>
                                             <span>
                                                  <b class="text-secondary">[[ answer.answered_by_points ]]</b>
@@ -268,7 +273,7 @@ Vue.component('answer', {
             <div class="col-1 pr-0"></div>
             <div class="col-11 pr-0 pl-0 mobile">
                <div v-for="comment in answer.comments" :id="'mob-answer-comment-' + comment.id" class="border-top pl-1 mobile-answer-comment p-1">
-                  <span v-html="comment.text_html"></span> – <a :href="'/user/' + comment.posted_by_id + '/profile/'" :class="[[ comment.posted_by == answer.answered_by ? 'highlighted' : '' ]]">[[ comment.posted_by ]]</a> <span class="primary text-secondary">[[ comment.posted_on ]]</span>
+                  <span v-html="comment.text_html"></span> – <a :href="'/users/' + comment.posted_by_id + '/' + comment.posted_by + '/'" :class="[[ comment.posted_by == answer.answered_by ? 'highlighted' : '' ]]">[[ comment.posted_by ]]</a> <span class="primary text-secondary">[[ comment.posted_on ]]</span>
                      <span v-if="comment.posted_by == [[ current_user ]]">
                         <span :id="'add-mob-answer-comment-' + comment.id" style="display:none">
                         <a href="#" class="ml-1"><i class="fas fa-pen"></i></a>
@@ -280,7 +285,7 @@ Vue.component('answer', {
 
             <div class="col-11 pl-0 pr-0 laptop border-bottom">
                <div v-for="comment in answer.comments" :id="'answer-comment-' + comment.id" class="border-top answer-comment p-1" >
-                  <span v-html="comment.text_html"></span> – <a :href="'/user/' + comment.posted_by_id + '/profile/'" :class="[[ comment.posted_by == answer.answered_by ? 'highlighted' : '' ]]">[[ comment.posted_by ]]</a> <span class="text-secondary">[[ comment.posted_on ]]</span>
+                  <span v-html="comment.text_html"></span> – <a :href="'/users/' + comment.posted_by_id + '/' + comment.posted_by + '/'" :class="[[ comment.posted_by == answer.answered_by ? 'highlighted' : '' ]]">[[ comment.posted_by ]]</a> <span class="text-secondary">[[ comment.posted_on ]]</span>
                   <span v-if="comment.posted_by == [[ current_user ]]"> <span :id="'add-answer-comment-' + comment.id" style="display:none"> <a href="#" class="ml-1">edit</a>  <a href="#" class="text-danger ml-2">delete</a></span></span>
                </div>
             </div>
@@ -292,7 +297,7 @@ Vue.component('answer', {
 
 
       <div class="col-12 pr-1 comment-box-remove">
-         <div :id="'now_add_comment-' + answer.pk" class="comment-box-remove" style="display:none">
+         <div :id="'now_add_comment-' + answer.pk" style="display:none">
 
 
                <div class="col-12 pl-2 laptop">  
@@ -381,7 +386,8 @@ var app = new Vue({
     downvoted: downvoted,
     upvoted: upvoted,
     score: score,
-    answers: answers
+    answers: answers,
+    question_owner: question_owner
 
   },
   methods: {
@@ -405,13 +411,16 @@ function vote(voteType, voted, voteURL) {
     data: bodyFormData,
     headers: {'Content-Type': 'multipart/form-data' }
   }).then((response) => {
+
     var responseVoteType = response.data.vote_type;
     var targetObj;
+
     if('answer' in this){
       targetObj = this.answer;
     } else {
       targetObj = this;
     }
+
     if (responseVoteType == 'upvote') {
       targetObj.upvoted = true;
       targetObj.downvoted = false;
@@ -422,7 +431,9 @@ function vote(voteType, voted, voteURL) {
       targetObj.upvoted = false;
       targetObj.downvoted = false;
     }
+
     targetObj.score = response.data.score;
+
   }).catch((error) => {
 
     if(error.message.includes('401')) {
@@ -433,6 +444,7 @@ function vote(voteType, voted, voteURL) {
 
   });
 }
+
 
 function accept(accept_type, accepted, acceptURL) {
   var bodyFormData = new FormData();
@@ -469,6 +481,7 @@ function accept(accept_type, accepted, acceptURL) {
   });
 }
 
+
 function submitComment(button_id, Comment_Url) {
    var bodyFormData = new FormData();
    var text_content = $("#id_" + button_id ).val();
@@ -493,14 +506,65 @@ function submitComment(button_id, Comment_Url) {
          targetObj = this;
       }
 
-      console.log(response.data);
-      alert('comment-posted!!!');
+      if ( $(".add_comment_question").is(":hidden") ){
 
-      $(".comment-box-remove").hide();
+         $(".add_comment_question").show();
+         $(".comment-box-remove").hide();
+
+         if (response.data.last_comment == result){
+
+            location.reload(true);
+
+         } else {
+
+            $("#comment-" + response.data.last_comment).removeClass('border-bottom');
+
+            if (response.data.posted_by == question_owner ) {
+   
+               $("#comment-" + response.data.last_comment).after("<div class='border-top border-bottom activate-update p-1'>" + response.data.text_html + " – <a href='' class='highlighted'>" + response.data.posted_by + "</a> <span class='text-secondary'>" + response.data.posted_on + "</span> </div>");
+               $("#second-comment-" + response.data.last_comment).after("<div class='border-bottom pl-1 activate-update2 p-1' style='font-size: 12px;'>" + response.data.text_html + " – <a href='' class='highlighted'>" + response.data.posted_by + "</a> <span class='text-secondary'>" + response.data.posted_on + "</span> </div>");
+   
+            } else {
+               
+               $("#comment-" + response.data.last_comment).after("<div class='border-top border-bottom activate-update p-1'>" + response.data.text_html + " – <a href=''>" + response.data.posted_by + "</a> <span class='text-secondary'>" + response.data.posted_on + "</span> </div>");
+               $("#second-comment-" + response.data.last_comment).after("<div class='border-bottom pl-1 activate-update2 p-1' style='font-size: 12px;'>" + response.data.text_html + " – <a href=''>" + response.data.posted_by + "</a> <span class='text-secondary'>" + response.data.posted_on + "</span> </div>");
+               
+            }
+
+         }
+
+      }
+
+      if ( $(".add_comment_answer").is(":hidden") ){
+
+         $(".add_comment_answer").show();
+         $(".comment-box-remove").hide();
+
+         if (response.data.last_comment == result){
+
+            location.reload(true);
+
+         } else {
+
+            if (response.data.posted_by == targetObj.answered_by ) {
+
+               $("#answer-comment-" + response.data.last_comment).after("<div class='border-top answer-comment p-1'>" + response.data.text_html + " – <a href='' class='highlighted'>" + response.data.posted_by + "</a> <span class='text-secondary'>" + response.data.posted_on + "</span> </div>");           
+               $("#mob-answer-comment-" + response.data.last_comment).after("<div class='border-top pl-1 mobile-answer-comment p-1'>" + response.data.text_html + " – <a href='' class='highlighted'>" + response.data.posted_by + "</a> <span class='text-secondary'>" + response.data.posted_on + "</span> </div>");           
+   
+            } else {
+   
+               $("#answer-comment-" + response.data.last_comment).after("<div class='border-top answer-comment p-1'>" + response.data.text_html + " – <a href='' class=''>" + response.data.posted_by + "</a> <span class='text-secondary'>" + response.data.posted_on + "</span> </div>");     
+               $("#mob-answer-comment-" + response.data.last_comment).after("<div class='border-top pl-1 mobile-answer-comment p-1'>" + response.data.text_html + " – <a href='' class=''>" + response.data.posted_by + "</a> <span class='text-secondary'>" + response.data.posted_on + "</span> </div>");                 
+   
+            }   
+
+         } 
+         
+      }
 
       }).catch((error) => {
 
-         alert('error!!!');
+         alert(error);
 
       });
 

@@ -60,7 +60,7 @@ label {
 
  <div class="row laptop pt-3">
     <div class="col-12 pl-4 mt-5 pr-0">
-        <a class="btn btn-sm rounded-pill" href="{% url 'user' user.pk %}" role="button">Profile</a>
+        <a class="btn btn-sm rounded-pill" href="{% url 'user' user.pk user.username %}" role="button">Profile</a>
          <a class="btn btn-sm btn-primary rounded-pill" href="{% url 'user_update' user.pk %}" role="button">Edit profile and settings</a>
         <div class="float-right">
             {{ user }}
