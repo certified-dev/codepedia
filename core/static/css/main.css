@@ -98,7 +98,6 @@ a:hover {
     overflow:auto;
 }
 
-
 .notify-red {
     position: absolute;
     top: 4px;
@@ -225,11 +224,21 @@ span.pt-3 {
 font-size:1.2rem;
 }
 
+.highlight {
+  background-color: #e1ecf4;
+}
+
 .highlighted {
   background-color: #e1ecf4;
   padding: 1px 5px;
   border-radius: 3px;
   white-space: nowrap;
+}
+
+.tagged {
+
+  background-color: #fdf7e3;
+
 }
 
 .answer-comment,

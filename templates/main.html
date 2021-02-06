@@ -14,8 +14,10 @@
 <nav class="navbar navbar-expand-sm bg-light navbar-light laptop fixed-top pb-0 pt-0 shadow-sm">
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'home' %}">
-            <img src="{% static 'img/code.svg' %}" alt="" width="30" height="30">
+            <img src="{% static 'img/web-programming.ico' %}" alt="" class="d-inline-block align-top" width="30" height="30">
+        <b>Code</b>
         </a>
+        
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainMenu" aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -101,22 +103,6 @@
                 </div>
 
 
-<!--                <div class="row">-->
-<!--                    <div class="col-12 nav-note mr-5 border">-->
-
-<!--                        <div class="row">-->
-<!--                            <div class="col-2 pr-2 text-center">-->
-<!--                                <i class="fas fa-code"></i>-->
-<!--                            </div>-->
-<!--                            <div class="col-6 pr-0 pl-0">-->
-<!--                                <span class="text-secondary">comment</span>-->
-<!--                            </div>-->
-<!--                            <div class="col-4 pl-0">-->
-<!--                                <span class="text-secondary float-right">Aug 25 at 7:08</span>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
 
             </ul>
             {% else %}
@@ -138,8 +124,10 @@
 <div id="nav-anchor" class="mobile">
     <nav class="navbar {% if user.is_authenticated %}bg-dark navbar-dark {% else %}bg-light navbar-light {% endif %} pt-1 pb-1 pr-0">
         <a class="navbar-brand p-1"  href="{% url 'home' %}">
-            <img src="{% static 'img/code.svg' %}" alt="" width="30" height="30">
+            <img src="{% if user.is_authenticated %}{% static 'img/web-programming.svg' %} {% else %} {% static 'img/web-programming.svg' %} {% endif %}" alt="" class="d-inline-block align-top" width="30" height="30">
+        <b>Code</b>
         </a>
+
 
         {% if user.is_authenticated %}
         <div class="form-inline ml-auto">

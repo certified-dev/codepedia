@@ -78,6 +78,6 @@ urlpatterns = [
                   path('tagged/<int:pk>/<str:tag>/questions/',
                        views.TagQuestionView.as_view(), name="tag_question"),
 
-                  path('user/<int:pk>/watched-tags/update/', views.TagUpdateView.as_view(), name="tag_edit"),
+                  path('user/<int:pk>/watched/update/', views.TagUpdateView.as_view(), name="tag_edit"),
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

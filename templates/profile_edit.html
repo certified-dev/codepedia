@@ -45,45 +45,55 @@
         <div class="card-body">
           <form method="post" novalidate>
               {% csrf_token %}  
-             <div class="form-group">
-              <label for="">Display name</label>
-              {{ form.username }}
-            </div>
+
+              <div class="form-group">
+                 <label for="">Display name</label>
+                 {{ form.username }}
+               </div>
+
+              <div class="form-group">
+                 <label for="">Location</label>
+                 {{ form.location }}
+              </div>
+
+              <div class="form-group">
+                 <label for="">Title</label>
+                 {{ form.title }}
+              </div>
+
             <div class="form-group">
-            <label for="">Location</label>
-            {{ form.location }}
+               <label for="">First name</label>
+              {{ form.first_name }}
             </div>
+
             <div class="form-group">
-            <label for="">Title</label>
-            {{ form.title }}
+                <label for="">Last name</label>
+               {{ form.last_name }}
             </div>
+
             <div class="form-group">
-            <label for="">First name</label>
-            {{ form.first_name }}
+                <label for="">Email</label>
+               {{ form.email }}
             </div>
-            <div class="form-group">
-            <label for="">Last name</label>
-            {{ form.last_name }}
-            </div>
-            <div class="form-group">
-            <label for="">Email</label>
-            {{ form.email }}
-            </div>
-          <button type="submit" class="btn btn-sm btn-primary">Save changes</button>  
-          <a href="{% url 'user' user.pk %}" class="btn btn-sm btn-outline-danger">Cancel</a>
+
+            <div class="text-center">
+               <button type="submit" class="btn btn-sm btn-primary">Save changes</button>  
+               <a href="{% url 'user' user.pk user.username %}" class="btn btn-sm btn-outline-danger">Cancel</a>
+             </div>
+
           </form>       
         </div>
       </div> 
     </div>
     <div class="col-12 pb-2">
-        <button type="button" class="btn btn-outline-secondary btn-lg btn-block"  data-toggle="modal" data-target="#Photo_modal"><i class="fas fa-image"></i> change picture</button>
+        <button type="button" class="btn btn-outline-info btn-lg btn-block"  data-toggle="modal" data-target="#Photo_modal"><i class="fas fa-image"></i> change picture</button>
     </div>
   </div>
 
 
  <div class="row laptop pt-3">
     <div class="col-12 pl-5  mt-5">
-        <a class="btn btn-sm rounded-pill" href="{% url 'user' user.pk %}" role="button">Profile</a>
+        <a class="btn btn-sm rounded-pill" href="{% url 'user' user.pk user.username %}" role="button">Profile</a>
          <a class="btn btn-sm btn-primary rounded-pill" href="{% url 'user_update' user.pk %}" role="button">Edit profile and settings</a>
     </div>
     <div class="col-12 pt-3">
@@ -170,7 +180,7 @@
           </div>
            <div class="col-6 mt-3 mb-5">
             <button type="submit" class="btn btn-primary">Save changes</button>  
-             <a href="{% url 'user' user.pk %}" class="btn btn-outline-danger">Cancel</a>  
+             <a href="{% url 'user' user.pk user.username %}" class="btn btn-outline-danger">Cancel</a>  
           </div>
            </form>
            </div>

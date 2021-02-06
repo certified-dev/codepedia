@@ -50,7 +50,7 @@
                                         </div>
                                     </div>
                                     <div class="col-10 pt-2 pl-2">
-                                        <h6><a href="">{{ question.title|capfirst }}</a></h6>
+                                        <h6><a href="">{{ question.title }}</a></h6>
 
                                         <div class="row">
                                            <div class="col-12 mb-2">
@@ -70,7 +70,7 @@
                         <span>{{ question.body|markdown }}</span>
                     </div>
 
-                    <div class="col-12 pl-0 pr-0">
+                    <div class="col-12 p-2 highlight">
                         <small>
                             <span class="text-secondary">
 
@@ -80,7 +80,8 @@
                                 <img src="{{ question.asked_by|gravatar:20 }}" class="rounded mb-1 img-fluid" />
                                 {% endif %}
 
-                                <a href="{% url 'user' question.asked_by.pk question.asked_by.username %}">{{ question.asked_by }}</a>
+                                <a href="{% url 'user' question.asked_by.pk question.asked_by.username %}" class="font-weight-bold">{{ question.asked_by }}</a>
+                                <span class="text-dark">{{ question.asked_by.points }}</span>
                                 {% if user.is_authenticated %}
                                 {% if question.asked_by == user %}
                                 <span class= "text-secondary ">| </span>
@@ -89,7 +90,7 @@
                                 <a class="text-secondary mr-1 ml-1" href="javascript:void(0)"  onclick="alert('are you sure you want to delete this question?')">delete</a>
                                 {% endif %}
                                 {% endif %}
-                                <span class="float-right"><i class="fas fa-clock"></i> {{ question.posted_on|naturaltime }}</span>
+                                <span class="float-right mt-1"><i class="fas fa-clock"></i> {{ question.posted_on|naturaltime }}</span>
                             </span>
                         </small>
                     </div>
@@ -97,8 +98,8 @@
                     {% if question.comments.count > 0 %}
                     <div class="col-12 pl-0 pr-0">
                         {% for comment in question.comments.all %}
-                        <div id="second-comment-{{ comment.id }}" class= "border-bottom {% if forloop.first %}border-top{% endif %} pl-1 activate-update2 p-1" style="font-size:12px">
-                            {{ comment.text|urlize }} – <a href="{% url 'user' comment.posted_by.pk comment.posted_by.username %}" class="{% if comment.posted_by == question.asked_by %}highlighted{% endif %}">{{ comment.posted_by }}</a> <span class="primary text-secondary"> {{ comment.posted_on|naturaltime }}</span>
+                        <div id="second-comment-{{ comment.id }}" class= "border-bottom {% if forloop.first %}border-top{% endif %} pl-1 activate-update2 p-1 text-secondary" style="font-size:12px">
+                            {{ comment.text|urlize }} – <a href="{% url 'user' comment.posted_by.pk comment.posted_by.username %}" class="{% if comment.posted_by == question.asked_by %}highlighted{% endif %} font-weight-bold">{{ comment.posted_by }}</a> <span class="text-primary"> {{ comment.posted_on|naturaltime }}</span>
                             {% if comment.posted_by == user %}
                             <span id="activate-second-comment-{{ comment.id }}" style="display:none"> <a href="#"><i class="fas fa-pen fa-sm  ml-1"></i></a>  <a class="text-danger"><i class="fas fa-trash fa-sm ml-2"></i></a></span>
                             {% endif %}
@@ -127,7 +128,7 @@
                             </div>
                         </form>
                     </div>
-                    <div class="col-12 pl-2 text-center pb-1 add_comment_question">
+                    <div class="col-12 p-2 text-center pb-1 bg-light add_comment_question">
                         <small><a href="javascript:void(0)" class="add2" id="question_add_comment-{{ question.pk }}">add a comment</a></small>
                     </div>
                 </div>
@@ -141,7 +142,7 @@
                     <div class="col-12 pl-3 pr-2">
                         <div class="row">
                             <div class="col-12">
-                                <h4 class="mt-2">{{ question.title|capfirst }}</h4>
+                                <h4 class="mt-2">{{ question.title }}</h4>
                             </div>
                             <div class="col-12">
                                 <small>
@@ -208,7 +209,7 @@
                                         {% endif %}
                                         
                                     </div>
-                                    <div class="col-3 bg-light pb-1 ml-5">
+                                    <div class="col-3 highlighted pb-1 pl-3 ml-5">
                                         <div class="row">
                                             <div class="col-12">
                                                 <span class="text-secondary"><small>{{ question.posted_on|naturaltime}}</small></span>
@@ -286,7 +287,7 @@
 
             <div  class="container border mb-1 mobile">
                 <div class="row">
-                    <div class="col-12 pt-1 pl-2 pb-1">
+                    <div class="col-12 pt-1 pl-2 pb-1 shadow-sm">
                         <span class="small font-weight-bold">{{ answers.count|intcomma }} Answer{{ answers.count|pluralize }}</span>
                     </div>
                 </div>

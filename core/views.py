@@ -3,7 +3,7 @@ import git
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -54,20 +54,27 @@ class HomeQuestionView(ListView):
 
     # filter according to user tag watch
     def get_queryset(self):
-        if self.request.user.watched.count() > 0:
-            queryset = super().get_queryset().order_by('-posted_on')
+        queryset = super().get_queryset().order_by('-posted_on')
+
+        if self.request.user.watched.count() > 0:        
             user_tags = self.request.user.watched.all()
 
             questions = []
             for item in queryset:
+                item.tagged = False
+                
                 for tag in user_tags:
+
                     if tag in item.tags.all() and item not in questions:
                         questions.append(item)
 
+                    if tag in item.tags.all():
+                        if not item.tagged:
+                            item.tagged = True
+
             return questions[:20]
         else:
-            queryset = super().get_queryset()
-            return queryset.order_by('-posted_on')[:20]
+            return queryset[:20]
 
 
 class QuestionListView(ListView):
@@ -77,13 +84,32 @@ class QuestionListView(ListView):
     paginate_by = 15
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.order_by('-posted_on')
+        queryset = super().get_queryset().order_by('-posted_on')
+        if self.request.user.is_authenticated:
+            
+            user_tags = self.request.user.watched.all()
+
+            for item in queryset:
+                item.tagged = False
+                
+                for tag in user_tags:
+
+                    if tag in item.tags.all():
+                        if not item.tagged:
+                            item.tagged = True
+                        
+            return queryset
+        else:
+            return queryset
+        
 
     def get_context_data(self, **kwargs):
+        queryset = super().get_queryset()
         related_tags = Tag.objects.all()[:10]
         extra_context = {
-            'related_tags': related_tags
+            'related_tags': related_tags,
+            'question_count': queryset.count()
+            
         }
         kwargs.update(extra_context)
         return super().get_context_data(**kwargs)
@@ -96,14 +122,32 @@ class UnansweredQuestion(ListView):
     paginate_by = 15
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().order_by('-posted_on')
         excluded = []
 
-        for item in queryset:
-            if item.answers.count() > 0:
-                excluded.append(item.id)
-        
-        return queryset.exclude(id__in=excluded).order_by('-posted_on')
+        if self.request.user.is_authenticated:
+            user_tags = self.request.user.watched.all()    
+
+            for item in queryset:
+                item.tagged = False
+                
+                for tag in user_tags:
+
+                    if tag in item.tags.all():
+                        if not item.tagged:
+                            item.tagged = True
+
+                if item.answers.count() > 0:
+                    excluded.append(item.id)
+            
+            return queryset.exclude(id__in=excluded)
+        else:
+            for item in queryset:
+
+                 if item.answers.count() > 0:
+                    excluded.append(item.id)
+
+            return queryset.exclude(id__in=excluded)
 
     def get_context_data(self, **kwargs):
         related_tags = Tag.objects.all()[:10]
@@ -322,6 +366,18 @@ class TagQuestionView(DetailView):
         questions = Question.objects.filter(tags=tag).order_by('-posted_on')
         related_tags = super().get_queryset()[:10]
 
+        if self.request.user.is_authenticated:
+            user_tags = self.request.user.watched.all()
+
+            for item in questions:
+                item.tagged = False
+                
+                for tag in user_tags:
+
+                    if tag in item.tags.all():
+                        if not item.tagged:
+                            item.tagged = True                  
+
         paginator = Paginator(questions, 15)
         page_number = self.request.GET.get('page')
         tagged_question = paginator.get_page(page_number)
@@ -361,7 +417,7 @@ class TagUpdateView(UpdateView):
         return super().form_invalid(form)
 
     def get_success_url(self):
-        return redirect('tag_edit', pk=self.request.user.pk)
+        return reverse_lazy('tag_edit', kwargs={"pk": self.request.user.pk })
 
 
 class UsersListView(ListView):
