@@ -1,5 +1,7 @@
-from itertools import chain
+from hashlib import new
 import git
+import re
+from itertools import chain
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest
@@ -15,6 +17,8 @@ from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.utils.html import urlize
 
 from notify.signals import notify
+
+from .utils import send_notify, highlight
 
 from .models import Question, Answer, Tag, User, AnswerSerializer, Comment
 from .forms import AnswerForm, QuestionForm, UserUpdateForm, UploadPhotoForm, \
@@ -224,7 +228,7 @@ class AnswerListView(ListView):
 
         # answers
         answers = self.question.answers.exclude(
-            hidden=True).order_by('posted_on')
+            hidden=True).order_by('-score')
         answers_serialized = AnswerSerializer(answers, many=True).data
         for answer in answers_serialized:
             answer['upvoted'] = False
@@ -289,7 +293,6 @@ class AnswerUpdateView(UpdateView):
         return reverse('question_detail', kwargs={'pk': answer.question.pk, 'slug': answer.question.slug})
 
 
-@login_required
 def comment_question_ajax(request, pk):
     question = get_object_or_404(Question, pk=pk)
     last_comment = Comment.objects.filter(question_comments=question).last()
@@ -297,8 +300,11 @@ def comment_question_ajax(request, pk):
 
     if request.method == 'POST':
         comment_text = request.POST.get('text')
-        comment = Comment(content_object=question,text=comment_text, posted_by=request.user)
+        new_comment = highlight(comment_text)
+        comment = Comment(content_object=question,text=new_comment, posted_by=request.user)
         comment.save()
+
+        send_notify(request, question, comment_text)
 
         if question.asked_by != request.user:
                 notify.send(request.user, recipient=question.asked_by, actor=request.user,
@@ -317,19 +323,20 @@ def comment_question_ajax(request, pk):
         return JsonResponse(response_data)
 
 
-@login_required
+
 def reply_answer_ajax(request, pk):
     answer = get_object_or_404(Answer, pk=pk)
     last_comment = Comment.objects.filter(answer_comments=answer).last()
-
-    print()
     response_data = {}
 
     if request.method == 'POST':
         comment_text = request.POST.get('text')
-        comment = Comment(content_object=answer, text=comment_text, posted_by=request.user)    
+        new_comment = highlight(comment_text)
+        comment = Comment(content_object=answer,text=new_comment, posted_by=request.user)
         comment.save()
 
+        send_notify(request, answer, comment_text)
+        
         if answer.answered_by != request.user:
                 notify.send(request.user, recipient=answer.answered_by, actor=request.user,
                             verb='commented on your answer', obj=answer, target=answer.question,

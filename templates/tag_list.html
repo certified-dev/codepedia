@@ -15,7 +15,7 @@
      <div class="col-12 mb-3 pl-1">
        A tag is a keyword or label that categorizes your question with other, similar questions. Using the
          <br>
-         right tags makes it easier for others to find and answer your question.
+        right tags makes it easier for others to find and answer your question.
      </div>
      
 
@@ -27,15 +27,13 @@
               </div>
             </div>
             <div class="col-8">
-            <small>
-              <div class="btn-group float-right">
-                
-                <button type="button" class="btn btn-sm btn-outline-secondary active">Popular</button> 
-                <button type="button" class="btn btn-sm btn-outline-secondary">Name</button>
-                <button type="button" class="btn btn-sm btn-outline-secondary">New</button>
-               
-              </div>
-            </small>
+             <small>
+                <div class="btn-group float-right">
+                  <button type="button" class="btn btn-sm btn-outline-secondary active">Popular</button> 
+                  <button type="button" class="btn btn-sm btn-outline-secondary">Name</button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary">New</button>
+                </div>
+             </small>
           </div>
         </div>
           
@@ -75,28 +73,43 @@
 </div>
 
 
+<div class="row pl-2 pr-2 mb-2 mobile">
 
-<div class="row pl-2 pr-2 mb-2 mt-2 mobile">
-    <div  class="col-12 bg-light border p-2">
-        <span>Tags</span>
-       </div>
+  <h5>Tags</h5>
 
-   <div class="col-12 mb-3 pt-2 border-bottom" >
-       <span class="">A tag is a keyword or label that categorizes your question with other, similar questions. Using the right tags makes it easier for others to find and answer your question.</span>
-     </div>
+    <div class="col-12 mb-3 pt-2 pl-1" style="font-size:14px">
+      <span>A tag is a keyword or label that categorizes your question with other, similar questions. Using the right tags makes it easier for others to find and answer your question.</span>
+    </div>
+
+    <div class="col-12">
+      <div class="row">
+         <div class="col-6 pl-1">
+            <div class="form-group">
+              <input type="text" class="form-control form-control-sm" placeholder="filter by tag name">
+            </div>
+         </div>
+         <div class="col-6 pr-1">
+            <div class="btn-group btn-group-sm float-right">
+              <button type="button" class="btn btn-sm btn-outline-secondary active">Popular</button> 
+              <button type="button" class="btn btn-sm btn-outline-secondary">Name</button>
+              <button type="button" class="btn btn-sm btn-outline-secondary">New</button>      
+           </div>
+         </div>
+      </div>
+    </div>
           
       <div class="col-12">
           <div class="row">
             {% for tag in tags %}
             <div class="col-12 p-0 pl-1 pr-1">
-                <div class="container {% if forloop.last %} mb-2 {% else %} mb-1 {% endif %}  p-2 pl-2" style="border:1px solid lightgray; border-radius:4px;">
+                <div class="container {% if forloop.last %} mb-3 {% else %} mb-2 {% endif %} p-2 pl-2 border rounded">
                   <div class="row pl-1 pr-2">
                       <div class="col-12 mb-2 pl-2 pr-2">
-                        <a href="{% url 'tag_question' tag.pk tag.name %}" class="badge">{{ tag }}</a>
+                        <a href="{% url 'tag_question' tag.pk tag.name %}" class="badge" style="font-size:12px">{{ tag }}</a>
                       </div>
 
                       <div class="col-12 ml-1 pl-2 pr-2" >
-                         <small><span class="text-secondary">{{ tag.description }}</span> </small>
+                         <span class="text-secondary" style="font-size:12px">{{ tag.description }}</span>
                       </div>
                      
                       <div class="col-12 pl-2 pr-2">
@@ -133,9 +146,6 @@
    </div>
   
 </div>
-
-
-
 
 {% endblock %}
 

@@ -82,6 +82,12 @@ body {
   
 }
 
+.answer-text {
+
+  margin-top: 10px;
+
+}
+
 a:hover {
    text-decoration: none;
 }
@@ -224,11 +230,17 @@ span.pt-3 {
 font-size:1.2rem;
 }
 
-.highlight {
+.highlight-mobile {
   background-color: #e1ecf4;
 }
 
-.highlighted {
+.highlight-laptop {
+  background-color: #e1ecf4;
+  border-radius: 3px;
+}
+
+
+.highlight-link {
   background-color: #e1ecf4;
   padding: 1px 5px;
   border-radius: 3px;

@@ -33,7 +33,7 @@
 
    </div>
 
-    {% for question in questions %}
+  {% for question in questions %}
 
      <div class="container pl-0 pb-2 pt-3 pr-2 {% if not forloop.last %}border-bottom-0{% endif %} border-top border-left border-bottom laptop {% if question.tagged %}tagged{% endif %}">
         <div class="row">
@@ -103,15 +103,15 @@
             </div>
         </div>
       </div>
-          {% empty %} 
+    {% empty %} 
 
-          <div class="card laptop">      
-            <div class="card-body">  
-              <p class="card-text text-center pb-5 pt-5">No Question Available</p>
-            </div>
-          </div>  
+    <div class="card laptop">      
+      <div class="card-body">  
+        <p class="card-text text-center pb-5 pt-5">No Question Available</p>
+      </div>
+    </div>  
 
-         {% endfor %}
+  {% endfor %}
 
 
     {% if tagged_question.paginator.num_pages > 1 %}
@@ -235,96 +235,94 @@
   </div>
 
 
- <div class="text-center mobile">
-     <div class="btn-group btn-group-sm mb-3">
-       <a class="btn btn-sm text-secondary" href="{% url 'question' %}" role="button">Questions</a>
-       <a class="btn btn-sm {% if 'tag' in request.path %}btn-primary{% endif %}" href="{% url 'tags' %}" role="button">Tags</a>
-       <a class="btn btn-sm text-secondary" href="{% url 'users' %}" role="button">Users</a>
-       <a class="btn btn-sm text-secondary" href="{% url 'ask_question' %}" role="button">Ask</a>
-     </div>
-   </div>
+  <div class="text-center mobile">
+    <div class="btn-group btn-group-sm mb-3">
+        <a class="btn btn-sm text-secondary" href="{% url 'question' %}" role="button">Questions</a>
+        <a class="btn btn-sm {% if 'tag' in request.path %}btn-primary{% endif %}" href="{% url 'tags' %}" role="button">Tags</a>
+        <a class="btn btn-sm text-secondary" href="{% url 'users' %}" role="button">Users</a>
+        <a class="btn btn-sm text-secondary" href="{% url 'ask_question' %}" role="button">Ask</a>
+    </div>
+  </div>
 
-       <div class="row border-top mobile">
-          <div class="col-12 p-1 bg-light border-bottom">
-            <span>Tagged Questions</span>
+  <div class="row border-top mobile tagged">
+    <div class="col-12 p-1 bg-light border-bottom">
+      <span>Tagged Questions</span>
+    </div>
+    <div class="col-12 pl-2 pt-1 pb-2">
+      <span><a href="{% url 'tag_question' tag.pk tag.name %}" class="badge-mobile  mb-2">{{ tag }}</a></span>
+    </div>
+    <div class="col-12 pr-2 pl-2">
+      <span>{{ tag.description }}</span>
+    </div>
+  </div>
+
+
+   {% for question in tagged_question %}
+
+    <div class="row {% if not forloop.last %}border-bottom-0{% endif %} pl-0 mobile border {% if question.tagged %}tagged{% endif %}">
+      <div class="col-2" style="{% if question.any_answer_accepted %} background-color: #ddf1e1; {% else %} background-color: #f8f9fa; {% endif %}">
+        <div class="row">
+          <div class="col-12 p-0 text-center">
+            <small class="text-secondary">
+            {{ question.score }}
+            <svg width="1.8em" height="1.8em" viewBox="0 0 16 16" class="bi bi-caret-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M3.204 11L8 5.519 12.796 11H3.204zm-.753-.659l4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z"/>
+            </svg>
+            </small>
           </div>
-          <div class="col-12 pl-2 pt-1 pb-2">
-            <span><a href="{% url 'tag_question' tag.pk tag.name %}" class="badge-mobile  mb-2">{{ tag }}</a></span>
+          <div class="col-12 col-12 p-0 text-center">
+              <small class="{% if question.any_answer_accepted %}text-success{% else %}text-secondary{% endif %}">{{ question.answers.count }} <i class="fas fa-comment-dots fa-lg" style="width:1.2em"></i></small>
           </div>
-          <div class="col-12 pr-2 pl-2">
-            <span style="font-size:15px">{{ tag.description }}</span>
+        </div> 
+      </div>
+      <div class="col-10">
+        <div class="row">
+          <div class="col-12 pl-1 pr-1">
+              <small><b><a href="{% url 'question_detail' question.pk question.slug %}">{{ question.title }}</a></b></small>
           </div>
-        </div>
-
-
- {% for question in tagged_question %}
-
-         <div class="row {% if not forloop.last %}border-bottom-0{% endif %} pl-0 mobile border {% if question.tagged %}tagged{% endif %}">
-           <div class="col-2" style="{% if question.any_answer_accepted %} background-color: #ddf1e1; {% else %} background-color: #f8f9fa; {% endif %}">
-              <div class="row">
-                <div class="col-12 p-0 text-center">
-                  <small class="text-secondary">
-                  {{ question.score }}
-                  <svg width="1.8em" height="1.8em" viewBox="0 0 16 16" class="bi bi-caret-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                   <path fill-rule="evenodd" d="M3.204 11L8 5.519 12.796 11H3.204zm-.753-.659l4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z"/>
-                  </svg>
-                  </small>
-                </div>
-                <div class="col-12 col-12 p-0 text-center">
-                   <small class="{% if question.any_answer_accepted %}text-success{% else %}text-secondary{% endif %}">{{ question.answers.count }} <i class="fas fa-comment-dots fa-lg" style="width:1.2em"></i></small>
-                </div>
-              </div> 
-           </div>
-           <div class="col-10">
-              <div class="row">
-                <div class="col-12 pl-1 pr-1">
-                   <small><b><a href="{% url 'question_detail' question.pk question.slug %}">{{ question.title }}</a></b></small>
-                </div>
-                <div class="col-12 pl-1 pr-1">
-                   {% for tag in question.tags.all %}
-                    <small><a href="{% url 'tag_question' tag.pk tag.name %}" class="badge-mobile">{{ tag }}</a></small>
-                   {% endfor %}
-                </div>
-                <div class="col-12 pl-1 pr-1 pb-2">
-                   <small><span class="text-secondary">{{ question.posted_on|naturaltime }}</span> <a href="{% url 'user' question.asked_by.pk question.asked_by.username %}">{{ question.asked_by }}</a></small>
-                </div>
-              </div> 
-
-            </div>
+          <div class="col-12 pl-1 pr-1">
+              {% for tag in question.tags.all %}
+              <small><a href="{% url 'tag_question' tag.pk tag.name %}" class="badge-mobile">{{ tag }}</a></small>
+              {% endfor %}
+          </div>
+          <div class="col-12 pl-1 pr-1 pb-2">
+              <small><span class="text-secondary">{{ question.posted_on|naturaltime }}</span> <a href="{% url 'user' question.asked_by.pk question.asked_by.username %}">{{ question.asked_by }}</a></small>
+          </div>
         </div> 
 
-    {% empty %} 
+      </div>
+    </div> 
 
-      <div class="card mt-2 mb-2" style="height:100vh">
-        
-        <div class="card-body">
-          
-          <p class="card-text text-center pb-5 pt-5">No Question Available</p>
+  {% empty %} 
+
+    <div class="card mt-2 mb-2" style="height:100vh">   
+      <div class="card-body">      
+        <p class="card-text text-center pb-5 pt-5">No Question Available</p>
+      </div>
+    </div>  
+
+  {% endfor %}
+
+  {% if tagged_question.paginator.num_pages > 1 %}
+    <div class="row mobile">
+        <div class="col mt-5 mb-3">
+          <div class="pagination float-right" style="margin-bottom: 3; margin-top: 10">
+              <span class="step-links">
+              {% if tagged_question.has_previous %}
+                  <a href="?page={{ tagged_question.previous_page_number }}">&laquo; previous</a>
+              {% endif %}
+
+              <span class="current text-secondary">
+                  page {{ tagged_question.number }} of {{ tagged_question.paginator.num_pages }}
+              </span>
+
+              {% if tagged_question.has_next %}
+                  <a href="?page={{ tagged_question.next_page_number }}">next &raquo;</a>
+              {% endif %}
+              </span>
+          </div>
         </div>
-      </div>  
-
-      {% endfor %}
-
-    {% if tagged_question.paginator.num_pages > 1 %}
-     <div class="row mobile">
-         <div class="col mt-5 mb-3">
-            <div class="pagination float-right" style="margin-bottom: 3; margin-top: 10">
-               <span class="step-links">
-                {% if tagged_question.has_previous %}
-                    <a href="?page={{ tagged_question.previous_page_number }}">&laquo; previous</a>
-                {% endif %}
-
-                <span class="current text-secondary">
-                    page {{ tagged_question.number }} of {{ tagged_question.paginator.num_pages }}
-                </span>
-
-                {% if tagged_question.has_next %}
-                    <a href="?page={{ tagged_question.next_page_number }}">next &raquo;</a>
-                {% endif %}
-               </span>
-            </div>
-         </div>
-     </div>
-     {% endif %}
+    </div>
+  {% endif %}
 
 {% endblock %}

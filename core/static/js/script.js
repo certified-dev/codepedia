@@ -27,48 +27,57 @@ Vue.component('answer', {
   template: `
   <div>
 
-   <div class="container mb-1 pt-1 pb-1 pl-2 pr-2">
+   <div class="container mb-1 pl-2 pr-2">
       <div class="row">
-         <div class="col-12 pr-2 pl-2" >
-            <div class="row">
+         <div class="col-12 pr-2 pl-2">
 
-              <div class="col-2 mobile">
-                  <div class="row">
-                     <div class="col-12 p-0 pl-2 text-center">
-                         <a href="javascript:void(0)" v-on:click="vote('upvote', answer.upvoted, '/answer/' + [[ answer.pk ]] + '/vote/')" :class="[[answer.upvoted ? 'done' : 'undone']]">
-                            <svg width="30" height="30" viewBox="0 0 16 16" class="bi bi-caret-up-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                               <path d="M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
-                            </svg>
-                         </a>
+            <div class="row mobile pl-3 pr-3">
+              <div class="col-12 border-top">
+                  <div class="row pl-0 pr-0">
+                     <div class="col-2 pl-0 pr-2 bg-light">
+                           <div class="row">
+                              <div class="col-12 p-0 pl-2 text-center">
+                                 <a href="javascript:void(0)" v-on:click="vote('upvote', answer.upvoted, '/answer/' + [[ answer.pk ]] + '/vote/')" :class="[[answer.upvoted ? 'done' : 'undone']]">
+                                    <svg width="30" height="30" viewBox="0 0 16 16" class="bi bi-caret-up-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                       <path d="M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+                                    </svg>
+                                 </a>
+                              </div>
+                           
+                              <div class="col-12 p-0 pl-2 text-center">
+                                 <h6 class="mb-0">[[ answer.score ]]</h6>
+                              </div>
+
+                              <div class="col-12 p-0 pl-2 text-center">
+                                 <a href="javascript:void(0)" v-on:click="vote('downvote', answer.downvoted, '/answer/' + [[ answer.pk ]] + '/vote/')" :class="[[answer.downvoted ? 'done' : 'undone']]">
+                                    <svg width="30" height="30" viewBox="0 0 16 16" class="bi bi-caret-down-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                       <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                                    </svg>
+                                 </a>
+                              </div>
+            
+                              <div v-if="answer.question_owner == [[ current_user ]] " class="col-12 p-0 pl-2 text-center">
+                                 <a href="javascript:void(0)" v-on:click="accept('accept', answer.accepted, '/answer/' + [[ answer.pk ]] + '/accept/')" :class="[[ answer.accepted ? 'checked' : 'undone']]">
+                                    <i class="fas fa-check fa-lg"></i>
+                                 </a>
+                              </div>
+
+                           <div v-if="answer.accepted && answer.question_owner != [[ current_user ]]" class="col-12 p-0 pl-2 text-center">
+                              <i class="fas fa-check fa-lg text-success"></i>
+                           </div>
+
+                           </div>
                      </div>
                     
-                     <div class="col-12 p-0 pl-2 text-center">
-                        <h6 class="mb-0">[[ answer.score ]]</h6>
+                     <div class="col-10 pl-2 pr-0">
+                        <div class="answer-text" v-html="answer.text_html"></div>
                      </div>
-
-                     <div class="col-12 p-0 pl-2 text-center">
-                        <a href="javascript:void(0)" v-on:click="vote('downvote', answer.downvoted, '/answer/' + [[ answer.pk ]] + '/vote/')" :class="[[answer.downvoted ? 'done' : 'undone']]">
-                           <svg width="30" height="30" viewBox="0 0 16 16" class="bi bi-caret-down-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
-                           </svg>
-                        </a>
-                     </div>
-   
-                     <div v-if="answer.question_owner == [[ current_user ]] " class="col-12 p-0 pl-2 text-center">
-                        <a href="javascript:void(0)" v-on:click="accept('accept', answer.accepted, '/answer/' + [[ answer.pk ]] + '/accept/')" :class="[[ answer.accepted ? 'checked' : 'undone']]">
-                           <i class="fas fa-check fa-lg"></i>
-                        </a>
-                     </div>
-
-                    <div v-if="answer.accepted && answer.question_owner != [[ current_user ]]" class="col-12 p-0 pl-2 text-center">
-                       <i class="fas fa-check fa-lg text-success"></i>
-                    </div>
-
                   </div>
-              </div>
+               </div>
+            </div>
 
-
-              <div class="col-1 laptop">
+            <div class="row laptop">
+              <div class="col-1">
                   <div class="row">
                      <div class="col-12 p-0 pl-2 text-center">
                          <a href="javascript:void(0)" v-on:click="vote('upvote', answer.upvoted, '/answer/' + [[ answer.pk ]] + '/vote/')" :class="[[answer.upvoted ? 'done' : 'undone']]">
@@ -102,141 +111,85 @@ Vue.component('answer', {
 
                   </div>
               </div>
+              <div class="col-11 pl-2">
+                <div class="answer-text" v-html="answer.text_html"></div>
+              </div>    
+            </div>
 
-              <div class="col-10 pl-0 mobile">
-                <span class="mobile"><div class="answer-text" v-html="answer.text_html"></div></span>
-              </div>
-
-              <div class="col-11 pl-2 laptop">
-                <span class="laptop"><div class="answer-text" v-html="answer.text_html"></div></span>
-              </div>
-
-           </div>
          </div>
 
-
-         <div v-if="answer.answered_by != [[ current_user ]]" class="col-12 pl-2 pr-2">
-             <div class="row">
-
-                 <div class="col-1"></div>
-                 <div class="col-11 pl-2 pr-3">
-
-                      <small class="text-secondary mobile">
-                      <a :href="'/users/' + answer.answered_by_id + '/' + answer.answered_by + '/'">
-                        <img :src="answer.answered_by_image" class="rounded img-fluid" height="22" width="22"/>
-                          <b>[[ answer.answered_by ]]</b></a>
-                          <span class="text-dark">[[ answer.answered_by_points ]]</span>
-                       <span class="float-right"><i class="fas fa-clock"></i> [[ answer.posted_on ]]</span>
-                      </small>
-
-
-                      <div class="row pb-2 laptop">
-                         <div class="col-8 pl-3">
-                         <span v-if="answer.updated_on" class="text-muted float-right small">edited [[ answer.updated_on ]]</span>
-                         </div>
-                             <div :class="[[ question_owner == answer.answered_by ? 'highlighted col-3 pb-1 pl-3 ml-5' : 'col-3 pl-3 pb-1 ml-5' ]]">
-                                 <div class="row">
-                                     <div class="col-12">
-                                         <span class="text-secondary"><small> [[ answer.posted_on ]]</small></span>
-                                     </div>
-                                     <div class="col-12">
-                                        <div class="row">
-                                           <div class="col-3">
-                                           <a :href="'/users/' + answer.answered_by_id + '/' + answer.answered_by + '/'"><img :src="answer.answered_by_image"  class="rounded" width="28" height="28"/></a>
-                                           </div>
-                                           <div class="col-9 p-0 pl-1">
-
-                                              <small>
-                                                  <span>
-                                                    <a :href="'/users/' + answer.answered_by_id +  '/' + answer.answered_by + '/'"> [[ answer.answered_by ]]</a>
-                                                  </span>
-                                                  <span>
-                                                     <b class="text-secondary">[[ answer.answered_by_points ]]</b>
-                                                  </span>
-                                              </small>
-
-                                           </div>
-                                        </div>
-                                     </div>
-                                </div>
-                             </div>
-                         </div>
-                      </div>
-                 </div>
-                 
-
-
-             </div>
-         </div>
-
-
-         <div v-if="answer.answered_by == [[ current_user ]]" class="col-12 pl-2 pr-2">
-            <div class="row">
-
-               <div class="col-1"></div>
-               <div class="col-11 pl-0 pr-1">
-
-                  <small class="text-secondary mobile">
+         <div class="col-12 mobile">
+            <div class="row pl-2 pr-2">
+               <div v-if="answer.answered_by == [[ current_user ]]" class="col-12 p-1 border-top mobile">   
+                  <span class="small">
+                     <a :href=" '/question/' + [[ question_id ]] +'/answer/' + answer.pk + '/update/'" class="mr-3 ml-1 text-secondary">edit</a>          
+                     <a href="javascript:void(0)" class="text-secondary" onclick="alert('are you sure you want to delete this answer?')">delete</a>
+                  </span>        
+               </div>
+               <div :class="[[ answer.answered_by == question_owner ? 'highlight-mobile col-12 p-2 shadow-sm border-top border-bottom' : 'col-12 p-2 shadow-sm border-top border-bottom' ]]">
+                  <small class="text-secondary">
                      <a :href="'/users/' + answer.answered_by_id + '/' + answer.answered_by + '/'">
-                        <img :src="answer.answered_by_image" class="rounded img-fluid" height="22" width="22"/>
+                        <img :src="answer.answered_by_image" class="rounded img-fluid" height="25" width="25"/>
                         <b>[[ answer.answered_by ]]</b>
                      </a>
                      <span class="text-dark">[[ answer.answered_by_points ]]</span>
-                     <span class="text-secondary"> | </span>
-                     <a :href=" '/question/' + [[ question_id ]] +'/answer/' + answer.pk + '/update/'" class="text-secondary">edit</a>
-                     <span class="text-secondary"> | </span>
-                     <a href="javascript:void(0)" class="text-secondary" onclick="alert('are you sure you want to delete this answer?')">delete</a>
-                     <span class="float-right"><i class="fas fa-clock"></i> [[ answer.posted_on ]]</span>
+                     <span class="float-right mt-1"><i class="fas fa-clock"></i> [[ answer.posted_on ]]</span>
                   </small>
+               </div>          
+            </div>
+         </div>
 
-                  <div class="row pb-2 laptop">
-                     <div class="col-8 pl-2">
-                        <small>
+         <div class="col-12 pl-2 pr-2 laptop">
+            <div class="row">
+               <div class="col-1"></div>
+               <div class="col-11 pl-0 pr-1">                   
+                  <div class="row pb-2">
+                     <div class="col-8 pl-4">
+                        <small v-if="answer.answered_by == [[ current_user ]]">
                            <a class="text-secondary" :href=" '/question/' + [[ question_id ]] +'/answer/' + answer.pk + '/update/'">edit</a>
                            <span class="mr-3"></span>
                            <a class="text-secondary" href="#" onclick="alert('are you sure you want to delete this answer?')">delete</a>
-                       </small>
-                       <span v-if="answer.updated_on" class="text-muted float-right small">edited [[ answer.updated_on ]]</span>
-                     </div>
-                     <div :class="[[ question_owner == answer.answered_by ? 'highlighted col-3 pb-1 pl-3 ml-5' : 'col-3 pb-1 pl-3 ml-5']]">
-                         <div class="row">
-                             <div class="col-12">
-                                 <span class="text-secondary"><small> [[ answer.posted_on ]]</small></span>
-                             </div>
-                             <div class="col-12">
-                                 <div class="row">
-                                     <div class="col-3">
-                                     <a :href="'/users/' + answer.answered_by_id + '/' + answer.answered_by + '/'"><img :src="answer.answered_by_image"  class="rounded" width="28" height="28"/></a>
-                                     </div>
-                                     <div class="col-9 p-0 pl-1">
+                        </small>
 
-                                        <small>
-                                            <span>
-                                                <a :href="'/users/' + answer.answered_by_id + '/' + answer.answered_by + '/'"> [[ answer.answered_by ]]</a>
-                                            </span>
-                                            <span>
-                                                 <b class="text-secondary">[[ answer.answered_by_points ]]</b>
-                                            </span>
-                                        </small>
-                                     </div>
+                        <span v-if="answer.updated_on" class="text-muted float-right small">edited [[ answer.updated_on ]]</span>
+                     </div>
+                     <div :class="[[ question_owner == answer.answered_by ? 'highlight-laptop col-3 pb-1 pl-3 ml-5' : 'col-3 pb-1 pl-3 ml-5']]">
+                        <div class="row">
+                           <div class="col-12">
+                              <span class="text-secondary"><small> [[ answer.posted_on ]]</small></span>
+                           </div>
+                           <div class="col-12">
+                              <div class="row">
+                                 <div class="col-3">
+                                    <a :href="'/users/' + answer.answered_by_id + '/' + answer.answered_by + '/'"><img :src="answer.answered_by_image"  class="rounded" width="28" height="28"/></a>
                                  </div>
-                             </div>
-                         </div>
+                                 <div class="col-9 p-0 pl-1">
+                                    <small>
+                                       <span>
+                                          <a :href="'/users/' + answer.answered_by_id + '/' + answer.answered_by + '/'"> [[ answer.answered_by ]]</a>
+                                       </span>
+                                       <span>
+                                          <b class="text-secondary">[[ answer.answered_by_points ]]</b>
+                                       </span>
+                                    </small>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
                      </div>
                   </div>
-
-               </div>
-            </div>
+               </div>            
+            </div> 
          </div>
+         
       </div>
 
-      <div class="col-12 pl-2 pr-2">
-         <div class="row pr-2 pl-0" v-if="answer.comments.length > 0">
-
-            <div class="col-1 pr-0"></div>
-            <div class="col-11 pr-0 pl-0 mobile">
-               <div v-for="comment in answer.comments" :id="'mob-answer-comment-' + comment.id" class="border-top pl-1 mobile-answer-comment p-1 text-secondary">
-                  <span v-html="comment.text_html"></span> – <a :href="'/users/' + comment.posted_by_id + '/' + comment.posted_by + '/'" :class="[[ comment.posted_by == answer.answered_by ? 'highlighted font-weight-bold' : 'font-weight-bold' ]]">[[ comment.posted_by ]]</a> <span class="text-primary">[[ comment.posted_on ]]</span>
+      <div class="col-12 pl-2 pr-2 mobile">
+         <div class="row pr-0 pl-0" v-if="answer.comments.length > 0">
+            <div class="col-2 pr-0 mt-1 bg-light"></div>      
+            <div class="col-10 pr-0 pl-0">
+               <div v-for="comment in answer.comments" :id="'mob-answer-comment-' + comment.id" class="border-bottom pl-1 mobile-answer-comment p-1 text-secondary">
+                  <span v-html="comment.text_html"></span> – <a :href="'/users/' + comment.posted_by_id + '/' + comment.posted_by + '/'" :class="[[ comment.posted_by == answer.answered_by ? 'highlight-link font-weight-bold' : 'font-weight-bold' ]]">[[ comment.posted_by ]]</a> <span class="text-primary">[[ comment.posted_on ]]</span>
                      <span v-if="comment.posted_by == [[ current_user ]]">
                         <span :id="'add-mob-answer-comment-' + comment.id" style="display:none">
                         <a href="#" class="ml-1"><i class="fas fa-pen"></i></a>
@@ -245,23 +198,24 @@ Vue.component('answer', {
                   </span>
                </div>
             </div>
+         </div>      
+      </div>
 
-            <div class="col-11 pl-0 pr-0 laptop border-bottom">
+      <div class="col-12 pl-0 pr-2 laptop">
+         <div class="row pr-0 pl-0" v-if="answer.comments.length > 0">
+            <div class="col-1 pr-0 laptop"></div>       
+            <div class="col-11 pl-0 pr-0 border-bottom mb-2">
                <div v-for="comment in answer.comments" :id="'answer-comment-' + comment.id" class="border-top answer-comment p-1" >
-                  <span v-html="comment.text_html"></span> – <a :href="'/users/' + comment.posted_by_id + '/' + comment.posted_by + '/'" :class="[[ comment.posted_by == answer.answered_by ? 'highlighted' : '' ]]">[[ comment.posted_by ]]</a> <span class="text-secondary">[[ comment.posted_on ]]</span>
+                  <span v-html="comment.text_html"></span> – <a :href="'/users/' + comment.posted_by_id + '/' + comment.posted_by + '/'" :class="[[ comment.posted_by == answer.answered_by ? 'highlight-link' : '' ]]">[[ comment.posted_by ]]</a> <span class="text-secondary">[[ comment.posted_on ]]</span>
                   <span v-if="comment.posted_by == [[ current_user ]]"> <span :id="'add-answer-comment-' + comment.id" style="display:none"> <a href="#" class="ml-1">edit</a>  <a href="#" class="text-danger ml-2">delete</a></span></span>
                </div>
             </div>
-
-         </div>
-         
+         </div>      
       </div>
       
 
-
       <div class="col-12 pr-1 comment-box-remove">
          <div :id="'now_add_comment-' + answer.pk" style="display:none">
-
 
                <div class="col-12 pl-2 laptop">  
                   <div class="row pt-2">
@@ -276,7 +230,7 @@ Vue.component('answer', {
                                  </div>
                               </form>
                            </div>
-                           <div class="col-2 p-0 text-center">
+                           <div class="col-2 p-0 pl-2 text-center">
                               <button type="button" v-on:click="submitComment('laptop_comment_text-'+ answer.pk, '/answer/' + answer.pk + '/reply/')" class="btn btn-primary btn-sm"> Add Comment </button>
                            </div>
                         </div>
@@ -284,8 +238,7 @@ Vue.component('answer', {
                   </div>
                </div>
 
-               <div class="row pt-2 mobile" novalidate>
-
+               <div class="row pl-2 pt-2 mobile shadow-sm" novalidate>
                   <div class="col-12 pl-0">
                      <form method="post" novalidate>
                         <div class="form-group">
@@ -293,7 +246,6 @@ Vue.component('answer', {
                         </div>
                      </form>
                   </div>
-
                   <div class="col-12 pl-0">
                      <div class="row mb-2">
                         <div class="col-5">
@@ -304,38 +256,44 @@ Vue.component('answer', {
                         </div>
                      </div>
                   </div>
-
                </div>
-            </div>
 
+            </div>
          </div>
 
 
-         <div class="row pt-2 laptop add_comment_answer">
-            <div class="col-1 pr-0"></div>
-               <div class="col-11 pl-1 pr-2">
-                  <small><a href="javascript:void(0)" class="add" :id=" 'add_comment-' + answer.pk">add a comment</a></small>
-               </div>
-            </div>
-
-            <div class="col-12 pl-2 pr-2 mobile add_comment_answer">
-               <div class="row pr-2 pl-0">
+         <div class="row pt-0">
+            <div class="col-12 laptop add_comment_answer">
+               <div class="row">
                   <div class="col-1 pr-0"></div>
-                  <div class="col-11 p-2 text-center border border-bottom-0 pb-1 bg-light">
-                     <small><a href="javascript:void(0)" class="add" :id=" 'add_comment-' + answer.pk ">add a comment</a></small>
-                  </div>
-               </div>
-               <div class="mobile border-top"></div>
+                     <div class="col-11 pl-1 pr-2">
+                       <small>
+                          <a v-if="[[ current_user.length ]] > 0" href="javascript:void(0)" class="add" :id=" 'add_comment-' + answer.pk ">add a comment</a>
+                          <a v-else href="javascript:void(0)">add a comment</a>
+                       </small>
+                    </div>
+                </div>
+             </div>
            </div>
-
            <hr class="laptop">
 
+            <div class="col-12 pl-2 pr-2 mobile add_comment_answer mb-2">
+               <div class="row pr-0 pl-0">       
+                  <div class="col-12 p-2 text-center pb-1 bg-light">
+                     <small>
+                      <a v-if="[[ current_user.length ]] > 0" href="javascript:void(0)" class="add" :id=" 'add_comment-' + answer.pk ">add a comment</a>
+                      <a v-else href="javascript:void(0)">add a comment</a>
+                    </small>
+                  </div>
+               </div>
+            
+            </div>                   
          </div>
 
       </div>
+      
    </div>
    
-   </div>
 
   </div>
   `
@@ -484,8 +442,8 @@ function submitComment(button_id, Comment_Url) {
 
             if (response.data.posted_by == question_owner ) {
    
-               $("#comment-" + response.data.last_comment).after("<div class='border-top border-bottom activate-update p-1'>" + response.data.text_html + " – <a href='' class='highlighted'>" + response.data.posted_by + "</a> <span class='text-secondary'>" + response.data.posted_on + "</span> </div>");
-               $("#second-comment-" + response.data.last_comment).after("<div class='border-bottom pl-1 activate-update2 p-1' style='font-size: 12px;'>" + response.data.text_html + " – <a href='' class='highlighted'>" + response.data.posted_by + "</a> <span class='text-secondary'>" + response.data.posted_on + "</span> </div>");
+               $("#comment-" + response.data.last_comment).after("<div class='border-top border-bottom activate-update p-1'>" + response.data.text_html + " – <a href='' class='highlight-link'>" + response.data.posted_by + "</a><span class='text-secondary'>" + response.data.posted_on + "</span> </div>");
+               $("#second-comment-" + response.data.last_comment).after("<div class='border-bottom pl-1 activate-update2 p-1' style='font-size: 12px;'>" + response.data.text_html + " – <a href='' class='highlight-link'>" + response.data.posted_by + "</a> <span class='text-secondary'>" + response.data.posted_on + "</span> </div>");
    
             } else {
                
@@ -511,8 +469,8 @@ function submitComment(button_id, Comment_Url) {
 
             if (response.data.posted_by == targetObj.answered_by ) {
 
-               $("#answer-comment-" + response.data.last_comment).after("<div class='border-top answer-comment p-1'>" + response.data.text_html + " – <a href='' class='highlighted'>" + response.data.posted_by + "</a> <span class='text-secondary'>" + response.data.posted_on + "</span> </div>");           
-               $("#mob-answer-comment-" + response.data.last_comment).after("<div class='border-top pl-1 mobile-answer-comment p-1 text-secondary'>" + response.data.text_html + " – <a href='' class='highlighted font-weight-bold'>" + response.data.posted_by + "</a> <span class='text-primary'>" + response.data.posted_on + "</span> </div>");           
+               $("#answer-comment-" + response.data.last_comment).after("<div class='border-top answer-comment p-1'>" + response.data.text_html + " – <a href='' class='highlight-link'>" + response.data.posted_by + "</a> <span class='text-secondary'>" + response.data.posted_on + "</span> </div>");           
+               $("#mob-answer-comment-" + response.data.last_comment).after("<div class='border-top pl-1 mobile-answer-comment p-1 text-secondary'>" + response.data.text_html + " – <a href='' class='highlight-link font-weight-bold'>" + response.data.posted_by + "</a> <span class='text-primary'>" + response.data.posted_on + "</span> </div>");           
    
             } else {
    
