@@ -26,18 +26,22 @@ class Tag(models.Model):
     name = models.CharField(max_length=100)
     description = models.CharField(max_length=500)
 
+    class Meta:
+        ordering = ['?']
+
     def __str__(self):
         return self.name
 
+
 class Comment(models.Model):
-    content_type   = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id      = models.PositiveIntegerField()
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey()
     text = models.CharField(max_length=5000)
     posted_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     posted_on = models.DateTimeField(auto_now_add=True)
-    
+
     def __str__(self):
         return self.text
 
@@ -269,7 +273,6 @@ class AnswerSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_answered_by_points(obj):
         return obj.answered_by.points
-        
 
     @staticmethod
     def get_answered_by_id(obj):

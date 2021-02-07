@@ -120,7 +120,7 @@ a:hover {
 
 .notify-green {
     position: absolute;
-     top: 4px;
+    top: 4px;
     right: 2px;
     padding: 0px 3px;
     background-color: #28a745;
@@ -248,9 +248,7 @@ font-size:1.2rem;
 }
 
 .tagged {
-
   background-color: #fdf7e3;
-
 }
 
 .answer-comment,
@@ -303,7 +301,6 @@ a code {
     padding: 1px 6px;
     font-size: 70%;
     color: #fff;
-    margin-bottom:5px;
 
 }
 

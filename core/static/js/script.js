@@ -188,7 +188,7 @@ Vue.component('answer', {
          <div class="row pr-0 pl-0" v-if="answer.comments.length > 0">
             <div class="col-2 pr-0 mt-1 bg-light"></div>      
             <div class="col-10 pr-0 pl-0">
-               <div v-for="comment in answer.comments" :id="'mob-answer-comment-' + comment.id" class="border-bottom pl-1 mobile-answer-comment p-1 text-secondary">
+               <div v-for="comment in answer.comments" :id="'mob-answer-comment-' + comment.id" class="border-bottom mobile-answer-comment p-2 text-secondary">
                   <span v-html="comment.text_html"></span> – <a :href="'/users/' + comment.posted_by_id + '/' + comment.posted_by + '/'" :class="[[ comment.posted_by == answer.answered_by ? 'highlight-link font-weight-bold' : 'font-weight-bold' ]]">[[ comment.posted_by ]]</a> <span class="text-primary">[[ comment.posted_on ]]</span>
                      <span v-if="comment.posted_by == [[ current_user ]]">
                         <span :id="'add-mob-answer-comment-' + comment.id" style="display:none">
@@ -442,13 +442,13 @@ function submitComment(button_id, Comment_Url) {
 
             if (response.data.posted_by == question_owner ) {
    
-               $("#comment-" + response.data.last_comment).after("<div class='border-top border-bottom activate-update p-1'>" + response.data.text_html + " – <a href='' class='highlight-link'>" + response.data.posted_by + "</a><span class='text-secondary'>" + response.data.posted_on + "</span> </div>");
-               $("#second-comment-" + response.data.last_comment).after("<div class='border-bottom pl-1 activate-update2 p-1' style='font-size: 12px;'>" + response.data.text_html + " – <a href='' class='highlight-link'>" + response.data.posted_by + "</a> <span class='text-secondary'>" + response.data.posted_on + "</span> </div>");
+               $("#comment-" + response.data.last_comment).after("<div class='border-top border-bottom activate-update p-1'>" + response.data.text_html + " – <a href='' class='highlight-link'>" + response.data.posted_by + "</a><span class='text-secondary'>" + response.data.posted_on + "</span></div>");
+               $("#second-comment-" + response.data.last_comment).after("<div class='border-bottom pl-1 activate-update2 p-2 text-secondary' style='font-size: 12px;'>" + response.data.text_html + " – <a href='' class='highlight-link'>" + response.data.posted_by + "</a> <span class='text-secondary'>" + response.data.posted_on + "</span> </div>");
    
             } else {
                
                $("#comment-" + response.data.last_comment).after("<div class='border-top border-bottom activate-update p-1'>" + response.data.text_html + " – <a href=''>" + response.data.posted_by + "</a> <span class='text-secondary'>" + response.data.posted_on + "</span> </div>");
-               $("#second-comment-" + response.data.last_comment).after("<div class='border-bottom pl-1 activate-update2 p-1' style='font-size: 12px;'>" + response.data.text_html + " – <a href=''>" + response.data.posted_by + "</a> <span class='text-secondary'>" + response.data.posted_on + "</span> </div>");
+               $("#second-comment-" + response.data.last_comment).after("<div class='border-bottom pl-1 activate-update2 p-2 text-secondary' style='font-size: 12px;'>" + response.data.text_html + " – <a href=''>" + response.data.posted_by + "</a> <span class='text-secondary'>" + response.data.posted_on + "</span> </div>");
                
             }
 
@@ -470,12 +470,12 @@ function submitComment(button_id, Comment_Url) {
             if (response.data.posted_by == targetObj.answered_by ) {
 
                $("#answer-comment-" + response.data.last_comment).after("<div class='border-top answer-comment p-1'>" + response.data.text_html + " – <a href='' class='highlight-link'>" + response.data.posted_by + "</a> <span class='text-secondary'>" + response.data.posted_on + "</span> </div>");           
-               $("#mob-answer-comment-" + response.data.last_comment).after("<div class='border-top pl-1 mobile-answer-comment p-1 text-secondary'>" + response.data.text_html + " – <a href='' class='highlight-link font-weight-bold'>" + response.data.posted_by + "</a> <span class='text-primary'>" + response.data.posted_on + "</span> </div>");           
+               $("#mob-answer-comment-" + response.data.last_comment).after("<div class='border-top pl-1 mobile-answer-comment p-2 text-secondary'>" + response.data.text_html + " – <a href='' class='highlight-link font-weight-bold'>" + response.data.posted_by + "</a> <span class='text-primary'>" + response.data.posted_on + "</span> </div>");
    
             } else {
    
                $("#answer-comment-" + response.data.last_comment).after("<div class='border-top answer-comment p-1'>" + response.data.text_html + " – <a href='' class=''>" + response.data.posted_by + "</a> <span class='text-secondary'>" + response.data.posted_on + "</span> </div>");     
-               $("#mob-answer-comment-" + response.data.last_comment).after("<div class='border-top pl-1 mobile-answer-comment p-1 text-secondary'>" + response.data.text_html + " – <a href='' class='font-weight-bold'>" + response.data.posted_by + "</a> <span class='text-primary'>" + response.data.posted_on + "</span> </div>");                 
+               $("#mob-answer-comment-" + response.data.last_comment).after("<div class='border-top pl-1 mobile-answer-comment p-2 text-secondary'>" + response.data.text_html + " – <a href='' class='font-weight-bold'>" + response.data.posted_by + "</a> <span class='text-primary'>" + response.data.posted_on + "</span> </div>");
    
             }   
 

@@ -9,7 +9,7 @@
    <div class="row pl-2 pr-2 laptop pt-5">
    
      <div class="col-12 mt-2">
-      <h3>Questions tagged [{{ tag }}]
+      <h3>Questions tagged [{{ tag|lower }}]
        <a class="btn btn-sm btn-primary float-right" href="{% url 'ask_question' %}" role="button">Ask Question</a>
       </h3>
      </div>
@@ -68,7 +68,7 @@
                    <div class="row">
                      <div class="col-9 pl-0">
                       {% for tag in question.tags.all %}
-                       <a href="{% url 'tag_question' tag.pk tag.name %}" class="badge">{{ tag }}</a>
+                       <a href="{% url 'tag_question' tag.pk tag.name %}" class="badge">{{ tag|lower }}</a>
                       {% endfor %}
                      </div>
 
@@ -207,7 +207,7 @@
                  <div class="card-body">
                      <p class="card-text text-center">
                      {% for tag in user.watched.all %}
-                      <a href="{% url 'tag_question' tag.pk tag.name %}" class="badge">{{ tag }}</a>
+                      <a href="{% url 'tag_question' tag.pk tag.name %}" class="badge">{{ tag|lower }}</a>
                       {% empty %}
                          <em><small>No tag is being watched.</small></em>
                      {% endfor %}
@@ -222,7 +222,7 @@
                 <div class="row">
                     {% for tag in related_tags %}
                     <div class="col-12 p-1 ml-2">
-                        <a href="{% url 'tag_question' tag.pk tag.name %}" class="badge">{{ tag }}</a>
+                        <a href="{% url 'tag_question' tag.pk tag.name %}" class="badge">{{ tag|lower }}</a>
                     </div>
                     {% endfor %}
                 </div>
@@ -245,14 +245,14 @@
   </div>
 
   <div class="row border-top mobile tagged">
-    <div class="col-12 p-1 bg-light border-bottom">
-      <span>Tagged Questions</span>
+    <div class="col-12 p-2 bg-light border-bottom">
+      <span class="font-weight-bold">Tagged Questions</span>
     </div>
     <div class="col-12 pl-2 pt-1 pb-2">
-      <span><a href="{% url 'tag_question' tag.pk tag.name %}" class="badge-mobile  mb-2">{{ tag }}</a></span>
+      <span><a href="{% url 'tag_question' tag.pk tag.name %}" class="badge-mobile  mb-2">{{ tag|lower }}</a></span>
     </div>
-    <div class="col-12 pr-2 pl-2">
-      <span>{{ tag.description }}</span>
+    <div class="col-12 pr-2 pl-2 pt-1 pb-1">
+      <span style="font-size:13px">{{ tag.description }}</span>
     </div>
   </div>
 
@@ -260,7 +260,7 @@
    {% for question in tagged_question %}
 
     <div class="row {% if not forloop.last %}border-bottom-0{% endif %} pl-0 mobile border {% if question.tagged %}tagged{% endif %}">
-      <div class="col-2" style="{% if question.any_answer_accepted %} background-color: #ddf1e1; {% else %} background-color: #f8f9fa; {% endif %}">
+      <div class="col-2" style="{% if question.any_answer_accepted %} background-color: #ddf1e1; {% elif question.tagged %} background: #f1ecdb {% else %} background-color: #f8f9fa; {% endif %}">
         <div class="row">
           <div class="col-12 p-0 text-center">
             <small class="text-secondary">
@@ -276,17 +276,17 @@
         </div> 
       </div>
       <div class="col-10">
-        <div class="row">
+        <div class="row pl-1">
           <div class="col-12 pl-1 pr-1">
               <small><b><a href="{% url 'question_detail' question.pk question.slug %}">{{ question.title }}</a></b></small>
           </div>
           <div class="col-12 pl-1 pr-1">
               {% for tag in question.tags.all %}
-              <small><a href="{% url 'tag_question' tag.pk tag.name %}" class="badge-mobile">{{ tag }}</a></small>
+              <small><a href="{% url 'tag_question' tag.pk tag.name %}" class="badge-mobile">{{ tag|lower }}</a></small>
               {% endfor %}
           </div>
-          <div class="col-12 pl-1 pr-1 pb-2">
-              <small><span class="text-secondary">{{ question.posted_on|naturaltime }}</span> <a href="{% url 'user' question.asked_by.pk question.asked_by.username %}">{{ question.asked_by }}</a></small>
+          <div class="col-12 pl-1 pr-1 pb-2 pt-2" style="font-size:10px">
+              <span class="text-secondary">{{ question.posted_on|naturaltime }}</span> <a href="{% url 'user' question.asked_by.pk question.asked_by.username %}">{{ question.asked_by }}</a>
           </div>
         </div> 
 
