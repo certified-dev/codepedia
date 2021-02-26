@@ -124,6 +124,7 @@
       </div>
 
 
+  {% if page_obj.paginator.num_pages > 1 %}
    <div class="row mobile mb-3">
       <div class="col-12 pr-1 mb-2">
           <div class="pagination float-right mr-3" style="margin-bottom: 3; margin-top: 10">
@@ -141,6 +142,8 @@
         {% endif %}
       </span>
     </div>
+    {% endif %}
+    
      </div>
 
    </div>

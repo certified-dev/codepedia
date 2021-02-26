@@ -14,7 +14,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DetailView
 from django.core.paginator import Paginator
 from django.core import serializers
 from django.contrib.humanize.templatetags.humanize import naturaltime
-from django.utils.html import urlize
+from django.utils.html import strip_tags, urlize
 
 from notify.signals import notify
 
@@ -60,23 +60,35 @@ class HomeQuestionView(ListView):
     def get_queryset(self):
         queryset = super().get_queryset().order_by('-posted_on')
 
-        if self.request.user.watched.count() > 0:
+        if self.request.user.watched.count() > 0:        
             user_tags = self.request.user.watched.all()
-            questions = []
+
+            tag_count =  0 
 
             for item in queryset:
                 item.tagged = False
-                tag_count = 0
-
+                
                 for tag in user_tags:
+                    
                     if tag in item.tags.all():
                         tag_count += 1
+
+                if tag_count > 1 and not item.tagged:
+                    item.tagged = True
+
+
+            questions = []
+            for item in queryset:
+                item.tagged = False
+                
+                for tag in user_tags:
 
                     if tag in item.tags.all() and item not in questions:
                         questions.append(item)
 
-                if tag_count > 1 and not item.tagged:
-                    item.tagged = True
+                    if tag in item.tags.all():
+                        if not item.tagged:
+                            item.tagged = True
 
             return questions[:20]
         else:
@@ -92,21 +104,25 @@ class QuestionListView(ListView):
     def get_queryset(self):
         queryset = super().get_queryset().order_by('-posted_on')
         if self.request.user.is_authenticated:
+            
             user_tags = self.request.user.watched.all()
 
             for item in queryset:
                 item.tagged = False
-                tag_count = 0
+                tag_count =  0 
+                
                 for tag in user_tags:
+                    
                     if tag in item.tags.all():
                         tag_count += 1
 
                 if tag_count > 1 and not item.tagged:
                     item.tagged = True
-
+                        
             return queryset
         else:
             return queryset
+        
 
     def get_context_data(self, **kwargs):
         queryset = super().get_queryset()
@@ -114,7 +130,7 @@ class QuestionListView(ListView):
         extra_context = {
             'related_tags': related_tags,
             'question_count': queryset.count()
-
+            
         }
         kwargs.update(extra_context)
         return super().get_context_data(**kwargs)
@@ -131,12 +147,14 @@ class UnansweredQuestion(ListView):
         excluded = []
 
         if self.request.user.is_authenticated:
-            user_tags = self.request.user.watched.all()
+            user_tags = self.request.user.watched.all()   
 
             for item in queryset:
                 item.tagged = False
-                tag_count = 0
+                tag_count =  0 
+                
                 for tag in user_tags:
+                    
                     if tag in item.tags.all():
                         tag_count += 1
 
@@ -145,12 +163,12 @@ class UnansweredQuestion(ListView):
 
                 if item.answers.count() > 0:
                     excluded.append(item.id)
-
+            
             return queryset.exclude(id__in=excluded)
         else:
             for item in queryset:
 
-                if item.answers.count() > 0:
+                 if item.answers.count() > 0:
                     excluded.append(item.id)
 
             return queryset.exclude(id__in=excluded)
@@ -302,18 +320,18 @@ def comment_question_ajax(request, pk):
 
     if request.method == 'POST':
         comment_text = request.POST.get('text')
-        new_comment = highlight(comment_text)
-        comment = Comment(content_object=question, text=new_comment, posted_by=request.user)
+        new_comment = highlight(strip_tags(comment_text))
+        comment = Comment(content_object=question,text=new_comment, posted_by=request.user)
         comment.save()
 
         send_notify(request, question, comment_text)
 
         if question.asked_by != request.user:
-            notify.send(request.user, recipient=question.asked_by, actor=request.user,
-                        verb='commented on your question', obj=question, nf_type='question_commented_on')
+                notify.send(request.user, recipient=question.asked_by, actor=request.user,
+                            verb='commented on your question', obj=question, nf_type='question_commented_on')
 
         response_data['id'] = comment.pk
-        response_data['text_html'] = urlize(comment.text)
+        response_data['text_html'] =  urlize(comment.text)
         response_data['posted_by'] = comment.posted_by.username
         response_data['posted_by_id'] = comment.posted_by.id
         response_data['posted_on'] = naturaltime(comment.posted_on)
@@ -325,6 +343,7 @@ def comment_question_ajax(request, pk):
         return JsonResponse(response_data)
 
 
+
 def reply_answer_ajax(request, pk):
     answer = get_object_or_404(Answer, pk=pk)
     last_comment = Comment.objects.filter(answer_comments=answer).last()
@@ -332,19 +351,19 @@ def reply_answer_ajax(request, pk):
 
     if request.method == 'POST':
         comment_text = request.POST.get('text')
-        new_comment = highlight(comment_text)
-        comment = Comment(content_object=answer, text=new_comment, posted_by=request.user)
+        new_comment = highlight(strip_tags(comment_text))
+        comment = Comment(content_object=answer,text=new_comment, posted_by=request.user)
         comment.save()
 
         send_notify(request, answer, comment_text)
-
+        
         if answer.answered_by != request.user:
-            notify.send(request.user, recipient=answer.answered_by, actor=request.user,
-                        verb='commented on your answer', obj=answer, target=answer.question,
-                        nf_type='answer_commented_on')
+                notify.send(request.user, recipient=answer.answered_by, actor=request.user,
+                            verb='commented on your answer', obj=answer, target=answer.question,
+                            nf_type='answer_commented_on')
 
         response_data['id'] = comment.pk
-        response_data['text_html'] = urlize(comment.text)
+        response_data['text_html'] = strip_tags(urlize(comment.text))
         response_data['posted_by'] = comment.posted_by.username
         response_data['posted_by_id'] = comment.posted_by.id
         response_data['posted_on'] = naturaltime(comment.posted_on)
@@ -379,13 +398,12 @@ class TagQuestionView(DetailView):
 
             for item in questions:
                 item.tagged = False
-                tag_count = 0
+                
                 for tag in user_tags:
-                    if tag in item.tags.all():
-                        tag_count += 1
 
-                if tag_count > 1 and not item.tagged:
-                    item.tagged = True
+                    if tag in item.tags.all():
+                        if not item.tagged:
+                            item.tagged = True                  
 
         paginator = Paginator(questions, 15)
         page_number = self.request.GET.get('page')
@@ -426,7 +444,7 @@ class TagUpdateView(UpdateView):
         return super().form_invalid(form)
 
     def get_success_url(self):
-        return reverse_lazy('tag_edit', kwargs={"pk": self.request.user.pk})
+        return reverse_lazy('tag_edit', kwargs={"pk": self.request.user.pk })
 
 
 class UsersListView(ListView):
@@ -495,9 +513,9 @@ def upload_photo(request):
         if form.is_valid():
             request.user.display_photo = request.FILES['display_photo']
             request.user.save()
-            return redirect('user', pk=request.user.pk, username=request.user.username)
+            return redirect('user', pk=request.user.pk)
         else:
-            return redirect('user', pk=request.user, username=request.user.username)
+            return redirect('user', pk=request.user.pk)
 
 
 def vote_question(request, pk, slug):
@@ -562,10 +580,10 @@ def vote(request, pk, question_or_answer):
         state = None
         if question_or_answer == 'question':
             if request.user.upvoted_questions.filter(pk=target.pk).exists():
-                state = 'once_upvoted_question'
+               state = 'once_upvoted_question'
             elif request.user.downvoted_questions.filter(pk=target.pk).exists():
-                state = 'once_downvoted_question'
-
+               state = 'once_downvoted_question'
+       
         if question_or_answer == 'answer':
             if request.user.upvoted_answers.filter(pk=target.pk).exists():
                 state = 'once_upvoted_answer'
@@ -574,6 +592,7 @@ def vote(request, pk, question_or_answer):
 
         score = update_vote(request.user, target,
                             vote_type, question_or_answer)
+            
 
         if state == None and question_or_answer == 'question' and vote_type == 'upvote':
             target.asked_by.question_vote_up()
