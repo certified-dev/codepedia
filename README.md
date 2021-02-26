@@ -5,4 +5,4 @@
 - Django
 - RestApi
 
->**<https://karma.pythonanywhere.com>**
+>**<https://codepedia.pythonanywhere.com>**
