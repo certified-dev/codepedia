@@ -16,7 +16,7 @@ django-pagedown==2.1.2
 django-redis==4.12.1
 django-select2==7.4.2
 django-widget-tweaks==1.4.8
-djangorestframework==3.11.0
+djangorestframework==3.11.2
 future==0.18.2
 gitdb==4.0.5
 GitPython==3.1.7
