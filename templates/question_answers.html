@@ -92,7 +92,7 @@
                             <a href="{% url 'user' question.asked_by.pk question.asked_by.username %}" class="font-weight-bold">{{ question.asked_by }}</a>
                             <span class="text-dark">{{ question.asked_by.points }}</span>
                             
-                            <span class="float-right mt-1"><i class="fas fa-clock"></i> {{ question.posted_on|naturaltime }}</span>
+                            <span class="float-right mt-1"><i class="fas fa-clock"></i> {{ question.posted_on|naturaltime|shorten_naturaltime }}</span>
                         </span>     
                     </div>
 
@@ -103,7 +103,7 @@
                             <div class="col-10 pr-0 pl-0">
                                {% for comment in question.comments.all %}
                                 <div id="second-comment-{{ comment.id }}" class="{% if not forloop.last %}border-bottom{% endif %} pl-1 activate-update2 p-2 text-secondary" style="font-size:12px">
-                                    {{ comment.text|safe|urlize }} – <a href="{% url 'user' comment.posted_by.pk comment.posted_by.username %}" class="{% if comment.posted_by == question.asked_by %}highlight-link{% endif %} font-weight-bold">{{ comment.posted_by }}</a> <span class="text-primary"> {{ comment.posted_on|naturaltime }}</span>
+                                    {{ comment.text|safe|urlize }} – <a href="{% url 'user' comment.posted_by.pk comment.posted_by.username %}" class="{% if comment.posted_by == question.asked_by %}highlight-link{% endif %} font-weight-bold">{{ comment.posted_by }}</a> <span class="text-primary"> {{ comment.posted_on|naturaltime|shorten_naturaltime }}</span>
                                     {% if comment.posted_by == user %}
                                     <span id="activate-second-comment-{{ comment.id }}" style="display:none"> <a href="#"><i class="fas fa-pen fa-sm  ml-1"></i></a>  <a class="text-danger"><i class="fas fa-trash fa-sm ml-2"></i></a></span>
                                     {% endif %}
@@ -159,7 +159,7 @@
                             <div class="col-12">
                                 <small>
                                     <span class="mr-2"><span class='text-secondary'>Viewed</span> {{ question.views }} time{{ question.views|pluralize}}</span>
-                                    <span class="mr-2"><span class='text-secondary'>Asked</span> {{ question.posted_on|naturaltime }}</span>
+                                    <span class="mr-2"><span class='text-secondary'>Asked</span> {{ question.posted_on|naturaltime|shorten_naturaltime }}</span>
                                 </small>
                             </div>
                         </div>
@@ -217,14 +217,14 @@
                                         </small>
                                         {% endif %}
                                         {% if question.updated_on %}
-                                        <span class="text-muted float-right small">edited {{ question.updated_on|naturaltime}}</span>
+                                        <span class="text-muted float-right small">edited {{ question.updated_on|naturaltime|shorten_naturaltime}}</span>
                                         {% endif %}
                                         
                                     </div>
                                     <div class="col-3 highlight-link pb-1 pl-3 ml-5">
                                         <div class="row">
                                             <div class="col-12">
-                                                <span class="text-secondary"><small>{{ question.posted_on|naturaltime}}</small></span>
+                                                <span class="text-secondary"><small>{{ question.posted_on|naturaltime|shorten_naturaltime}}</small></span>
                                             </div>
                                             <div class="col-12">
                                                 <div class="row">
@@ -258,7 +258,7 @@
                             <div class="col-11 pl-2">
                                 {% for comment in question.comments.all %}
                                 <div id="comment-{{ comment.id }}" class= "border-top {% if forloop.last %}border-bottom{% endif %} activate-update p-1">
-                                    {{ comment.text|safe|urlize }} – <a href="{% url 'user' comment.posted_by.pk comment.posted_by.username %}" class="{% if comment.posted_by == question.asked_by %}highlight-link{% endif %}">{{ comment.posted_by }}</a> <span class="text-secondary">{{ comment.posted_on|naturaltime }}</span>
+                                    {{ comment.text|safe|urlize }} – <a href="{% url 'user' comment.posted_by.pk comment.posted_by.username %}" class="{% if comment.posted_by == question.asked_by %}highlight-link{% endif %}">{{ comment.posted_by }}</a> <span class="text-secondary">{{ comment.posted_on|naturaltime|shorten_naturaltime }}</span>
                                     {% if comment.posted_by == user %}
                                     <span id="activate-comment-{{ comment.id }}" style="display:none"> <a href="#">edit</a>  <a class="text-danger">delete</a></span>
                                     {% endif %}

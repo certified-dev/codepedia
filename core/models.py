@@ -10,6 +10,8 @@ from django.utils.html import urlize
 from markdown2 import Markdown
 from rest_framework import serializers
 
+from core.templatetags.core_tags import shorten_naturaltime
+
 markdowner = Markdown(html4tags=True)
 
 
@@ -264,11 +266,12 @@ class AnswerSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_posted_on(obj):
-        return naturaltime(obj.posted_on)
+        return shorten_naturaltime(naturaltime(obj.posted_on))
 
     @staticmethod
     def get_updated_on(obj):
-        return naturaltime(obj.updated_on)
+        if obj.updated_on:
+            return shorten_naturaltime(naturaltime(obj.updated_on))
 
     @staticmethod
     def get_answered_by_points(obj):
