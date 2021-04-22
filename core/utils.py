@@ -24,26 +24,22 @@ def highlight(text):
         return new_comment
     else:
         return text
-    
-        
 
 
-
-def send_notify(request, question_or_answer, content):
+def send_notify(request, question_or_answer, object_type, content):
     is_mentioned = re.search("\@\w+", content)
     if is_mentioned is not None:
         mention = is_mentioned.group()[1:]
 
-        if User.objects.filter(username=mention).exists():
-            mentioned_user = User.objects.get(username=mention)
-
-            if mentioned_user is not None:
-                if Question.objects.filter(pk=question_or_answer.id).exists():
-                    if question_or_answer.asked_by != request.user:
-                        notify.send(request.user, recipient=mentioned_user, actor=request.user,
-                                    verb='mentioned you in', obj=question_or_answer, nf_type='user_mentioned')
-                else:
-                    if question_or_answer.answered_by != request.user:
-                        notify.send(request.user, recipient=mentioned_user, actor=request.user,
+        mentioned_user = User.objects.get(username=mention)
+        if mentioned_user:
+            if object_type == 'question':
+                if question_or_answer.asked_by != request.user:
+                    notify.send(request.user, recipient=mentioned_user, actor=request.user,
+                                verb='mentioned you in', obj=question_or_answer, nf_type='user_mentioned')
+            elif object_type == "answer":
+                if question_or_answer.answered_by != request.user:
+                    notify.send(request.user, recipient=mentioned_user, actor=request.user,
                                 verb='mentioned you in', obj=question_or_answer, target=question_or_answer.question,
                                 nf_type='user_mentioned')
+

@@ -22,7 +22,7 @@
         <!-- vue-app start -->
         <div id="question">
             <!--        mobile -->
-            <div  class="container pt-0 pl-md-3 mobile">
+            <div  class="container pt-0 pl-2 pr-2 mobile">
                 <div class="row">
                     <div class="col-12 pl-3 pr-2 border">
                         <div class="row">
@@ -81,7 +81,7 @@
                         {% endif %}
                     {% endif %}
 
-                    <div class="col-12 p-2 highlight-mobile shadow-sm">
+                    <div class="col-12 p-2 highlight-mobile {% if not question.updated_on %}shadow-sm{% endif %}">
                         <span class="text-secondary small">
                             {% if question.asked_by.display_photo %}
                             <img src="{{ question.asked_by.display_photo.url }}" class="rounded mb-1 img-fluid" height="20" width="20"/>
@@ -92,9 +92,17 @@
                             <a href="{% url 'user' question.asked_by.pk question.asked_by.username %}" class="font-weight-bold">{{ question.asked_by }}</a>
                             <span class="text-dark">{{ question.asked_by.points }}</span>
                             
-                            <span class="float-right mt-1"><i class="fas fa-clock"></i> {{ question.posted_on|naturaltime|shorten_naturaltime }}</span>
+                            <span class="float-right mt-1">asked {{ question.posted_on|naturaltime|shorten_naturaltime }}</span>
                         </span>     
                     </div>
+
+                    {% if question.updated_on %}
+                     <div class="col-12 p-2 shadow-sm">
+                        <span class="text-secondary small">
+                            <span class="float-right mt-1">edited {{ question.updated_on|naturaltime|shorten_naturaltime }}</span>
+                        </span>
+                    </div>
+                    {% endif %}
 
                     {% if question.comments.count > 0 %} 
                     <div class="col-12 ">
@@ -303,13 +311,15 @@
                 </div>
             </div>
 
-            <div  class="container border-top mobile">
-                <div class="row">
+            {% if answers.count > 0%}
+            <div  class="container pl-2 pr-2 mobile">
+                <div class="row border">
                     <div class="col-12 pt-1 pl-2 pb-1">
                         <span class="small font-weight-bold">{{ answers.count|intcomma }} Answer{{ answers.count|pluralize }}</span>
                     </div>
                 </div>
             </div>
+            {% endif %}
 
             <div class="container mb-2 laptop">
                 <div class="row">
@@ -337,7 +347,7 @@
         </div>
         <!-- vue-app end -->
 
-        <div  class="container mb-3">
+        <div  class="pl-2 pr-2 mb-3">
             <div class="row">
                 {% if user.is_authenticated %}
                 {% if user_answers.count > 0 %}
@@ -360,13 +370,13 @@
 
                             {% for field in form.visible_fields %}
                             <div class="form-group">
-                                <div class="row mobile pr-2 pl-2">
+                                <div class="row mobile pr-3 pl-3">
                                     <div class="col-12 bg-light border pt-2 pl-2" >
                                         <label for="{{ field.id_for_label }}">Your Answer</label>
                                     </div>
                                 </div>
                                 <label for="{{ field.id_for_label }}" class="laptop h5 mb-3">Your Answer</label>
-                                <div class="mt-2 ml-2 mb-1 small font-weight-bold mobile">Body</div>
+                                <div class="mt-2 ml-1 mb-1 small font-weight-bold mobile">Body</div>
                                 {{ field|add_class:'form-control' }}
                             </div>
                             {% endfor %}
@@ -392,7 +402,7 @@
                                 </div>
                             </div>
                             <label for="{{ field.id_for_label }}" class="laptop h5 mb-3">Your Answer</label>
-                            <div class="mt-2 mb-1 ml-2 small font-weight-bold mobile">Body</div>
+                            <div class="mt-2 mb-1 ml-1 small font-weight-bold mobile">Body</div>
                             {{ field|add_class:'form-control' }}
                         </div>
                         {% endfor %}
@@ -413,6 +423,7 @@
                 {% endif %}
             </div>
         </div>
+
 
         <div  class="container mb-5 p-0 pt-2 laptop" >
             Not the answer you're looking for? Browse other questions tagged

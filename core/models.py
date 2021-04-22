@@ -1,3 +1,4 @@
+from abc import ABC
 from hashlib import md5
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
@@ -10,7 +11,7 @@ from django.utils.html import urlize
 from markdown2 import Markdown
 from rest_framework import serializers
 
-from core.templatetags.core_tags import shorten_naturaltime
+from .templatetags.core_tags import shorten_naturaltime
 
 markdowner = Markdown(html4tags=True)
 
@@ -215,9 +216,9 @@ class User(AbstractUser):
             pass
 
 
-class UserField(serializers.Field):
-    def to_representation(self, value):
-        return value.username
+class UserField(serializers.Field, ABC):
+    def to_representation(self, data):
+        return data.username
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -230,13 +231,16 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = ('id', 'text_html', 'posted_by', 'posted_by_id', 'posted_on')
 
-    def get_text_html(self, obj):
+    @staticmethod
+    def get_text_html(obj):
         return urlize(obj.text)
 
-    def get_posted_on(self, obj):
-        return naturaltime(obj.posted_on)
+    @staticmethod
+    def get_posted_on(obj):
+        return shorten_naturaltime(naturaltime(obj.posted_on))
 
-    def get_posted_by_id(self, obj):
+    @staticmethod
+    def get_posted_by_id(obj):
         return obj.posted_by.id
 
 

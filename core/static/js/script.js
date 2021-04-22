@@ -27,12 +27,12 @@ Vue.component('answer', {
   template: `
   <div>
 
-   <div class="container mb-1 pl-2 pr-2">
+   <div class="container mb-1 pl-0 pr-0">
       <div class="row">
          <div class="col-12 pr-2 pl-2">
 
             <div class="row mobile pl-3 pr-3">
-              <div class="col-12 border-top">
+              <div class="col-12">
                   <div class="row pl-0 pr-0">
                      <div class="col-2 pl-0 pr-2 bg-light">
                            <div class="row">
@@ -126,16 +126,21 @@ Vue.component('answer', {
                      <a href="javascript:void(0)" class="text-secondary" onclick="alert('are you sure you want to delete this answer?')">delete</a>
                   </span>        
                </div>
-               <div :class="[[ answer.answered_by == question_owner ? 'highlight-mobile col-12 p-2 shadow-sm border-top border-bottom' : 'col-12 p-2 shadow-sm border-top border-bottom' ]]">
+               <div :class="[[ answer.answered_by == question_owner ? 'highlight-mobile col-12 p-2 border-top border-bottom shadow-sm' : 'col-12 p-2 border-top border-bottom shadow-sm' ]]">
                   <small class="text-secondary">
                      <a :href="'/users/' + answer.answered_by_id + '/' + answer.answered_by + '/'">
                         <img :src="answer.answered_by_image" class="rounded img-fluid" height="25" width="25"/>
                         <b>[[ answer.answered_by ]]</b>
                      </a>
                      <span class="text-dark">[[ answer.answered_by_points ]]</span>
-                     <span class="float-right mt-1"><i class="fas fa-clock"></i> [[ answer.posted_on ]]</span>
+                     <span class="float-right mt-1">asked [[ answer.posted_on ]]</span>
                   </small>
-               </div>          
+               </div>
+               <div v-if="answer.updated_on" class="col-12 p-2 shadow-sm border-top border-bottom">
+                   <small class="text-secondary">
+                     <span class="float-right mt-1">edited [[ answer.updated_on ]]</span>
+                  </small>
+               </div>
             </div>
          </div>
 
@@ -214,32 +219,28 @@ Vue.component('answer', {
       </div>
       
 
-      <div class="col-12 pr-1 comment-box-remove">
+      <div class="col-12 pr-0 pl-0 comment-box-remove">
          <div :id="'now_add_comment-' + answer.pk" style="display:none">
-
-               <div class="col-12 pl-2 laptop">  
-                  <div class="row pt-2">
-                     <div class="col-1"></div>
-                     <div class="col-11 pl-0">
-                        <div class="row">
-                           <div class="col-10 pr-0 pl-1">
-                              <form method="post" novalidate>
-                                 <div class="form-group">
-                                    <textarea class="form-control form-control-sm" :id="'id_laptop_comment_text-'+ answer.pk" name="text" rows="2" placeholder="Use comments to ask for more information."></textarea>
-                                    <small id="helpId" class="form-text text-muted">enter at least 15  characters.</small>
-                                 </div>
-                              </form>
-                           </div>
-                           <div class="col-2 p-0 pl-2 text-center">
-                              <button type="button" v-on:click="submitComment('laptop_comment_text-'+ answer.pk, '/answer/' + answer.pk + '/reply/')" class="btn btn-primary btn-sm"> Add Comment </button>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-
+              <div class="row pt-2 pl-2 laptop">
+                 <div class="col-1"></div>
+                 <div class="col-11 pl-0">
+                    <div class="row">
+                       <div class="col-10 pr-0 pl-1">
+                          <form method="post" novalidate>
+                             <div class="form-group">
+                                <textarea class="form-control form-control-sm" :id="'id_laptop_comment_text-'+ answer.pk" name="text" rows="2" placeholder="Use comments to ask for more information."></textarea>
+                                <small id="helpId" class="form-text text-muted">enter at least 15  characters.</small>
+                             </div>
+                          </form>
+                       </div>
+                       <div class="col-2 p-0 pl-2 text-center">
+                          <button type="button" v-on:click="submitComment('laptop_comment_text-'+ answer.pk, '/answer/' + answer.pk + '/reply/')" class="btn btn-primary btn-sm"> Add Comment </button>
+                       </div>
+                    </div>
+                 </div>
+              </div>
                <div class="row pl-2 pt-2 mobile shadow-sm" novalidate>
-                  <div class="col-12 pl-0">
+                  <div class="col-12 pl-0 pr-2">
                      <form method="post" novalidate>
                         <div class="form-group">
                            <textarea class="form-control form-control-sm" :id="'id_mobile_comment_text-'+ answer.pk" name="text" rows="2" placeholder="Use comments to ask for more information."></textarea>
@@ -257,7 +258,6 @@ Vue.component('answer', {
                      </div>
                   </div>
                </div>
-
             </div>
          </div>
 
@@ -415,10 +415,10 @@ function submitComment(button_id, Comment_Url) {
       bodyFormData.set('text', text_content);
 
       axios({
-      method: 'post',
-      url: Comment_Url,
-      data: bodyFormData,
-      headers: {'Content-Type': 'application/json' }
+          method: 'post',
+          url: Comment_Url,
+          data: bodyFormData,
+          headers: {'Content-Type': 'application/json' }
       }).then((response) => {
 
       if('answer' in this){

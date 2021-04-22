@@ -1,8 +1,13 @@
-# Code
+# Codepedia
+
+_A Stackoverflow Clone_
 
 - Bootstrap4
-- Vue.js
+- VueJS
 - Django
-- RestApi
+- RestFramework
 
->**<https://codepedia.pythonanywhere.com>**
+>**[LIVE DEMO][pythonanywhere]**
+
+
+[pythonanywhere]: https://codepedia.pythonanywhere.com
