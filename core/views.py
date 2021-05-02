@@ -19,7 +19,7 @@ from .forms import AnswerForm, QuestionForm, UserUpdateForm, UploadPhotoForm, \
     AddWatchedForm, AddWatched
 from .models import Question, Answer, Tag, User, AnswerSerializer, Comment
 from .templatetags.core_tags import shorten_naturaltime
-from .utils import send_notify, highlight
+from .utils import send_notify, highlight, compress
 
 
 @csrf_exempt
@@ -505,7 +505,7 @@ def upload_photo(request):
     if request.method == 'POST':
         form = UploadPhotoForm(request.POST, request.FILES)
         if form.is_valid():
-            request.user.display_photo = request.FILES['display_photo']
+            request.user.display_photo = compress(request.FILES['display_photo'])
             request.user.save()
             return redirect('user', pk=request.user.pk)
         else:

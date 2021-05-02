@@ -1,7 +1,12 @@
 import re
+import sys
+from io import BytesIO
+
+from PIL import Image
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from notify.signals import notify
 
-from .models import User, Question
+from .models import User
 
 
 def highlight(text):
@@ -43,3 +48,13 @@ def send_notify(request, question_or_answer, object_type, content):
                                 verb='mentioned you in', obj=question_or_answer, target=question_or_answer.question,
                                 nf_type='user_mentioned')
 
+
+def compress(file):
+    temp_image = Image.open(file)
+    outputIoStream = BytesIO()
+    resized_temp_image = temp_image.resize((1020, 573))
+    resized_temp_image.save(outputIoStream, format='JPEG', quality=60)
+    outputIoStream.seek(0)
+    final_image = InMemoryUploadedFile(outputIoStream, 'ImageField', "%s.jpg" % file.name.split('.')[0],
+                                       'image/jpeg', sys.getsizeof(outputIoStream), None)
+    return final_image

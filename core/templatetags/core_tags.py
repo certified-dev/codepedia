@@ -15,5 +15,5 @@ def gravatar(user, size=35):
 @register.filter
 def shorten_naturaltime(naturaltime):
     naturaltime = naturaltime.replace('minute', 'min').replace('minutes', 'mins').replace('hours', 'hrs').replace('days', 'd').replace('day', 'd')
-    naturaltime = naturaltime.replace('months', 'mon').replace('weeks', 'wks').replace('week', 'wk')
+    naturaltime = naturaltime.replace('months', 'mth').replace('weeks', 'wks').replace('week', 'wk')
     return naturaltime
