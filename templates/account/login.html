@@ -76,10 +76,10 @@
 {% endblock%}
 
  {% block title %}
- 
- {% trans "Code - Sign In" %} 
- 
+ {% trans "Code - Sign In" %}
  {% endblock %}
+
+{% block main_js %}<script src="{% static 'js/auth.js' %}"></script>{% endblock %}
  
   {% block body %}
 
@@ -113,7 +113,7 @@
                         </div>
                         {% endif %}
 
-                        <form id="signup_form" method="POST" action="{% url 'account_login' %}" novalidate>
+                        <form id="auth_form" method="POST" action="{% url 'account_login' %}" novalidate>
                             {% csrf_token %}
 
                             <div class=" form-group">
@@ -136,11 +136,14 @@
                                 
                             </div>
 
-                            {% if redirect_field_value %}<input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" /> {% endif %}
+                            {% if redirect_field_value %}
+                            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                            {% endif %}
+
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-primary btn-block"> Login</button>
+                                        <button type="button" onclick="checkForm()" class="btn btn-primary btn-block"> Login</button>
                                     </div>
                                     <!-- form-group// -->
                                 </div>

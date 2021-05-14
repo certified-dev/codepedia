@@ -10,6 +10,26 @@
     
     }
 
+    $("#upload-btn").click(function(e) {
+      e.preventDefault();
+
+      var x = $('#image-form input[type="file"]')
+      if (x.val()) {
+        $('#image-form').submit();
+      } else {
+       alert('select a file');
+       x.addClass("is-invalid");
+      }
+    });
+
+    $("#id_display_photo").change(function(e) {
+       var x = $('#image-form input[type="file"]')
+       if (x.val()) {
+          x.removeClass("is-invalid");
+          x.addClass("is-valid");
+        }
+    });
+
     $("#modelId").modal('show');
 
     $("#wmd-input-id_body,#wmd-input-id_description").addClass('border-bottom-0 border-left-0 border-right-0');

@@ -52,7 +52,7 @@ def send_notify(request, question_or_answer, object_type, content):
 def compress(file):
     temp_image = Image.open(file)
     outputIoStream = BytesIO()
-    resized_temp_image = temp_image.resize((1020, 573))
+    resized_temp_image = temp_image.resize((1100, 1000))
     resized_temp_image.save(outputIoStream, format='JPEG', quality=60)
     outputIoStream.seek(0)
     final_image = InMemoryUploadedFile(outputIoStream, 'ImageField', "%s.jpg" % file.name.split('.')[0],
