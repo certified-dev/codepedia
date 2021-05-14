@@ -16,16 +16,15 @@ urlpatterns = [
 
                   path('accounts/', include('allauth.urls')),
 
-
                   path("select2/", include("django_select2.urls")),
-
-                  path('answer/<int:pk>/accept/', views.accept, name="accept_answer"),
 
                   path('', views.home, name="home"),
 
+                  path('answer/<int:pk>/accept/', views.accept, name="accept_answer"),
+
                   path('home/', views.HomeQuestionView.as_view(), name="home_question"),
 
-                  path('questions/', views.QuestionListView.as_view(), name="question"),
+                  path('ajax/validate_username/', views.check_user, name="check_user"),
 
                   path('questions/unanswered/', views.UnansweredQuestion.as_view(), name="unanswered"),
 
@@ -60,6 +59,8 @@ urlpatterns = [
 
                   path('answer/<int:pk>/vote/',
                        views.vote_answer, name="vote_answer"),
+
+                  path('answer/<int:pk>/accept/', views.accept, name="accept_answer"),
 
                   path('users/',
                        views.UsersListView.as_view(), name="users"),

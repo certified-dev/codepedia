@@ -128,7 +128,7 @@ class User(AbstractUser):
         return self.username
 
     def get_absolute_url(self):
-        return reverse("user", kwargs={"pk": self.pk})
+        return reverse("user", kwargs={"pk": self.pk, "username": self.username})
 
     def question_once_upvote_now_downvote(self):
         if self.points > 1:

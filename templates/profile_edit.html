@@ -12,24 +12,25 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Upload photo</h5>
+          <h5 class="modal-title"><b>Upload photo</b></h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
         </div>
         <div class="modal-body">
+            <div class="card mb-2 pt-2">
+                {% if user.display_photo %}
+                    <img src="{{ user.display_photo.url }}" class="rounded mb-1 img-fluid d-block mx-auto" width="150" height="150"/>
+                {% else %}
+                    <img src="{{ user|gravatar:120 }}" class="mb-1 img-fluid d-block mx-auto" width="150" height="150"/>
+                {% endif %}
+            </div>
 
-        {% if user.display_photo %}
-            <img src="{{ user.display_photo.url }}" class="rounded mb-1 img-fluid d-block mx-auto" width="150" height="150"/>
-        {% else %}
-         <img src="{{ user|gravatar:120 }}" class="mb-1 img-fluid d-block mx-auto" width="150" height="150">
-        {% endif %}         
-
-          <form enctype="multipart/form-data" method="post" action="{% url 'upload_photo' %}" novalidate>
+          <form id="image-form" enctype="multipart/form-data" method="post" action="{% url 'upload_photo' %}" novalidate>
               {% csrf_token %}
-              <input type="file" class="form-control form-control-sm" accept="image/*" name="display_photo" id="id_display_photo">
+              <input type="file" class="form-control" accept="image/*" name="display_photo" id="id_display_photo">
               <div class="text-center mt-2">
-                  <button type="submit" class="btn btn-primary">Upload</button>
+                  <button type="button" id="upload-btn" class="btn btn-primary">Upload</button>
               </div>
           </form>
         </div>

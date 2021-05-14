@@ -47,6 +47,16 @@ def home(request):
         return redirect('home_question')
 
 
+def check_user(request):
+    username = request.GET.get('username', None)
+    email = request.GET.get('email', None)
+    data = {
+        'username_unavailable': User.objects.filter(username__iexact=username).exists(),
+        'email_unavailable': User.objects.filter(email__iexact=email).exists()
+    }
+    return JsonResponse(data)
+
+
 @method_decorator([login_required], name="dispatch")
 class HomeQuestionView(ListView):
     model = Question
@@ -507,9 +517,9 @@ def upload_photo(request):
         if form.is_valid():
             request.user.display_photo = compress(request.FILES['display_photo'])
             request.user.save()
-            return redirect('user', pk=request.user.pk)
+            return redirect('user', pk=request.user.pk, username=request.user.username)
         else:
-            return redirect('user', pk=request.user.pk)
+            return redirect('user', pk=request.user.pk, username=request.user.username)
 
 
 def vote_question(request, pk, slug):
