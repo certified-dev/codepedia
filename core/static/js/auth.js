@@ -70,59 +70,50 @@
     });
 
 
-     function checkForm() {
+     function checkForm(e) {
 
-      if (email) {
+      if (user_bool && pass_bool && email_bool) {
 
-       if (user_bool && pass_bool && email_bool) {
+                var form = $('#auth_form');
+                $.ajax({
+                  url: form.attr('data-validate-username-url'),
+                  data: form.serialize(),
+                  dataType: 'json',
+                  success: function (data) {
+                     if (data.username_unavailable && !data.email_unavailable) {
+                         alert('user already exists!!!');
+                         $('#reg_error_username').show();
+                     } else if (data.email_unavailable && !data.username_unavailable) {
+                         alert('user with email already exists!!!');
+                         $('#reg_error_email').show();
+                     } else if (data.username_unavailable && data.email_unavailable) {
+                         alert('user with username and email already exists!!!');
+                         $('#reg_error').show();
+                     } else {
+                         $('#auth_form').submit();
+                     }
 
-            var form = $('#auth_form');
-            $.ajax({
-              url: form.attr('data-validate-username-url'),
-              data: form.serialize(),
-              dataType: 'json',
-              success: function (data) {
-                 if (data.username_unavailable && !data.email_unavailable) {
-                     alert('user already exists!!!');
-                     $('#reg_error_username').show();
-                 } else if (data.email_unavailable && !data.username_unavailable) {
-                     alert('user with email already exists!!!');
-                     $('#reg_error_email').show();
-                 } else if (data.username_unavailable && data.email_unavailable) {
-                     alert('user with username and email already exists!!!');
-                     $('#reg_error').show();
-                 } else {
-                     $('#auth_form').submit();
-                 }
+                  }
+                });
 
+              } else if (user_bool && pass_bool) {
+
+              $('#auth_form').submit();
+
+              } else if(!user_bool) {
+
+              alert('enter your username/email');
+
+              } else if(!pass_bool) {
+
+              alert('enter your password');
+
+              } else {
+              alert('enter your username/email and password');
               }
-            });
+            }
 
-          } else if(!user_bool) {
-          alert('enter your username/email');
-          } else if(!pass_bool) {
-          alert('enter your password');
-          } else if(!email_bool) {
-          alert('enter your email address');
-          } else {
-          alert('enter your username,email and password');
-          }
 
-      } else {
-
-       if (user_bool && pass_bool) {
-
-          $('#auth_form').submit();
-          } else if(!user_bool) {
-          alert('enter your username/email');
-          } else if(!pass_bool) {
-          alert('enter your password');
-          } else {
-          alert('enter your username/email and password');
-          }
-        }
-
-      }
 
    $('#auth_form input[type="text"],#auth_form input[type="email"]').focus(function(e) {
        $('#reg_error,#reg_error_username,#reg_error_email').hide();
