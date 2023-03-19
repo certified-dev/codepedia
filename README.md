@@ -10,4 +10,4 @@ _A Stackoverflow Clone_
 >**[LIVE DEMO][pythonanywhere]**
 
 
-[pythonanywhere]: https://codepedia.pythonanywhere.com
+[pythonanywhere]: https://codepedia.pythonanywhere.com/questions
